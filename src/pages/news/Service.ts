@@ -15,17 +15,17 @@ export class NewsService {
 	 */
 	@span('getNews')
 	@cache('news', {ttl: 7200})
-	static async list (ctx:Context):Promise<NewsItem[]> {
-		try {
-			return sort([
-				...await ReleaseService.list(ctx),
-				...await BlogService.list(ctx),
-			], 'date', 'desc');
-		} catch (err) {
-			ctx.logger.error(err);
-			return cacheSkip([]);
-		}
-	}
+    static async list (ctx:Context):Promise<NewsItem[]> {
+        try {
+            return sort([
+                ...await ReleaseService.list(ctx),
+                ...await BlogService.list(ctx),
+            ], 'date', 'desc');
+        } catch (err) {
+            ctx.logger.error(err);
+            return cacheSkip([]);
+        }
+    }
 
 	/**
 	 * Retrieves the next and previous items for a news entry
@@ -34,13 +34,13 @@ export class NewsService {
 	 * @param {string} slug
 	 */
 	static async nextPrevious (ctx:Context, slug:string) {
-		const list = await NewsService.list(ctx);
-		const idx = list.findIndex(el => el.slug === slug);
+	    const list = await NewsService.list(ctx);
+	    const idx = list.findIndex(el => el.slug === slug);
 
-		return {
-			previous: idx >= 0 && idx < list.length - 1 ? list[idx + 1] : null,
-			next: idx > 0 ? list[idx - 1] : null,
-		};
+	    return {
+	        previous: idx >= 0 && idx < list.length - 1 ? list[idx + 1] : null,
+	        next: idx > 0 ? list[idx - 1] : null,
+	    };
 	}
 
 	/**
@@ -49,10 +49,10 @@ export class NewsService {
 	 * @param {Context} ctx
 	 */
 	static async siteMap (ctx:Context) {
-		const list = await NewsService.list(ctx);
-		const acc:string[] = [siteMapEntry('/news')];
-		for (let i = 0; i < list.length; i++) acc.push(siteMapEntry(list[i].to, new Date(list[i].date)));
-		return acc;
+	    const list = await NewsService.list(ctx);
+	    const acc:string[] = [siteMapEntry('/news')];
+	    for (let i = 0; i < list.length; i++) acc.push(siteMapEntry(list[i].to, new Date(list[i].date)));
+	    return acc;
 	}
 
 	/**
@@ -61,7 +61,7 @@ export class NewsService {
 	 * @param {Context} ctx
 	 */
 	static async evict (ctx:Context) {
-		await ctx.cache.del('news');
+	    await ctx.cache.del('news');
 	}
 
 }

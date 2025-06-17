@@ -26,23 +26,23 @@ export class BlogService {
 	 * @param {Context} ctx
 	 */
 	@span('getBlogs')
-	static async list (ctx:Context):Promise<CompactBlog[]> {
-		try {
-			const posts = await neon(ctx.env.DB_CONNECTION_STRING).query(`
+    static async list (ctx:Context):Promise<CompactBlog[]> {
+        try {
+            const posts = await neon(ctx.env.DB_CONNECTION_STRING).query(`
 				SELECT b.slug, b.title, b.desc, b.date
 				FROM public.blogs as b
 			`) as CompactBlog[];
-			return posts.map(row => ({
-				...row,
-				date: new Date(row.date).valueOf(),
-				to: getLink(row),
-				type: 'blog',
-			}));
-		} catch (err) {
-			ctx.logger.error(err);
-			return [];
-		}
-	}
+            return posts.map(row => ({
+                ...row,
+                date: new Date(row.date).valueOf(),
+                to: getLink(row),
+                type: 'blog',
+            }));
+        } catch (err) {
+            ctx.logger.error(err);
+            return [];
+        }
+    }
 
 	/**
 	 * Retrieves a single blog from postgress
@@ -50,8 +50,8 @@ export class BlogService {
 	 */
 	@span('getBlog')
 	static async one <S extends {slugId:string}> (ctx:Context<S>) {
-		try {
-			const rows = await neon(ctx.env.DB_CONNECTION_STRING).query(`
+	    try {
+	        const rows = await neon(ctx.env.DB_CONNECTION_STRING).query(`
 				SELECT
 					b.slug,
 					b.title,
@@ -65,16 +65,17 @@ export class BlogService {
 				ON b.author_id = a.id
 				WHERE b.slug = $1
 			`, [ctx.state.slugId]) as FullBlog[];
-			if (!rows.length) return null;
+	        if (!rows.length) return null;
 
-			return {
-				...rows[0],
-				to: getLink(rows[0]),
-				type: 'blog',
-			};
-		} catch (err) {
-			ctx.logger.error(err, {slugId: ctx.state.slugId});
-			return null;
-		}
+	        return {
+	            ...rows[0],
+	            to: getLink(rows[0]),
+	            type: 'blog',
+	        };
+	    } catch (err) {
+	        ctx.logger.error(err, {slugId: ctx.state.slugId});
+	        return null;
+	    }
 	}
+
 }

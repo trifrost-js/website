@@ -47,25 +47,25 @@ export class ReleaseService {
 	 * @param {Context} ctx
 	 */
 	@span('getReleases')
-	static async list (ctx:Context):Promise<CompactRelease[]> {
-		try {
-			const rows = (await neon(ctx.env.DB_CONNECTION_STRING).query(`
+    static async list (ctx:Context):Promise<CompactRelease[]> {
+        try {
+            const rows = (await neon(ctx.env.DB_CONNECTION_STRING).query(`
 				SELECT r.slug, r.title, r.desc, r.date
 				FROM public.releases AS r
 				ORDER BY r.date DESC
 			`)) as CompactRelease[];
 
-			return rows.map(row => ({
-				...row,
-				to: getLink(row),
-				date: new Date(row.date).valueOf(),
-				type: 'release',
-			}));
-		} catch (err) {
-			ctx.logger.error(err);
-			return [];
-		}
-	}
+            return rows.map(row => ({
+                ...row,
+                to: getLink(row),
+                date: new Date(row.date).valueOf(),
+                type: 'release',
+            }));
+        } catch (err) {
+            ctx.logger.error(err);
+            return [];
+        }
+    }
 
 	/**
 	 * Retrieves a single release from postgress
@@ -73,10 +73,10 @@ export class ReleaseService {
 	 */
 	@span('getRelease')
 	static async one <S extends {slugId:string}> (ctx:Context<S>) {
-		try {
-			const sql = neon(ctx.env.DB_CONNECTION_STRING);
-			const rows = (await sql.query(
-				`SELECT
+	    try {
+	        const sql = neon(ctx.env.DB_CONNECTION_STRING);
+	        const rows = (await sql.query(
+	            `SELECT
 				r.slug,
 				r.title,
 				r.desc,
@@ -88,44 +88,44 @@ export class ReleaseService {
 				FROM public.releases AS r
 				LEFT JOIN public.authors AS a ON r.author_id = a.id
 				WHERE r.slug = $1`,
-				[ctx.state.slugId]
-			)) as FullRelease[];
-			if (!rows.length) return null;
+	            [ctx.state.slugId]
+	        )) as FullRelease[];
+	        if (!rows.length) return null;
 
-			return {
-				...rows[0],
-				type: 'release',
-				to: getLink(rows[0]),
-			};
-		} catch (err) {
-			ctx.logger.error(err, {slugId: ctx.state.slugId});
-			return null;
-		}
+	        return {
+	            ...rows[0],
+	            type: 'release',
+	            to: getLink(rows[0]),
+	        };
+	    } catch (err) {
+	        ctx.logger.error(err, {slugId: ctx.state.slugId});
+	        return null;
+	    }
 	}
 
 	/** Fetch all releases from GitHub and upsert into Postgres */
 	@span('syncReleasesToDb')
-	static async syncToDb(ctx:Context) {
+	static async syncToDb (ctx:Context) {
 		// Step 1: Fetch releases directly from GitHub
-		const res = await ctx.fetch(RELEASES_URL, {
-			method: 'GET',
-			headers: {
+	    const res = await ctx.fetch(RELEASES_URL, {
+	        method: 'GET',
+	        headers: {
 			  Accept: 'application/vnd.github.v3+json',
 			  Authorization: `Bearer ${ctx.env.GITHUB_API_TOKEN}`,
 			  'User-Agent': 'TrifrostJs/core',
-			},
-		});
+	        },
+	    });
 
-		if (!res.ok) {
-			ctx.logger.error('GitHub releases fetch failed', {text: await res.text()});
-			return 0;
-		}
+	    if (!res.ok) {
+	        ctx.logger.error('GitHub releases fetch failed', {text: await res.text()});
+	        return 0;
+	    }
 
-		const raw = (await res.json()) as RawGitHubRelease[];
-		if (!Array.isArray(raw)) return 0;
+	    const raw = (await res.json()) as RawGitHubRelease[];
+	    if (!Array.isArray(raw)) return 0;
 
 		// 2. Build release data and collect unique authors
-		const releases: {
+	    const releases: {
 			slug: string;
 			title: string;
 			desc: string | null;
@@ -136,69 +136,67 @@ export class ReleaseService {
 			link: string;
 		}[] = [];
 
-		const authors = new Map<string, {name:string; link:string}>();
-		for (const r of raw) {
-			const name = r.author.login;
-			const link = r.author.html_url;
-			if (!authors.has(link)) authors.set(link, {name, link});
+	    const authors = new Map<string, {name:string; link:string}>();
+	    for (const r of raw) {
+	        const name = r.author.login;
+	        const link = r.author.html_url;
+	        if (!authors.has(link)) authors.set(link, {name, link});
 
-			releases.push({
-				slug: r.tag_name,
-				title: `TriFrost ${r.name}`,
-				desc: Markdown.getIntroFromTree(Markdown.toTree(r.body)),
-				date: new Date(r.published_at),
-				author_name: name,
-				author_link: link,
-				body_md: r.body,
-				link: r.html_url,
-			});
-		}
-		if (!releases.length) return 0;
+	        releases.push({
+	            slug: r.tag_name,
+	            title: `TriFrost ${r.name}`,
+	            desc: Markdown.getIntroFromTree(Markdown.toTree(r.body)),
+	            date: new Date(r.published_at),
+	            author_name: name,
+	            author_link: link,
+	            body_md: r.body,
+	            link: r.html_url,
+	        });
+	    }
+	    if (!releases.length) return 0;
 
-		const pool = new Pool({connectionString: ctx.env.DB_CONNECTION_STRING});
-		const client = await pool.connect();
-		try {
+	    const pool = new Pool({connectionString: ctx.env.DB_CONNECTION_STRING});
+	    const client = await pool.connect();
+	    try {
 			// 3. Query authors in bulk
-			const {rows: existingAuthors} = await client.query<{id:string; link:string}>(
-				'SELECT id, link FROM authors WHERE link = ANY($1::text[])',
-				[[...authors.keys()]]
-			);
+	        const {rows: existingAuthors} = await client.query<{id:string; link:string}>(
+	            'SELECT id, link FROM authors WHERE link = ANY($1::text[])',
+	            [[...authors.keys()]]
+	        );
 
-			const authorMap = new Map<string, string>(); // link -> id
-			for (const row of existingAuthors) authorMap.set(row.link, row.id);
+	        const authorMap = new Map<string, string>(); // link -> id
+	        for (const row of existingAuthors) authorMap.set(row.link, row.id);
 
 			// 4. Insert missing authors
-			const newAuthors = [...authors.values()].filter(el => !authorMap.has(el.link));
-			for (const el of newAuthors) {
-				const id = crypto.randomUUID();
-				await client.query(`
+	        const newAuthors = [...authors.values()].filter(el => !authorMap.has(el.link));
+	        for (const el of newAuthors) {
+	            const id = crypto.randomUUID();
+	            await client.query(`
 					INSERT INTO public.authors (id, name, link)
 					VALUES ($1, $2, $3)
 					ON CONFLICT (name, link) DO NOTHING
 				`, [id, el.name, el.link]);
-				authorMap.set(el.link, id);
-			}
+	            authorMap.set(el.link, id);
+	        }
 
 			// 5. Insert or update releases
-			const rows = releases.map(r => [
-				r.slug,
-				r.title,
-				r.desc,
-				r.date,
+	        const rows = releases.map(r => [
+	            r.slug,
+	            r.title,
+	            r.desc,
+	            r.date,
 				authorMap.get(r.author_link)!,
 				r.body_md,
 				r.link,
-			]);
+	        ]);
 
-			await client.query(`
+	        await client.query(`
 				INSERT INTO public.releases (
 					slug, title, "desc", date, author_id, body, link
 				)
 				VALUES ${rows
-					.map((_, i) =>
-					`(${[...Array(7)].map((_, j) => `$${i * 7 + j + 1}`).join(', ')})`
-					)
-					.join(', ')}
+        .map((_top, i) => `(${[...Array(7)].map((_, j) => `$${(i*7) + j + 1}`).join(', ')})`)
+        .join(', ')}
 				ON CONFLICT (slug) DO UPDATE SET
 					title     = EXCLUDED.title,
 					"desc"    = EXCLUDED."desc",
@@ -208,10 +206,10 @@ export class ReleaseService {
 					link      = EXCLUDED.link;
 			`, rows.flat());
 
-			return releases.length;
-		} finally {
-			client.release();
-		}
+	        return releases.length;
+	    } finally {
+	        client.release();
+	    }
 	}
 
 }
