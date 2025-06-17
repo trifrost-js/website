@@ -4,10 +4,10 @@ import {createCss} from '@trifrost/core';
 
 const _css = createCss({
     var: {
-		/* Fonts */
+        /* Fonts */
         font_header: '\'Fira Code\', monospace',
         font_body: '\'Roboto\', Sans-serif',
-		/* Font Size */
+        /* Font Size */
         font_s_giga: '7.8rem',
         font_s_title: '3.8rem',
         font_s_subtitle: '2.8rem',
@@ -15,11 +15,11 @@ const _css = createCss({
         font_s_form: '1.8rem',
         font_s_body: '1.8rem',
         font_s_small: '1.6rem',
-		/* Radii */
+        /* Radii */
         rad_s: '.4rem',
         rad_m: '1rem',
         rad_l: '2rem',
-		/* Spacing */
+        /* Spacing */
         space_xs: '.5rem',
         space_s: '1rem',
         space_m: '1.5rem',
@@ -155,7 +155,7 @@ const _css = createCss({
             dark: 'linear-gradient(110deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.05) 100%)',
             light: 'linear-gradient(110deg, rgba(186, 186, 186, 0.15) 0%, rgba(186, 186, 186, 0.50) 50%, rgba(186, 186, 186, 0.15) 100%)',
         },
-		/* Algolia */
+        /* Algolia */
         '--docsearch-searchbox-background': {
             dark: '#02080F !important',
             light: '#E1E4E8 !important',
@@ -188,7 +188,7 @@ const _css = createCss({
     themeAttribute: true,
     reset: true,
     definitions: mod => ({
-		/* Flex */
+        /* Flex */
         f: {display: 'flex'},
         fi: {display: 'inline-flex'},
         fh: {flexDirection: 'row'},
@@ -206,97 +206,97 @@ const _css = createCss({
         fg0: {flexGrow: 0},
         fs: {flexShrink: 1},
         fs0: {flexShrink: 0},
-		/* Radii */
+        /* Radii */
         br_s: {borderRadius: mod.$v.rad_s},
         br_m: {borderRadius: mod.$v.rad_m},
         br_l: {borderRadius: mod.$v.rad_l},
-		/* Spacing */
+        /* Spacing */
         sp_xs: {padding: mod.$v.space_xs},
         sp_s: {padding: mod.$v.space_s},
         sp_m: {padding: mod.$v.space_m},
         sp_l: {padding: mod.$v.space_l},
         sp_xl: {padding: mod.$v.space_xl},
-		/* Spacing Top */
+        /* Spacing Top */
         sp_t_xs: {paddingTop: mod.$v.space_xs},
         sp_t_s: {paddingTop: mod.$v.space_s},
         sp_t_m: {paddingTop: mod.$v.space_m},
         sp_t_l: {paddingTop: mod.$v.space_l},
         sp_t_xl: {paddingTop: mod.$v.space_xl},
-		/* Spacing Right */
+        /* Spacing Right */
         sp_r_xs: {paddingRight: mod.$v.space_xs},
         sp_r_s: {paddingRight: mod.$v.space_s},
         sp_r_m: {paddingRight: mod.$v.space_m},
         sp_r_l: {paddingRight: mod.$v.space_l},
         sp_r_xl: {paddingRight: mod.$v.space_xl},
-		/* Spacing Bottom */
+        /* Spacing Bottom */
         sp_b_xs: {paddingBottom: mod.$v.space_xs},
         sp_b_s: {paddingBottom: mod.$v.space_s},
         sp_b_m: {paddingBottom: mod.$v.space_m},
         sp_b_l: {paddingBottom: mod.$v.space_l},
         sp_b_xl: {paddingBottom: mod.$v.space_xl},
-		/* Spacing Left */
+        /* Spacing Left */
         sp_l_xs: {paddingLeft: mod.$v.space_xs},
         sp_l_s: {paddingLeft: mod.$v.space_s},
         sp_l_m: {paddingLeft: mod.$v.space_m},
         sp_l_l: {paddingLeft: mod.$v.space_l},
         sp_l_xl: {paddingLeft: mod.$v.space_xl},
-		/* Spacing Horizontal */
+        /* Spacing Horizontal */
         sp_h_xs: {paddingLeft: mod.$v.space_xs, paddingRight: mod.$v.space_xs},
         sp_h_s: {paddingLeft: mod.$v.space_s, paddingRight: mod.$v.space_s},
         sp_h_m: {paddingLeft: mod.$v.space_m, paddingRight: mod.$v.space_m},
         sp_h_l: {paddingLeft: mod.$v.space_l, paddingRight: mod.$v.space_l},
         sp_h_xl: {paddingLeft: mod.$v.space_xl, paddingRight: mod.$v.space_xl},
-		/* Spacing Vertical */
+        /* Spacing Vertical */
         sp_v_xs: {paddingTop: mod.$v.space_xs, paddingBottom: mod.$v.space_xs},
         sp_v_s: {paddingTop: mod.$v.space_s, paddingBottom: mod.$v.space_s},
         sp_v_m: {paddingTop: mod.$v.space_m, paddingBottom: mod.$v.space_m},
         sp_v_l: {paddingTop: mod.$v.space_l, paddingBottom: mod.$v.space_l},
         sp_v_xl: {paddingTop: mod.$v.space_xl, paddingBottom: mod.$v.space_xl},
-		/* Margin */
+        /* Margin */
         sm_xs: {margin: mod.$v.space_xs},
         sm_s: {margin: mod.$v.space_s},
         sm_m: {margin: mod.$v.space_m},
         sm_l: {margin: mod.$v.space_l},
         sm_xl: {margin: mod.$v.space_xl},
-		/* Margin Top */
+        /* Margin Top */
         sm_t_xs: {marginTop: mod.$v.space_xs},
         sm_t_s: {marginTop: mod.$v.space_s},
         sm_t_m: {marginTop: mod.$v.space_m},
         sm_t_l: {marginTop: mod.$v.space_l},
         sm_t_xl: {marginTop: mod.$v.space_xl},
-		/* Margin Right */
+        /* Margin Right */
         sm_r_xs: {marginRight: mod.$v.space_xs},
         sm_r_s: {marginRight: mod.$v.space_s},
         sm_r_m: {marginRight: mod.$v.space_m},
         sm_r_l: {marginRight: mod.$v.space_l},
         sm_r_xl: {marginRight: mod.$v.space_xl},
-		/* Margin Bottom */
+        /* Margin Bottom */
         sm_b_xs: {marginBottom: mod.$v.space_xs},
         sm_b_s: {marginBottom: mod.$v.space_s},
         sm_b_m: {marginBottom: mod.$v.space_m},
         sm_b_l: {marginBottom: mod.$v.space_l},
         sm_b_xl: {marginBottom: mod.$v.space_xl},
-		/* Margin Left */
+        /* Margin Left */
         sm_l_xs: {marginLeft: mod.$v.space_xs},
         sm_l_s: {marginLeft: mod.$v.space_s},
         sm_l_m: {marginLeft: mod.$v.space_m},
         sm_l_l: {marginLeft: mod.$v.space_l},
         sm_l_xl: {marginLeft: mod.$v.space_xl},
-		/* Margin Horizontal */
+        /* Margin Horizontal */
         sm_h_xs: {marginLeft: mod.$v.space_xs, marginRight: mod.$v.space_xs},
         sm_h_s: {marginLeft: mod.$v.space_s, marginRight: mod.$v.space_s},
         sm_h_m: {marginLeft: mod.$v.space_m, marginRight: mod.$v.space_m},
         sm_h_l: {marginLeft: mod.$v.space_l, marginRight: mod.$v.space_l},
         sm_h_xl: {marginLeft: mod.$v.space_xl, marginRight: mod.$v.space_xl},
         sm_h_auto: {marginLeft: 'auto', marginRight: 'auto'},
-		/* Margin Vertical */
+        /* Margin Vertical */
         sm_v_xs: {marginTop: mod.$v.space_xs, marginBottom: mod.$v.space_xs},
         sm_v_s: {marginTop: mod.$v.space_s, marginBottom: mod.$v.space_s},
         sm_v_m: {marginTop: mod.$v.space_m, marginBottom: mod.$v.space_m},
         sm_v_l: {marginTop: mod.$v.space_l, marginBottom: mod.$v.space_l},
         sm_v_xl: {marginTop: mod.$v.space_xl, marginBottom: mod.$v.space_xl},
         sm_v_auto: {marginTop: 'auto', marginBottom: 'auto'},
-		/* Typographic */
+        /* Typographic */
         text_giga_title: {
             fontFamily: mod.$v.font_header,
             fontWeight: 'bold',
@@ -363,7 +363,7 @@ const _css = createCss({
                 fontSize: `calc(${mod.$v.font_s_body} - .2rem)`,
             },
         },
-		/* Theme */
+        /* Theme */
         badge_release: {
             background: mod.$t.badge_release_bg,
             color: mod.$t.badge_release_fg,
@@ -387,7 +387,7 @@ const _css = createCss({
         outline: {
             [mod.hover]: {outline: mod.$t.outline},
         },
-		/* Blocks */
+        /* Blocks */
         page_wrapper: {
             display: 'flex',
             flexDirection: 'column',
@@ -469,7 +469,7 @@ const _css = createCss({
             color: mod.$t.badge_fg,
             [mod.hover]: {outline: mod.$t.outline},
         },
-		/* Generic */
+        /* Generic */
         hide: {display: 'none'},
     }),
 });
