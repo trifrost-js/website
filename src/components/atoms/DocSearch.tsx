@@ -31,7 +31,7 @@ export function DocSearch () {
                 script.defer = true;
                 script.async = true;
                 script.onload = () => {
-					/* @ts-expect-error DocSearch should be available at this point */
+                    /* @ts-expect-error DocSearch should be available at this point */
                     docsearch({
                         appId: data.appId,
                         apiKey: data.apiKey,

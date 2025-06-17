@@ -1,5 +1,6 @@
 name = "trifrost_website"
 main = "src/index.ts"
+account_id = "caecd57a23368bcaa309d412bee35b5f"
 compatibility_date = "2025-05-08"
 compatibility_flags = ["nodejs_compat"]
 
