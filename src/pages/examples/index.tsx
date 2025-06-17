@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {css} from '../../css';
 import {Badge} from '../../components/atoms/Badge';
 import {Collapsible} from '../../components/atoms/Collapsible';

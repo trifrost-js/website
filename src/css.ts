@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import {createCss} from '@trifrost/core';
 
 const _css = createCss({

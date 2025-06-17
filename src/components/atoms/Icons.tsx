@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-
 type IconProps = {
   width: number;
   className?: string;

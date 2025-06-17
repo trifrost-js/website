@@ -1,6 +1,3 @@
-/* eslint-disable no-labels */
-/* eslint-disable max-statements */
-
 import {join} from '@valkyriestudios/utils/array';
 import {HighLight} from '../components/atoms/HighLight';
 import {Image} from '../components/atoms/Image';
@@ -111,7 +108,6 @@ export class Markdown {
     return nodes;
   }
 
-  // eslint-disable-next-line complexity
   static toTree(markdown: string): MarkdownNode[] {
     const lines = markdown.trim().split(RGX_NEWLINE);
     const tree: MarkdownNode[] = [];

@@ -1,13 +1,13 @@
 import {css} from '../../css';
 
 type BadgeProps = {
-	type?: 'release' | 'blog' | 'normal';
-	style?: Record<string, unknown>;
-	children: any;
-	[key:string]: unknown;
+  type?: 'release' | 'blog' | 'normal';
+  style?: Record<string, unknown>;
+  children: any;
+  [key: string]: unknown;
 };
 
-export function Badge({type, style, children, ...rest}:BadgeProps) {
+export function Badge({type, style, children, ...rest}: BadgeProps) {
   const cls = css.use('sp_xs', 'br_s', `badge_${type || 'normal'}`, {
     fontWeight: 400,
     letterSpacing: '.1rem',
@@ -18,5 +18,9 @@ export function Badge({type, style, children, ...rest}:BadgeProps) {
     },
   });
 
-  return <span className={cls} {...rest}>{children}</span>;
+  return (
+    <span className={cls} {...rest}>
+      {children}
+    </span>
+  );
 }
