@@ -38,6 +38,10 @@ jobs:
         run: npm run lint
       - name: Run Types
         run: npm run types
+      - name: Validate Wrangler Config
+        run: test -f wrangler.toml
+      - name: Dry run deploy
+        run: npx wrangler deploy --dry-run
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
