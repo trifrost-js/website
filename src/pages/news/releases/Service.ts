@@ -48,11 +48,9 @@ export class ReleaseService {
   @span('getReleases')
   static async list(ctx: Context): Promise<CompactRelease[]> {
     try {
-      const rows = (await neon(ctx.env.DB_CONNECTION_STRING).query(`
-				SELECT r.slug, r.title, r.desc, r.date
-				FROM public.releases AS r
-				ORDER BY r.date DESC
-			`)) as CompactRelease[];
+      const rows = (await neon(ctx.env.DB_CONNECTION_STRING).query(
+        'SELECT r.slug, r.title, r.desc, r.date FROM public.releases AS r ORDER BY r.date DESC',
+      )) as CompactRelease[];
 
       return rows.map(row => ({
         ...row,
@@ -75,18 +73,7 @@ export class ReleaseService {
     try {
       const sql = neon(ctx.env.DB_CONNECTION_STRING);
       const rows = (await sql.query(
-        `SELECT
-				r.slug,
-				r.title,
-				r.desc,
-				r.date,
-				r.body,             -- stored markdown
-				r.link,
-				a.name  AS author_name,
-				a.link  AS author_link
-				FROM public.releases AS r
-				LEFT JOIN public.authors AS a ON r.author_id = a.id
-				WHERE r.slug = $1`,
+        'SELECT r.slug, r.title, r.desc, r.date, r.body, r.link, a.name AS author_name, a.link  AS author_link FROM public.releases AS r LEFT JOIN public.authors AS a ON r.author_id = a.id WHERE r.slug = $1',
         [ctx.state.slugId],
       )) as FullRelease[];
       if (!rows.length) return null;
@@ -170,14 +157,11 @@ export class ReleaseService {
       const newAuthors = [...authors.values()].filter(el => !authorMap.has(el.link));
       for (const el of newAuthors) {
         const id = crypto.randomUUID();
-        await client.query(
-          `
-					INSERT INTO public.authors (id, name, link)
-					VALUES ($1, $2, $3)
-					ON CONFLICT (name, link) DO NOTHING
-				`,
-          [id, el.name, el.link],
-        );
+        await client.query('INSERT INTO public.authors (id, name, link) VALUES ($1, $2, $3) ON CONFLICT (name, link) DO NOTHING', [
+          id,
+          el.name,
+          el.link,
+        ]);
         authorMap.set(el.link, id);
       }
 
@@ -186,18 +170,10 @@ export class ReleaseService {
 
       await client.query(
         `
-				INSERT INTO public.releases (
-					slug, title, "desc", date, author_id, body, link
-				)
-				VALUES ${rows.map((_top, i) => `(${[...Array(7)].map((_, j) => `$${i * 7 + j + 1}`).join(', ')})`).join(', ')}
-				ON CONFLICT (slug) DO UPDATE SET
-					title     = EXCLUDED.title,
-					"desc"    = EXCLUDED."desc",
-					date      = EXCLUDED.date,
-					author_id = EXCLUDED.author_id,
-					body   	  = EXCLUDED.body,
-					link      = EXCLUDED.link;
-			`,
+        INSERT INTO public.releases (slug, title, "desc", date, author_id, body, link)
+        VALUES ${rows.map((_top, i) => `(${[...Array(7)].map((_, j) => `$${i * 7 + j + 1}`).join(', ')})`).join(', ')}
+        ON CONFLICT (slug) DO UPDATE SET title = EXCLUDED.title, "desc" = EXCLUDED."desc", date = EXCLUDED.date, author_id = EXCLUDED.author_id, body = EXCLUDED.body, link = EXCLUDED.link;
+        `,
         rows.flat(),
       );
 

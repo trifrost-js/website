@@ -27,10 +27,9 @@ export class BlogService {
   @span('getBlogs')
   static async list(ctx: Context): Promise<CompactBlog[]> {
     try {
-      const posts = (await neon(ctx.env.DB_CONNECTION_STRING).query(`
-				SELECT b.slug, b.title, b.desc, b.date
-				FROM public.blogs as b
-			`)) as CompactBlog[];
+      const posts = (await neon(ctx.env.DB_CONNECTION_STRING).query(
+        'SELECT b.slug, b.title, b.desc, b.date FROM public.blogs as b',
+      )) as CompactBlog[];
       return posts.map(row => ({
         ...row,
         date: new Date(row.date).valueOf(),
@@ -51,20 +50,11 @@ export class BlogService {
   static async one<S extends {slugId: string}>(ctx: Context<S>) {
     try {
       const rows = (await neon(ctx.env.DB_CONNECTION_STRING).query(
-        `
-				SELECT
-					b.slug,
-					b.title,
-					b.desc,
-					b.date,
-					b.body,
-					a.name AS author_name,
-					a.link AS author_link
-				FROM public.blogs as b
-				LEFT JOIN public.authors as a
-				ON b.author_id = a.id
-				WHERE b.slug = $1
-			`,
+        `SELECT b.slug, b.title, b.desc, b.date, b.body, a.name AS author_name, a.link AS author_link
+        FROM public.blogs as b
+        LEFT JOIN public.authors as a
+        ON b.author_id = a.id
+        WHERE b.slug = $1`,
         [ctx.state.slugId],
       )) as FullBlog[];
       if (!rows.length) return null;
