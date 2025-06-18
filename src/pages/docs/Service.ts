@@ -94,6 +94,32 @@ const ROUTES = [
     ],
   },
   {
+    title: 'JSX & Rendering',
+    slug: 'jsx-rendering',
+    items: [
+      {
+        title: 'JSX Basics',
+        slug: 'jsx-basics',
+        desc: 'Learn how JSX works in TriFrost and how to write components.',
+      },
+      {
+        title: 'Styling',
+        slug: 'jsx-style-system',
+        desc: 'Understand the CSS-in-JS system, how styles are scoped, media/pseudo support, ....',
+      },
+      {
+        title: 'Scripting',
+        slug: 'jsx-script-behavior',
+        desc: 'Learn how to turn a static page into an interactive masterpiece using <Script /> and the atomic core.',
+      },
+      {
+        title: 'Utilities',
+        slug: 'jsx-utils',
+        desc: 'Learn about helpers like env(), state(), nonce() and how they hook into context',
+      },
+    ],
+  },
+  {
     title: 'Runtime Guides',
     slug: 'runtime-guides',
     items: [
