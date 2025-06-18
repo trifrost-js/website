@@ -32,11 +32,11 @@ This means:
 Example:
 ```typescript
 export async function middlewareA <State extends {}> (ctx:Context<State>) {
-    return ctx.setState({x:10});
+  return ctx.setState({x:10});
 }
 
 export async function middlewareB <State extends {x:number}> (ctx:Context<State>) {
-    console.log(ctx.state.x); // 10, fully typed
+  console.log(ctx.state.x); // 10, fully typed
 }
 ```
 
@@ -50,27 +50,27 @@ To expand the state from inside of middleware, always:
 Example:
 ```typescript
 export async function retrieveUser <State extends {}> (ctx:Context<State>) {
-    const user = await getUserFromToken(ctx);
-    return ctx.setState({ user });
+  const user = await getUserFromToken(ctx);
+  return ctx.setState({ user });
 }
 ```
 
 In case for some reason you really can't run `setState` as the final action you can always manually type the return from a middleware:
 ```typescript
 type User = {
-	... /* your user type */
+  ... /* your user type */
 };
 
 export async function retrieveUser <State extends {}> (
-	ctx:Context<State>
+  ctx:Context<State>
 ):Promise<Context<State & {user:User}>> {
-	/* Some logic */
+  /* Some logic */
 
-	ctx.setState({ user });
+  ctx.setState({ user });
 
-	/* Some more logic */
+  /* Some more logic */
 
-    return ctx;
+  return ctx;
 }
 ```
 
@@ -92,9 +92,9 @@ TriFrost’s typing system internally checks middleware state chains.
 Example:
 ```typescript
 export async function accessControl <State extends {user:User}>(ctx: Context<State>) {
-    if (!ctx.state.user) return ctx.status(401);
+  if (!ctx.state.user) return ctx.status(401);
 
-    /* your logic */
+  /* your logic */
 }
 ```
 
@@ -106,8 +106,8 @@ app.use(accessControl); // ❌ TypeScript will complain!
 But if you attach it **after** the user-adding middleware:
 ```typescript
 app
-    .use(retrieveUser)
-    .use(accessControl); // ✅ TypeScript passes, 'user' is now guaranteed on state
+  .use(retrieveUser)
+  .use(accessControl); // ✅ TypeScript passes, 'user' is now guaranteed on state
 ```
 
 This gives you **safe, predictable chains** without guessing what’s available where.
@@ -122,9 +122,9 @@ Example:
 import {type TriFrostContext, type TriFrostRouter} from '@trifrost/core';
 
 export type Env = {
-    GITHUB_API_TOKEN: string;
-    TRIFROST_API_TOKEN: string;
-    UPTRACE_DSN: string;
+  GITHUB_API_TOKEN: string;
+  TRIFROST_API_TOKEN: string;
+  UPTRACE_DSN: string;
 };
 
 export type Context<State extends Record<string, unknown> = {}> = TriFrostContext<Env, State>;
@@ -141,10 +141,10 @@ Using these types across your files then locks in:
 Attach middleware like:
 ```typescript
 myApp
-	.use(authenticate)
-	.use(accessControl)
-	.get(myHandler)
-	...
+  .use(authenticate)
+  .use(accessControl)
+  .get(myHandler)
+  ...
 ```
 
 **Execution flow**:

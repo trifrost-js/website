@@ -46,8 +46,8 @@ Logs an **informational** message — the backbone of your normal operational lo
 Example:
 ```typescript
 ctx.logger.info('Request completed', {
-    path: ctx.path,
-    statusCode: ctx.statusCode
+  path: ctx.path,
+  statusCode: ctx.statusCode
 });
 ```
 
@@ -79,9 +79,9 @@ If you pass an `Error` instance, the stack trace is automatically included.
 Example:
 ```typescript
 try {
-    await expensiveOperation();
+  await expensiveOperation();
 } catch (err) {
-    ctx.logger.error(err, {operation: 'expensiveOperation'});
+  ctx.logger.error(err, {operation: 'expensiveOperation'});
 }
 ```
 
@@ -108,15 +108,15 @@ In short: spans tell you **what happened, when, and how long it took** — acros
 import {span} from '@trifrost/core';
 
 class MyService {
-    @span()
-    async process(ctx) {
-        // Automatically traced as "process"
-    }
+  @span()
+  async process(ctx) {
+    // Automatically traced as "process"
+  }
 
-    @span('customSpanName')
-    async special(ctx) {
-        // Traced as "customSpanName"
-    }
+  @span('customSpanName')
+  async special(ctx) {
+    // Traced as "customSpanName"
+  }
 }
 ```
 
@@ -125,7 +125,7 @@ class MyService {
 import {spanFn} from '@trifrost/core';
 
 const process = spanFn('process', async (ctx) => {
-    // Automatically wrapped in a span
+  // Automatically wrapped in a span
 });
 ```
 
@@ -145,8 +145,8 @@ Wraps a block of code in a **named span**, automatically tracking its start and 
 Example:
 ```typescript
 await ctx.logger.span('loadUserProfile', async () => {
-    const user = await loadUser(ctx.state.userId);
-    ctx.setState({user});
+  const user = await loadUser(ctx.state.userId);
+  ctx.setState({user});
 });
 ```
 
@@ -189,8 +189,8 @@ These attributes apply only for the lifespan of the current `ctx.logger` (i.e., 
 Example:
 ```typescript
 ctx.logger.setAttributes({
-    userId: ctx.state.user.id,
-    tenantId: ctx.state.tenant.id
+  userId: ctx.state.user.id,
+  tenantId: ctx.state.tenant.id
 });
 ctx.logger.info('User session updated');
 ```

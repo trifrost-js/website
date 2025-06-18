@@ -21,31 +21,31 @@ This object is added to the state of the context and as such in addition to auth
 import {SessionCookieAuth} from '@trifrost/core';
 
 app.group('/account', router => {
-	router
-		.use(SessionCookieAuth({
-			cookie: 'session_id',
-			secret: {val: ctx => ctx.env.SESSION_SECRET},
-			validate: async (ctx, sessionId) => {
-				const session = await ctx.cache.get('session:' + sessionId);
-				if (!session) return false;
+  router
+    .use(SessionCookieAuth({
+      cookie: 'session_id',
+      secret: {val: ctx => ctx.env.SESSION_SECRET},
+      validate: async (ctx, sessionId) => {
+        const session = await ctx.cache.get('session:' + sessionId);
+        if (!session) return false;
 
-				const user = await ctx.cache.get<{
-					name: string;
-					email: string;
-					settings: Record<string, unknown>
-				}>('user:' + session.userId);
-				if (!user) return false;
+        const user = await ctx.cache.get<{
+          name: string;
+          email: string;
+          settings: Record<string, unknown>
+        }>('user:' + session.userId);
+        if (!user) return false;
 
-				return user;
-			},
-		}))
-		.get('/profile', ctx => ctx.json({
-			message: `Welcome back, ${ctx.state.$auth.name}`,
-			email: ctx.state.$auth.email
-		}))
-		.get('/settings', ctx => ctx.json({
-			settings: ctx.state.$auth.settings
-		}))
+        return user;
+      },
+    }))
+    .get('/profile', ctx => ctx.json({
+      message: `Welcome back, ${ctx.state.$auth.name}`,
+      email: ctx.state.$auth.email
+    }))
+    .get('/settings', ctx => ctx.json({
+      settings: ctx.state.$auth.settings
+    }))
 });
 ```
 
@@ -138,18 +138,18 @@ Example:
 import {BasicAuth} from '@trifrost/core';
 
 app.group('/admin', router => {
-    router
-		.use(BasicAuth({
-			validate: (ctx, {user, pass}) =>
-				user === 'admin' && pass === ctx.env.ADMIN_SECRET
-					? {role: 'admin'}
-					: false
-		}))
-		.get('/dashboard', ctx => {
-			return ctx.json({
-				message: `Welcome, ${ctx.state.$auth.role}!`
-			});
-		});
+  router
+    .use(BasicAuth({
+      validate: (ctx, {user, pass}) =>
+        user === 'admin' && pass === ctx.env.ADMIN_SECRET
+          ? {role: 'admin'}
+          : false
+    }))
+    .get('/dashboard', ctx => {
+      return ctx.json({
+        message: `Welcome, ${ctx.state.$auth.role}!`
+      });
+    });
 });
 ```
 
@@ -171,20 +171,20 @@ Example:
 import {BearerAuth} from '@trifrost/core';
 
 app.group('/protected', router => {
-	router
-		.use(BearerAuth({
-			validate: async (ctx, token) => {
-				/* Note: At time of writing TriFrost does not yet include a JWT module, but soon ... will ;) */
-				const decoded = await verifyJwt(token, ctx.env.JWT_SECRET);
-				return decoded ? {userId: decoded.sub, scopes: decoded.scopes} : false;
-			}
-		}))
-		.get('/data', ctx => {
-			return ctx.json({
-				userId: ctx.state.$auth.userId,
-				scopes: ctx.state.$auth.scopes
-			});
-		});
+  router
+    .use(BearerAuth({
+      validate: async (ctx, token) => {
+        /* Note: At time of writing TriFrost does not yet include a JWT module, but soon ... will ;) */
+        const decoded = await verifyJwt(token, ctx.env.JWT_SECRET);
+        return decoded ? {userId: decoded.sub, scopes: decoded.scopes} : false;
+      }
+    }))
+    .get('/data', ctx => {
+      return ctx.json({
+        userId: ctx.state.$auth.userId,
+        scopes: ctx.state.$auth.scopes
+      });
+    });
 });
 ```
 
@@ -207,28 +207,28 @@ Example:
 import {SessionCookieAuth} from '@trifrost/core';
 
 app.group('/account', router => {
-	router
-		.use(SessionCookieAuth({
-			cookie: 'session_id',
-			secret: {val: ctx => ctx.env.SESSION_SECRET},
-			validate: async (ctx, sessionId) => {
-				const session = await ctx.cache.get('session:' + sessionId);
-				if (!session) return false;
+  router
+    .use(SessionCookieAuth({
+      cookie: 'session_id',
+      secret: {val: ctx => ctx.env.SESSION_SECRET},
+      validate: async (ctx, sessionId) => {
+        const session = await ctx.cache.get('session:' + sessionId);
+        if (!session) return false;
 
-				const user = await ctx.cache.get<{
-					name: string;
-					email: string;
-					settings: Record<string, unknown>
-				}>('user:' + session.userId);
-				if (!user) return false;
+        const user = await ctx.cache.get<{
+          name: string;
+          email: string;
+          settings: Record<string, unknown>
+        }>('user:' + session.userId);
+        if (!user) return false;
 
-				return user;
-			}
-		}))
-		.get('/profile', ctx => ctx.json({
-			message: `Welcome back, ${ctx.state.$auth.name}`,
-			email: ctx.state.$auth.email
-		}));
+        return user;
+      }
+    }))
+    .get('/profile', ctx => ctx.json({
+      message: `Welcome back, ${ctx.state.$auth.name}`,
+      email: ctx.state.$auth.email
+    }));
 });
 ```
 

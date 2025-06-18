@@ -28,8 +28,8 @@ Create a file, for example, `server.ts`:
 import {App} from '@trifrost/core';
 
 new App()
-	.get('/', ctx => ctx.text('Hello TriFrost!'))
-	.boot();
+  .get('/', ctx => ctx.text('Hello TriFrost!'))
+  .boot();
 ```
 </BUN>
 <NODE>
@@ -37,8 +37,8 @@ new App()
 import {App} from '@trifrost/core';
 
 new App()
-	.get('/', ctx => ctx.text('Hello TriFrost!'))
-	.boot();
+  .get('/', ctx => ctx.text('Hello TriFrost!'))
+  .boot();
 ```
 </NODE>
 <WORKERD>
@@ -46,8 +46,8 @@ new App()
 import {App} from '@trifrost/core';
 
 const app = await new App()
-	.get('/', ctx => ctx.text('Hello TriFrost!'))
-	.boot();
+  .get('/', ctx => ctx.text('Hello TriFrost!'))
+  .boot();
 
 export default app;
 ```

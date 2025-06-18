@@ -14,19 +14,19 @@ The TriFrost website for example uses a combination of [JsonExporter](/docs/expo
 import {App, OtelHttpExporter} from '@trifrost/core';
 
 new App({
-	...
-	tracing: {
-		exporters: ({env}) => [
-			new OtelHttpExporter({
-				logEndpoint: env.OTEL_LOGS,
-				spanEndpoint: env.OTEL_SPANS,
-				headers: {
-					Authorization: `Bearer ${env.OTEL_TOKEN}`
-				}
-			}),
-		],
-	},
-	...
+  ...
+  tracing: {
+    exporters: ({env}) => [
+      new OtelHttpExporter({
+        logEndpoint: env.OTEL_LOGS,
+        spanEndpoint: env.OTEL_SPANS,
+        headers: {
+          Authorization: `Bearer ${env.OTEL_TOKEN}`
+        }
+      }),
+    ],
+  },
+  ...
 })
 ```
 
@@ -93,39 +93,39 @@ Spans created via `ctx.logger.span(...)`, decorators, or middleware tracing are 
 ##### Minimal
 ```typescript
 new OtelHttpExporter({
-	logEndpoint: 'https://collector.mycompany.com/v1/logs'
+  logEndpoint: 'https://collector.mycompany.com/v1/logs'
 });
 ```
 
 ##### With custom headers
 ```typescript
 new OtelHttpExporter({
-	logEndpoint: 'https://otel.example.com/v1/logs',
-	headers: {
-		'X-Project-ID': 'abc123',
-		'Authorization': `Bearer ${process.env.OTEL_TOKEN}`
-	}
+  logEndpoint: 'https://otel.example.com/v1/logs',
+  headers: {
+    'X-Project-ID': 'abc123',
+    'Authorization': `Bearer ${process.env.OTEL_TOKEN}`
+  }
 });
 ```
 
 ##### Custom retry/batch settings
 ```typescript
 new OtelHttpExporter({
-	logEndpoint: 'https://myotel/logs',
-	maxBatchSize: 50,
-	maxBufferSize: 5000,
-	maxRetries: 5
+  logEndpoint: 'https://myotel/logs',
+  maxBatchSize: 50,
+  maxBufferSize: 5000,
+  maxRetries: 5
 });
 ```
 
 ##### SigNoz (EU Region)
 ```typescript
 new OtelHttpExporter({
-	logEndpoint: 'https://ingest.eu.signoz.cloud/v1/logs',
-	spanEndpoint: 'https://ingest.eu.signoz.cloud/v1/traces',
-	headers: {
-		'signoz-access-token': env.SIGNOZ_API_TOKEN
-	}
+  logEndpoint: 'https://ingest.eu.signoz.cloud/v1/logs',
+  spanEndpoint: 'https://ingest.eu.signoz.cloud/v1/traces',
+  headers: {
+    'signoz-access-token': env.SIGNOZ_API_TOKEN
+  }
 });
 ```
 > **Note**: You'll find this token in your **SigNoz project settings** under **API Tokens**. Make sure you match the ingest region (`eu`, `us`, etc).
@@ -135,11 +135,11 @@ new OtelHttpExporter({
 ##### Uptrace
 ```typescript
 new OtelHttpExporter({
-	logEndpoint: 'https://otlp.uptrace.dev/v1/logs',
-	spanEndpoint: 'https://otlp.uptrace.dev/v1/traces',
-	headers: {
-		'uptrace-dsn': env.UPTRACE_DSN
-	}
+  logEndpoint: 'https://otlp.uptrace.dev/v1/logs',
+  spanEndpoint: 'https://otlp.uptrace.dev/v1/traces',
+  headers: {
+    'uptrace-dsn': env.UPTRACE_DSN
+  }
 });
 ```
 > **Note**: The `uptrace-dsn` is a secure connection string from your Uptrace project — it contains project ID, token, and endpoint info.

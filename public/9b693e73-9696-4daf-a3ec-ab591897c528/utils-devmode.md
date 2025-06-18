@@ -9,7 +9,7 @@ This utility enables environment-aware behavior like tracing, logging, debugging
 import {isDevMode} from '@trifrost/core';
 
 function (ctx:Context) {
-	isDevMode(ctx.env); // true | false
+  isDevMode(ctx.env); // true | false
 }
 ```
 
@@ -20,9 +20,9 @@ It accepts your app’s env object and returns a boolean:
 For Example:
 ```typescript
 if (isDevMode(ctx.env)) {
-	ctx.logger.debug('Running in dev mode!');
+  ctx.logger.debug('Running in dev mode!');
 } else {
-	ctx.logger.info('Production mode – tracing enabled');
+  ctx.logger.info('Production mode – tracing enabled');
 }
 ```
 

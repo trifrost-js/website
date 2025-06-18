@@ -186,7 +186,7 @@ const ROUTES = [
       {
         title: 'Middleware: Security',
         slug: 'middleware-api-security',
-        desc: 'API details for the security middleware in TriFrost.',
+        desc: 'API details for the security middleware, including CSP headers and automatic nonce generation for inline scripts.',
       },
       {
         title: 'Rate Limiting',

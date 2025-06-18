@@ -15,9 +15,9 @@ Example:
 ```typescript
 const sessionId = ctx.cookies.get('session_id');
 if (sessionId) {
-    console.log('Welcome back, session:', sessionId);
+  console.log('Welcome back, session:', sessionId);
 } else {
-    console.log('No session? No problem.');
+  console.log('No session? No problem.');
 }
 ```
 
@@ -46,9 +46,9 @@ Available Options (**TriFrostCookieOptions**):
 Example:
 ```typescript
 ctx.cookies.set('session_id', 'abc123', {
-    httpOnly: true,
-    secure: true,
-    maxage: 3600 /* 1 hour shelf life */
+  httpOnly: true,
+  secure: true,
+  maxage: 3600 /* 1 hour shelf life */
 });
 ```
 
@@ -128,9 +128,9 @@ const raw = ctx.cookies.get('session');
 const verified = await ctx.cookies.verify(raw, ctx.env.COOKIE_SECRET);
 
 if (verified) {
-    console.log('Verified session:', verified);
+  console.log('Verified session:', verified);
 } else {
-    console.log('Uh-oh, invalid or tampered cookie.');
+  console.log('Uh-oh, invalid or tampered cookie.');
 }
 ```
 

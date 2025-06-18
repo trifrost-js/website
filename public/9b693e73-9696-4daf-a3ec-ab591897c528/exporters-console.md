@@ -15,18 +15,18 @@ It’s the **default exporter in development** for all runtimes.
 import {App, ConsoleExporter} from '@trifrost/core';
 
 new App({
-	...
-	tracing: {
-		exporters: ({env}) => [
-			new ConsoleExporter({
-				grouped: true,
-				include: ['trace_id', 'ctx'],
-				omit: [...], // see below
-				format: log => `[${log.level.toUppercase()}] ${log.message}`,
-			}),
-		],
-	}
-	...
+  ...
+  tracing: {
+    exporters: ({env}) => [
+      new ConsoleExporter({
+        grouped: true,
+        include: ['trace_id', 'ctx'],
+        omit: [...], // see below
+        format: log => `[${log.level.toUppercase()}] ${log.message}`,
+      }),
+    ],
+  }
+  ...
 })
 ```
 
@@ -52,8 +52,8 @@ new ConsoleExporter();
 ##### Grouped with Trace ID
 ```typescript
 new ConsoleExporter({
-	grouped: true,
-	include: ['trace_id']
+  grouped: true,
+  include: ['trace_id']
 });
 ```
 > Output: `▶ [2025-06-06T10:30:00Z] [info] User logged in\n  trace_id: 3c51d...\n  data: {userId: "abc123"}`
@@ -61,7 +61,7 @@ new ConsoleExporter({
 ##### Add Context & Global App Info
 ```typescript
 new ConsoleExporter({
-	include: ['trace_id', 'ctx', 'global']
+  include: ['trace_id', 'ctx', 'global']
 });
 ```
 > Output includes: `{\n  "ctx": {"method": "GET", "path": "/login"},\n  "global": {"service.name": "my-app", "service.version": "1.2.3"}\n}`
@@ -69,7 +69,7 @@ new ConsoleExporter({
 ##### Custom Format Line
 ```typescript
 new ConsoleExporter({
-	format: log => `(${log.level.toUpperCase()}) ${log.message}`
+  format: log => `(${log.level.toUpperCase()}) ${log.message}`
 });
 ```
 > Output: `(INFO) Session started`
@@ -79,7 +79,7 @@ new ConsoleExporter({
 import {OMIT_PRESETS, ConsoleExporter} from '@trifrost/core';
 
 new ConsoleExporter({
-	omit: [...OMIT_PRESETS.default, {global: 'ssn'}]
+  omit: [...OMIT_PRESETS.default, {global: 'ssn'}]
 });
 ```
 

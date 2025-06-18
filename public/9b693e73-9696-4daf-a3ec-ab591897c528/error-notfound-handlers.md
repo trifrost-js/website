@@ -26,23 +26,23 @@ app.onNotFound(ctx => ctx.text('Page not found'));
 
 /* Router Level */
 app
-	.group('/myhappyfrontend', router => {
-		router
-			.get(...)
-			.get(...)
-			.onNotFound(ctx => ctx.html((<html>
-				...
-				<body>
-					<h1>404: Happy Frontend confused</h1>
-				</body>
-			</html>)))
-	})
-	.group('/myhappyapi', router => {
-		router
-			.get(...)
-			.get(...)
-			.onNotFound(ctx => ctx.json('Happy Api is missing bits'))
-	})
+  .group('/myhappyfrontend', router => {
+    router
+      .get(...)
+      .get(...)
+      .onNotFound(ctx => ctx.html((<html>
+        ...
+        <body>
+          <h1>404: Happy Frontend confused</h1>
+        </body>
+      </html>)))
+  })
+  .group('/myhappyapi', router => {
+    router
+      .get(...)
+      .get(...)
+      .onNotFound(ctx => ctx.json('Happy Api is missing bits'))
+  })
 ```
 
 When no route matches the incoming request, this handler will run. It's your place to show a helpful message, redirect, return a structured JSON error or a full-blown HTML page.
@@ -56,23 +56,23 @@ app.onError(ctx => ctx.json({error: 'Internal Server Error'}));
 
 /* Router Level */
 app
-	.group('/myhappyfrontend', router => {
-		router
-			.get(...)
-			.get(...)
-			.onError(ctx => ctx.html((<html>
-				...
-				<body>
-					<h1>{ctx.statusCode}: Happy Frontend not happy</h1>
-				</body>
-			</html>)))
-	})
-	.group('/myhappyapi', router => {
-		router
-			.get(...)
-			.get(...)
-			.onError(ctx => ctx.json('Happy Api is unhappy'))
-	})
+  .group('/myhappyfrontend', router => {
+    router
+      .get(...)
+      .get(...)
+      .onError(ctx => ctx.html((<html>
+        ...
+        <body>
+          <h1>{ctx.statusCode}: Happy Frontend not happy</h1>
+        </body>
+      </html>)))
+  })
+  .group('/myhappyapi', router => {
+    router
+      .get(...)
+      .get(...)
+      .onError(ctx => ctx.json('Happy Api is unhappy'))
+  })
 ```
 
 If a middleware or handler:
@@ -117,12 +117,12 @@ export async function auth(ctx: Context) {
 }
 
 export async function myUserRoute (ctx: Context) {
-	const user = await loadUser(...);
+  const user = await loadUser(...);
 
-	/* Would end up in nearest onNotFound */
-	if (!user) return ctx.setStatus(404);
+  /* Would end up in nearest onNotFound */
+  if (!user) return ctx.setStatus(404);
 
-	...
+  ...
 }
 ```
 

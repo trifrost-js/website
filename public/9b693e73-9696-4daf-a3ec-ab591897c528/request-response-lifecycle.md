@@ -6,9 +6,9 @@ Whether it’s a simple `GET /hello` or a complex multi-middleware route chain, 
 
 ### 🧭 Lifecycle at a Glance
 ```txt
-┌───────┐
-│  Request   │
-└─┬─────┘
+┌───────────┐
+│  Request  │
+└────┬──────┘
      ▼
 🔗 App-level middleware
      ▼

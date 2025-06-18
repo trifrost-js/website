@@ -32,9 +32,9 @@ app.use(CacheControl(options));
 Router-wide:
 ```typescript
 app.group('/static/*', router => {
-	router
-		.use(CacheControl(options))
-		...
+  router
+    .use(CacheControl(options))
+    ...
 })
 ```
 
@@ -43,9 +43,9 @@ app.group('/static/*', router => {
 Single-Route:
 ```typescript
 router.route('/assets/*', route => {
-	route
-		.use(CacheControl(options))
-		...
+  route
+    .use(CacheControl(options))
+    ...
 })
 ```
 
@@ -54,7 +54,7 @@ router.route('/assets/*', route => {
 As part of a response:
 ```typescript
 app
-	.get('/assets/:path', ctx => ctx.file(`/public/${ctx.state.path}`, {cacheControl: {...}}))
+  .get('/assets/:path', ctx => ctx.file(`/public/${ctx.state.path}`, {cacheControl: {...}}))
 ```
 
 ---
@@ -75,10 +75,10 @@ app
 ##### Public static content, cache 1 day:
 ```typescript
 app.group('/static/*', router => {
-	router.use(CacheControl({
-		type: 'public',
-		maxage: 86400 /* 1 day */
-	}));
+  router.use(CacheControl({
+    type: 'public',
+    maxage: 86400 /* 1 day */
+  }));
 });
 ```
 > Header sent: `Cache-Control: public, max-age=86400`
@@ -86,10 +86,10 @@ app.group('/static/*', router => {
 ##### Private user dashboard, no caching:
 ```typescript
 app.group('/dashboard/*', router => {
-	router.use(CacheControl({
-		type: 'private',
-		maxage: 0
-	}));
+  router.use(CacheControl({
+    type: 'private',
+    maxage: 0
+  }));
 });
 ```
 > Header sent: `Cache-Control: private, max-age=0`
@@ -97,11 +97,11 @@ app.group('/dashboard/*', router => {
 ##### Immutable build assets, cache 1 year:
 ```typescript
 app.group('/assets/*', router => {
-	router.use(CacheControl({
-		type: 'public',
-		maxage: 31536000, /* 1 year */
-		immutable: true
-	}));
+  router.use(CacheControl({
+    type: 'public',
+    maxage: 31536000, /* 1 year */
+    immutable: true
+  }));
 });
 ```
 > Header sent: `Cache-Control: public, max-age=31536000, immutable`
@@ -109,11 +109,11 @@ app.group('/assets/*', router => {
 ##### CDN-specific shared cache control:
 ```typescript
 app.group('/cdn/*', router => {
-	router.use(CacheControl({
-		type: 'public',
-		maxage: 60,      /* browsers: 1 min */
-		proxyMaxage: 600 /* shared caches: 10 min */
-	}));
+  router.use(CacheControl({
+    type: 'public',
+    maxage: 60,      /* browsers: 1 min */
+    proxyMaxage: 600 /* shared caches: 10 min */
+  }));
 });
 ```
 > Header sent: `Cache-Control: public, max-age=60, s-maxage=600`
@@ -121,10 +121,10 @@ app.group('/cdn/*', router => {
 ##### Force revalidation on stale:
 ```typescript
 app.group('/reports/*', router => {
-	router.use(CacheControl({
-		type: 'private',
-		mustRevalidate: true
-	}));
+  router.use(CacheControl({
+    type: 'private',
+    mustRevalidate: true
+  }));
 });
 ```
 > Header sent: `Cache-Control: private, must-revalidate`
@@ -132,12 +132,12 @@ app.group('/reports/*', router => {
 ##### Using with ctx.file:
 ```typescript
 app.get('/assets/:path', ctx =>
-	ctx.file(`/public/${ctx.state.path}`, {
-		cacheControl: {
-			type: 'public',
-			maxage: 86400 /* 1 day */
-		}
-	})
+  ctx.file(`/public/${ctx.state.path}`, {
+    cacheControl: {
+      type: 'public',
+      maxage: 86400 /* 1 day */
+    }
+  })
 );
 ```
 > Header sent: `Cache-Control: public, max-age=86400`
@@ -145,13 +145,13 @@ app.get('/assets/:path', ctx =>
 ##### Using ctx.file with immutable long-term assets:
 ```typescript
 app.get('/assets/build/:path', ctx =>
-	ctx.file(`/public/build/${ctx.state.path}`, {
-		cacheControl: {
-			type: 'public',
-			maxage: 31536000, /* 1 year */
-			immutable: true
-		}
-	})
+  ctx.file(`/public/build/${ctx.state.path}`, {
+    cacheControl: {
+      type: 'public',
+      maxage: 31536000, /* 1 year */
+      immutable: true
+    }
+  })
 );
 ```
 > Header sent: `Cache-Control: public, max-age=31536000, immutable`

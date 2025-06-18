@@ -33,9 +33,9 @@ const rootLogger = new TriFrostRootLogger({
 
 /* On incoming request */
 async onIncoming (ctx) {
-	ctx.logger = rootLogger.spawn({
-		... ctx-specific bits
-	});
+  ctx.logger = rootLogger.spawn({
+    ... ctx-specific bits
+  });
 }
 ```
 
@@ -60,7 +60,7 @@ There's built-in helpers you can use for this:
 ```typescript
 // Inline block span
 await ctx.logger.span("fetchUser", async () => {
-	// your logic
+  // your logic
 });
 
 // Manual start/end
@@ -75,8 +75,8 @@ For services or helpers outside of ctx-driven handlers, TriFrost provides trace 
 import {span, spanFn} from '@trifrost/core';
 
 class UserService {
-	@span("user.load")
-	load(ctx) { ... }
+  @span("user.load")
+  load(ctx) { ... }
 }
 
 const process = spanFn("job.process", async ctx => { ... });
@@ -109,15 +109,15 @@ You define exporters in your app setup:
 import {App, ConsoleExporter, OtelHttpExporter} from '@trifrost/core';
 
 new App({
-	tracing: {
-		exporters: ({env}) => [
-			new ConsoleExporter(),
-			new OtelHttpExporter({
-				logEndpoint: env.OTEL_LOGS,
-				spanEndpoint: env.OTEL_SPANS,
-			})
-		]
-	}
+  tracing: {
+    exporters: ({env}) => [
+      new ConsoleExporter(),
+      new OtelHttpExporter({
+        logEndpoint: env.OTEL_LOGS,
+        spanEndpoint: env.OTEL_SPANS,
+      })
+    ]
+  }
 });
 ```
 
@@ -206,37 +206,37 @@ Becomes:
 TriFrost maintains a sensible list of defaults which lives in the `OMIT_PRESETS` constant within the TriFrost codebase (available through `import {OMIT_PRESETS} from '@trifrost/core'`).
 ```typescript
 OMIT_PRESETS.default = [
-	/* Sensitive */
-    {global: 'access_token'},
-    {global: 'api_key'},
-    {global: 'api_secret'},
-    {global: 'apikey'},
-    {global: 'apitoken'},
-    {global: 'auth'},
-    {global: 'authorization'},
-    {global: '$auth'},
-    {global: 'client_secret'},
-    {global: 'client_token'},
-    {global: 'id_token'},
-    {global: 'password'},
-    {global: 'private_key'},
-    {global: 'public_key'},
-    {global: 'refresh_token'},
-    {global: 'secret'},
-    {global: 'session'},
-    {global: 'session_id'},
-    {global: 'sid'},
-    {global: 'token'},
-    {global: 'user_token'},
-    {valuePattern: /Bearer\s+[A-Za-z0-9\-._~+/]+=*/},
-	/* PII */
-    {global: 'first_name'},
-    {global: 'last_name'},
-    {global: 'full_name'},
-    {valuePattern: /[\w.-]+@[\w.-]+\.\w{2,}/}, /* Email */
-    {valuePattern: /\+?\d{1,2}[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/}, /* Phone */
-    {valuePattern: /\b\d{3}-\d{2}-\d{4}\b/}, /* SSN */
-    {valuePattern: /\b(?:\d[ -]*?){13,16}\b/}, /* Credit card */
+  /* Sensitive */
+  {global: 'access_token'},
+  {global: 'api_key'},
+  {global: 'api_secret'},
+  {global: 'apikey'},
+  {global: 'apitoken'},
+  {global: 'auth'},
+  {global: 'authorization'},
+  {global: '$auth'},
+  {global: 'client_secret'},
+  {global: 'client_token'},
+  {global: 'id_token'},
+  {global: 'password'},
+  {global: 'private_key'},
+  {global: 'public_key'},
+  {global: 'refresh_token'},
+  {global: 'secret'},
+  {global: 'session'},
+  {global: 'session_id'},
+  {global: 'sid'},
+  {global: 'token'},
+  {global: 'user_token'},
+  {valuePattern: /Bearer\s+[A-Za-z0-9\-._~+/]+=*/},
+  /* PII */
+  {global: 'first_name'},
+  {global: 'last_name'},
+  {global: 'full_name'},
+  {valuePattern: /[\w.-]+@[\w.-]+\.\w{2,}/}, /* Email */
+  {valuePattern: /\+?\d{1,2}[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/}, /* Phone */
+  {valuePattern: /\b\d{3}-\d{2}-\d{4}\b/}, /* SSN */
+  {valuePattern: /\b(?:\d[ -]*?){13,16}\b/}, /* Credit card */
 ];
 ```
 
@@ -314,8 +314,8 @@ All TriFrost loggers (including `ctx.logger`) support attribute injection:
 ```ts
 ctx.logger.setAttribute("userId", ctx.state.user.id);
 ctx.logger.setAttributes({
-    tenantId: ctx.state.tenant.id,
-    plan: ctx.state.tenant.plan
+  tenantId: ctx.state.tenant.id,
+  plan: ctx.state.tenant.plan
 });
 ```
 
@@ -329,7 +329,7 @@ When you start a span (`ctx.logger.span(...)`, `@span`, `spanFn()`), it **captur
 ctx.logger.setAttribute("db.shard", "eu-1");
 
 await ctx.logger.span("loadUser", async () => {
-    // span includes { db.shard: 'eu-1' }
+  // span includes { db.shard: 'eu-1' }
 });
 ```
 > Set attributes before creating spans to ensure correct propagation.

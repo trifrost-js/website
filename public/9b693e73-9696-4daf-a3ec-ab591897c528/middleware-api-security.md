@@ -60,8 +60,8 @@ By default, TriFrost’s `Security()` middleware applies **safe built-in default
 If you want to fully opt out of these defaults and only apply your own config, you can pass a second argument:
 ```typescript
 app.use(Security({
-    crossOriginOpenerPolicy: 'unsafe-none',
-    xFrameOptions: null,
+  crossOriginOpenerPolicy: 'unsafe-none',
+  xFrameOptions: null,
 }, {use_defaults: false})); // <- use_defaults = false
 ```
 
@@ -71,14 +71,87 @@ For most cases, you should leave this flag as `true` (the default), but it’s a
 
 ---
 
+### CSP Nonce Injection
+When using a `Content-Security-Policy` with `"'nonce'"` as a placeholder, TriFrost **will automatically generate and inject a secure, per-request nonce**, simplifying CSP compliance without manual coordination.
+
+**Enable via CSP Config**
+```typescript
+app.use(Security({
+  contentSecurityPolicy: {
+    'script-src': ["'self'", "'nonce'"],
+    'style-src': ["'self'", "'nonce'"],
+  },
+}));
+```
+
+At runtime, this produces:
+```bash
+Content-Security-Policy: script-src 'self' 'nonce-AbC123...'; style-src 'self' 'nonce-AbC123...'
+```
+
+##### Automatic JSX Integration
+TriFrost’s JSX renderer fully supports nonce propagation:
+- ✅ `ctx.nonce` is automatically assigned and stable per request
+- ✅ You can access it via `ctx.nonce` or `nonce()` from `@trifrost/core`
+- ✅ **No need to manually pass it** to TriFrost’s `<Script>` and `<Style>` components, they automatically apply the correct nonce.
+
+Example (manual nonce use for custom tags):
+```tsx
+import {nonce} from '@trifrost/core';
+
+export function AnalyticsBeacon() {
+  return (
+    <script nonce={nonce()}>
+      {`navigator.sendBeacon('/beacon')`}
+    </script>
+  );
+}
+```
+
+Example (TriFrost `<Script>` and `<Style>` primitives, no nonce needed):
+```tsx
+import {Script, Style} from '@trifrost/core';
+
+export function Layout() {
+  return (
+    <html>
+      <head>
+        <Style /> {/* Automatically gets nonce */}
+      </head>
+      <body>
+        ...
+        <Script>{() => {
+          console.log('Safe script execution');
+        }}</Script> {/* Automatically gets nonce */}
+      </body>
+    </html>
+  );
+}
+```
+
+👉 Learn more in [JSX Basics](/docs/jsx-basics)
+
+##### Inspecting the Nonce
+You can log the nonce in any handler:
+```ts
+app.get('/debug', ctx => {
+  return ctx.text('Nonce is: ' + ctx.nonce);
+});
+```
+
+---
+
 ### Examples
 ##### Strict CSP for FrontEnd App
+
+> 💡 **Tip:** Use `"'nonce'"` (as a string literal) in your `contentSecurityPolicy` config, TriFrost will replace it automatically with a secure, per-request value.
+
 ```typescript
 app.use(Security({
   contentSecurityPolicy: {
     'default-src': ["'self'"],
-    'script-src': ["'self'", 'https://cdn.example.com'],
-    'style-src': ["'self'", 'https://fonts.googleapis.com'],
+    'script-src': ["'self'", "'nonce'", 'https://cdn.example.com'],
+    'style-src': ["'self'", "'nonce'", 'https://fonts.googleapis.com'],
     'img-src': ['data:', '*'],
     'connect-src': ["'self'", 'https://api.example.com'],
     'font-src': ['https://fonts.gstatic.com'],
@@ -89,6 +162,7 @@ app.use(Security({
 **What’s happening here**:
 - Protects against inline scripts and unexpected external resources
 - Allows known CDNs and APIs
+- Script and style source get an automatic per-request nonce
 - Still blocks everything else
 
 ##### Allow Framing Only on Trusted Origins
@@ -194,6 +268,8 @@ Values can be:
 ### Best Practices
 - ✅ Always set **Strict-Transport-Security** if you serve over HTTPS.
 - ✅ Use **CSP** to block unexpected content, especially scripts.
+- ✅ Use `"'nonce'"` literal in your CSP config to trigger injection
+- ✅ Rely on `<Script>` and `<Style>` wherever possible, they’ll handle nonce automatically
 - ✅ Use **X-Frame-Options** to prevent clickjacking.
 - ⚠️ Avoid **X-XSS-Protection** unless supporting legacy IE.
 - ✅ Review your **cross-origin policies** carefully.
@@ -205,3 +281,5 @@ Values can be:
 - [MDN: HTTP Security Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers)
 - [OWASP Secure Headers Project](https://owasp.org/www-project-secure-headers/)
 - [Content Security Policy (CSP)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)
+- [Nonce Global Attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/nonce)
+- [TriFrost JSX Basics](/docs/jsx-basics)

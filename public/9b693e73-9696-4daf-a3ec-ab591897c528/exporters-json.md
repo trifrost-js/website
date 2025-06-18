@@ -19,16 +19,16 @@ It's the **default exporter in production** for the [Workerd runtime](/docs/clou
 import {App, JsonExporter} from '@trifrost/core';
 
 new App({
-	...
-	tracing: {
-		exporters: ({env}) => [
-			new JsonExporter({
-				omit: [...], // see below
-				sink: log => process.stdout.write(JSON.stringify(log) + '\n')
-			}),
-		],
-	}
-	...
+  ...
+  tracing: {
+    exporters: ({env}) => [
+      new JsonExporter({
+        omit: [...], // see below
+        sink: log => process.stdout.write(JSON.stringify(log) + '\n')
+      }),
+    ],
+  }
+  ...
 })
 ```
 
@@ -73,14 +73,14 @@ import {JsonExporter} from '@trifrost/core';
 import {LogService} from './LogService'; /* eg: singleton instance which pushes to file */
 
 new JsonExporter({
-	sink: log => LogService.push(JSON.stringify(log)),
+  sink: log => LogService.push(JSON.stringify(log)),
 });
 ```
 
 ##### Override Defaults
 ```typescript
 new JsonExporter({
-	omit: [{global: 'ssn'}] // Only redact 'ssn', not full default list
+  omit: [{global: 'ssn'}] // Only redact 'ssn', not full default list
 });
 ```
 > **Note**: ⚠️ Be very careful, you dont want to leak secrets, our advice is to always do something akin to `omit: [...OMIT_PRESETS.default, (your own expansion)]`
@@ -95,7 +95,6 @@ new JsonExporter({
 - ✅ Keep one exporter per format — don’t double-format
 - 💡 You can use this exporter **in tandem** with `JsonExporter` or `OtelHttpExporter`
 - 💡 Want to go fancy? Make use of TriFrost's [isDevMode](/docs/utils-devmode) function to refine between dev and prod
-
 
 ---
 

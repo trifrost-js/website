@@ -33,17 +33,17 @@ State is automatically initialized with any dynamic path parameters.
 For Example:
 ```typescript
 app
-	.group('/users/:userId', router => {
-		router
-			/* ctx.state is typed as {userId: string} */
-			.get('', async ctx => {
-				...
-			})
-			/* ctx.state is typed as {userId: string; assetId: string} */
-			.get('/assets/:assetId', async ctx => {
-				...
-			})
-	})
+  .group('/users/:userId', router => {
+    router
+      /* ctx.state is typed as {userId: string} */
+      .get('', async ctx => {
+        ...
+      })
+      /* ctx.state is typed as {userId: string; assetId: string} */
+      .get('/assets/:assetId', async ctx => {
+        ...
+      })
+  })
 });
 ```
 
@@ -59,13 +59,13 @@ Example:
 // types.ts
 
 import {
-	type TriFrostContext,
-	type TriFrostRouter
+  type TriFrostContext,
+  type TriFrostRouter
 } from '@trifrost/core';
 
 export type Env = {
-	DB_URL: string;
-	COOKIE_SECRET: string;
+  DB_URL: string;
+  COOKIE_SECRET: string;
 };
 
 export type Context<State = {}> = TriFrostContext<Env, State>;
@@ -80,24 +80,24 @@ Now use these everywhere — **app, routers, middleware, and handlers** — and 
 TriFrost's middleware chain is **compositional** — each middleware can extend ``ctx.state``, and downstream middleware/handlers will inherit it.
 ```typescript
 app
-	.use(authenticateUser) // Adds $auth to state
-	.group('/dashboard', router => {
-		router
-			.use(loadSettings) // Adds settings to state
-			.get(myDash) // state has $auth and settings
-	})
-	.get('/', myHome) // state has $auth
+  .use(authenticateUser) // Adds $auth to state
+  .group('/dashboard', router => {
+    router
+      .use(loadSettings) // Adds settings to state
+      .get(myDash) // state has $auth and settings
+  })
+  .get('/', myHome) // state has $auth
 ```
 
 Each `.setState({...})` call extends the state **immutably and inferably**, and the full shape is passed downstream.
 ```typescript
 export async function authenticateUser <S> (ctx:Context<S>) {
-	const user = await getUser(ctx);
-	return ctx.setState({ $auth: user });
+  const user = await getUser(ctx);
+  return ctx.setState({ $auth: user });
 }
 
 export async function myDash <S extends {$auth: User}> (ctx:Context<S>) {
-	console.log(ctx.state.$auth.name); // fully typed!
+  console.log(ctx.state.$auth.name); // fully typed!
 }
 ```
 
@@ -107,8 +107,8 @@ export async function myDash <S extends {$auth: User}> (ctx:Context<S>) {
 For the best type inference and DX, always make sure `ctx.setState(...)` is your **final returned value** from a middleware:
 ```typescript
 export async function loadSettings <S> (ctx:Context<S>) {
-	const settings = await fetchSettings(ctx);
-	return ctx.setState({ settings });
+  const settings = await fetchSettings(ctx);
+  return ctx.setState({ settings });
 }
 ```
 
@@ -120,12 +120,12 @@ This lets TypeScript automatically carry forward the new state into the next mid
 If your logic requires additional work **after** calling `setState()`, you’ll need to **manually specify** the updated state shape in the return type:
 ```typescript
 export async function fetchUser <S> (ctx:Context<S>) {
-	const user = await getUserFromDB(ctx);
-	ctx.setState({ user });
+  const user = await getUserFromDB(ctx);
+  ctx.setState({ user });
 
-	// more logic...
+  // more logic...
 
-	return ctx as Context<S & {user:User}>;
+  return ctx as Context<S & {user:User}>;
 }
 ```
 
@@ -139,16 +139,16 @@ This ensures that the **correct shape** is **preserved** for the next step.
 Handlers (and middleware) **can declare what they expect** on `ctx.state`. This acts like a guard and a compiler-enforced contract.
 ```typescript
 export async function managementDash <S extends {$auth:User}> (ctx:Context<S>) {
-	/* In theory, this isn’t necessary — but I’m a defensive coder. */
-	if (!ctx.state.$auth.isAdmin) return ctx.abort(403);
+  /* In theory, this isn’t necessary — but I’m a defensive coder. */
+  if (!ctx.state.$auth.isAdmin) return ctx.abort(403);
 }
 ```
 
 The `managementDash` in our example has declared that it **expects a $auth to be on the incoming state**, if upstream middleware didn't set `$auth`, TypeScript will immediately warn you.
 ```typescript
 app
-	/* Typescript will complain as $auth will NOT be available at this point */
-	.get('/management', managementDash);
+  /* Typescript will complain as $auth will NOT be available at this point */
+  .get('/management', managementDash);
 ```
 
 This ensures you have **fail-fast typing** across your app.

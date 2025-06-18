@@ -40,8 +40,8 @@ By default, TriFrost’s `Cors()` middleware applies **safe built-in defaults**,
 If you want to fully opt out of these defaults and only apply your own config, you can pass a second argument:
 ```typescript
 app.use(Cors({
-    origin: 'https://myapp.com',
-    methods: ['DELETE']
+  origin: 'https://myapp.com',
+  methods: ['DELETE']
 }, {use_defaults: false})); // <- use_defaults = false
 ```
 
@@ -55,8 +55,8 @@ For most cases, you should leave this flag as `true` (the default), but it’s a
 ##### Allow all origins (public API):
 ```typescript
 app.use(Cors({
-    origin: '*',
-    methods: ['GET', 'POST']
+  origin: '*',
+  methods: ['GET', 'POST']
 }));
 ```
 
@@ -66,7 +66,7 @@ app.use(Cors({
 ##### Allow specific origins with an array:
 ```typescript
 app.use(Cors({
-    origin: ['https://site1.com', 'https://site2.com']
+  origin: ['https://site1.com', 'https://site2.com']
 }));
 ```
 
@@ -76,8 +76,8 @@ app.use(Cors({
 ##### Allow specific origin + credentials:
 ```typescript
 app.use(Cors({
-    origin: 'https://myapp.com',
-    credentials: true
+  origin: 'https://myapp.com',
+  credentials: true
 }));
 ```
 
@@ -87,10 +87,10 @@ app.use(Cors({
 ##### Allow dynamic origins (function):
 ```typescript
 app.use(Cors({
-    origin: (reqOrigin) => {
-        if (reqOrigin === 'https://trusted.com') return reqOrigin;
-        return null;
-    }
+  origin: (reqOrigin) => {
+    if (reqOrigin === 'https://trusted.com') return reqOrigin;
+    return null;
+  }
 }));
 ```
 
@@ -100,8 +100,8 @@ app.use(Cors({
 ##### Allow additional headers + expose response headers:
 ```typescript
 app.use(Cors({
-    headers: ['X-Custom-Header', 'Authorization'],
-    expose: ['X-Response-Time']
+  headers: ['X-Custom-Header', 'Authorization'],
+  expose: ['X-Response-Time']
 }));
 ```
 
@@ -111,7 +111,7 @@ app.use(Cors({
 ##### Set max-age on preflight response:
 ```typescript
 app.use(Cors({
-    maxage: 600 // browsers cache preflight for 10 minutes
+  maxage: 600 // browsers cache preflight for 10 minutes
 }));
 ```
 
