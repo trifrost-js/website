@@ -1,5 +1,5 @@
-import {env, Script} from '@trifrost/core/modules/JSX';
 import {css} from '../../css';
+import {Script, script} from '../../script';
 
 export function DocSearch() {
   css.root({
@@ -25,8 +25,8 @@ export function DocSearch() {
       <link defer async rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
       <Script
         data={{
-          appId: env('ALGOLIA_DOCSEARCH_APPID'),
-          apiKey: env('ALGOLIA_DOCSEARCH_APIKEY'),
+          appId: script.env('ALGOLIA_DOCSEARCH_APPID'),
+          apiKey: script.env('ALGOLIA_DOCSEARCH_APIKEY'),
         }}
       >
         {(_, data) => {

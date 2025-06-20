@@ -22,7 +22,7 @@ export function Article({children, style, ...rest}: ArticleProps) {
         fontSize: `calc(${css.$v.font_s_header} + 0.5rem)`,
       },
     }),
-    [` *${css.is('h3, h4')}`]: css.mix('sm_t_xl', 'sm_b_l', {
+    [`*${css.is('h3, h4')}`]: css.mix('sm_t_xl', 'sm_b_l', {
       fontSize: css.$v.font_s_header,
       fontFamily: css.$v.font_header,
       fontWeight: 600,
@@ -31,7 +31,7 @@ export function Article({children, style, ...rest}: ArticleProps) {
         fontSize: `calc(${css.$v.font_s_header} - 0.2rem)`,
       },
     }),
-    [` *${css.is('h5, h6')}`]: css.mix('sm_t_xl', 'sm_b_l', 'sp_b_xs', {
+    [`*${css.is('h5, h6')}`]: css.mix('sm_t_xl', 'sm_b_l', 'sp_b_xs', {
       fontSize: css.$v.font_s_header,
       fontFamily: css.$v.font_header,
       fontWeight: 100,
@@ -97,8 +97,8 @@ export function Article({children, style, ...rest}: ArticleProps) {
     '>': {
       ' .runtime': css.mix('sm_b_l'),
       ' .highlight': css.mix('sm_b_s'),
-      [` *${css.firstChild}`]: {marginTop: 0},
-      [` *${css.lastChild}`]: {marginBottom: 0},
+      [`*${css.firstChild}`]: {marginTop: 0},
+      [`*${css.lastChild}`]: {marginBottom: 0},
     },
     ...(style || {}),
   });

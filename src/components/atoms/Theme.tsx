@@ -1,4 +1,4 @@
-import {Script} from '@trifrost/core/modules/JSX';
+import {Script} from '../../script';
 import {css} from '../../css';
 
 /**
@@ -39,7 +39,7 @@ export function Theme() {
     [` .${moon}`]: {
       transformOrigin: 'center center',
       fill: css.$t.body_fg,
-      ' > circle': {
+      circle: {
         transform: 'translateX(0)',
         transition: 'transform .1s ease-in-out',
         willChange: 'transform',
@@ -59,23 +59,27 @@ export function Theme() {
   });
 
   css.root({
-    '[data-theme="light"]': {
-      ' #theme-switcher svg mask circle': {
-        transform: 'translateX(0)',
+    [`${css.attr('data-theme', 'light')} #theme-switcher`]: {
+      svg: {
+        mask: {
+          circle: {
+            transform: 'translateX(0)',
+          },
+        },
       },
     },
-    '[data-theme="dark"]': {
-      [` #theme-switcher .${sun}`]: {
+    [`${css.attr('data-theme', 'dark')} #theme-switcher`]: {
+      [` .${sun}`]: {
         transform: 'scale(1.75)',
         transitionTimingFunction: 'cubic-bezier(.25,0,.3,1)',
         transitionDuration: '.25s',
       },
-      [` #theme-switcher .${sunbeams}`]: {
+      [` .${sunbeams}`]: {
         opacity: 0,
         transform: 'rotateZ(-25deg)',
         transitionDuration: '.15s',
       },
-      [` #theme-switcher .${moon} circle`]: {
+      [` .${moon} circle`]: {
         transform: 'translateX(-7px)',
         transitionDelay: '.15s',
       },

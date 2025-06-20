@@ -1,6 +1,7 @@
 import {Style} from '@trifrost/core';
 import {isNeString} from '@valkyriestudios/utils/string';
 import {css} from '../../css';
+import {script} from '../../script';
 import {ThemeSetter} from '../atoms/Theme';
 
 type RootProps = {
@@ -10,6 +11,10 @@ type RootProps = {
 };
 
 export function Root({children, title, description}: RootProps) {
+  /* Root injection for atomic */
+  script.root();
+
+  /* Root injection for css */
   css.root({
     [`*${css.selection}`]: {
       backgroundColor: css.$t.selection_bg,

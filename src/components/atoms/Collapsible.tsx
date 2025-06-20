@@ -1,5 +1,5 @@
-import {Script} from '@trifrost/core/modules/JSX';
 import {css} from '../../css';
+import {Script} from '../../script';
 
 type CollapsibleProps = {
   title: string;
@@ -8,6 +8,10 @@ type CollapsibleProps = {
   defaultExpanded?: boolean;
   group?: string | null;
   [key: string]: unknown;
+};
+
+export type CollapsibleEvents = {
+  'collapsible:toggle': {vmId: string};
 };
 
 export function Collapsible({title, tag, children, defaultExpanded = false, group = null, ...rest}: CollapsibleProps) {
@@ -73,12 +77,14 @@ export function Collapsible({title, tag, children, defaultExpanded = false, grou
           <Script>
             {el => {
               const parent = el.parentElement!;
-              const dgroup = el.getAttribute('aria-controls') as string;
-              el.addEventListener('click', () => {
-                const isOpen = parent.getAttribute('aria-expanded') + '' === 'true';
-                document.querySelectorAll(`[data-group="${dgroup}"]`).forEach(node => node.setAttribute('aria-expanded', 'false'));
-                parent.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+              el.$subscribe('collapsible:toggle', val => {
+                parent.setAttribute(
+                  'aria-expanded',
+                  el.$uid !== val.vmId ? 'false' : String(parent.getAttribute('aria-expanded')) === 'true' ? 'false' : 'true',
+                );
               });
+
+              el.addEventListener('click', () => el.$publish('collapsible:toggle', {vmId: el.$uid}));
             }}
           </Script>
         </TAG>

@@ -1,4 +1,4 @@
-import {Script} from '@trifrost/core/modules/JSX';
+import {Script} from '../../script';
 import {css} from '../../css';
 
 type ImageProps = {

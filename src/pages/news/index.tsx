@@ -1,7 +1,8 @@
 import {format} from '@valkyriestudios/utils/date';
-import {ApiKeyAuth, Script} from '@trifrost/core';
+import {ApiKeyAuth} from '@trifrost/core';
 import {type Router} from '../../types';
 import {css} from '../../css';
+import {Script} from '../../script';
 import {Badge} from '../../components/atoms/Badge';
 import {Time} from '../../components/atoms/Time';
 import {Layout} from '../../components/layout/Layout';
@@ -13,6 +14,11 @@ import {Page} from '../../components/molecules/Page';
 import {Panel} from '../../components/molecules/Panel';
 import {NewsService, type NewsItem} from './Service';
 import {ReleaseService} from './releases/Service';
+
+export type NewsEvents = {
+  'newsfilter:open': void;
+  'newsfilter:close': void;
+};
 
 function bucketKey(val: Date | string | number) {
   return format(new Date(val), 'YYYY-MM');
@@ -121,7 +127,7 @@ function Sidebar({buckets}: {buckets: Record<string, {count: number; label: stri
       <Script>
         {el => {
           async function load() {
-            const res = await fetch('/news', {method: 'POST', body: new FormData(el as HTMLFormElement)});
+            const res = await fetch('/news', {method: 'POST', body: new FormData(el as unknown as HTMLFormElement)});
             if (res.ok) document.querySelector('#news-list')!.outerHTML = await res.text();
           }
 
@@ -169,11 +175,7 @@ function SidebarWrapper({buckets}: {buckets: Record<string, {count: number; labe
         })}
       >
         <Filter width={14} /> Filter
-        <Script>
-          {el => {
-            el.addEventListener('click', () => el.parentElement!.setAttribute('aria-expanded', 'true'));
-          }}
-        </Script>
+        <Script>{el => el.addEventListener('click', () => el.$publish('newsfilter:open'))}</Script>
       </button>
       <div
         className={css.use('f', 'fv', {
@@ -197,13 +199,15 @@ function SidebarWrapper({buckets}: {buckets: Record<string, {count: number; labe
           })}
         >
           Close
-          <Script>
-            {el => {
-              el.addEventListener('click', () => el.parentElement!.parentElement!.setAttribute('aria-expanded', 'false'));
-            }}
-          </Script>
+          <Script>{el => el.addEventListener('click', () => el.$publish('newsfilter:close'))}</Script>
         </button>
       </div>
+      <Script>
+        {el => {
+          el.$subscribe('newsfilter:open', () => el.setAttribute('aria-expanded', 'true'));
+          el.$subscribe('newsfilter:close', () => el.setAttribute('aria-expanded', 'false'));
+        }}
+      </Script>
     </div>
   );
 }

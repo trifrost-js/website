@@ -1,4 +1,4 @@
-import {ApiKeyAuth, Script, Style} from '@trifrost/core';
+import {ApiKeyAuth, Style} from '@trifrost/core';
 import {Layout} from '../../components/layout/Layout';
 import {type Router} from '../../types';
 import {DocsService, type Doc} from './Service';
@@ -6,9 +6,15 @@ import {Markdown, type MarkdownNode} from '../../utils/Markdown';
 import {ShareThis} from '../../components/molecules/ShareThis';
 import {Article} from '../../components/molecules/Article';
 import {css} from '../../css';
+import {Script} from '../../script';
 import {Collapsible} from '../../components/atoms/Collapsible';
 import {Page} from '../../components/molecules/Page';
 import {NextPrevious} from '../../components/molecules/NextPrevious';
+
+export type DocsEvents = {
+  'docsmenu:mobile:open': void;
+  'docsmenu:mobile:close': void;
+};
 
 export function DocsSidebar({entry}: {entry: Doc}) {
   const collapseCid = css.cid();
@@ -98,12 +104,14 @@ export function DocsSidebar({entry}: {entry: Doc}) {
         })}
       >
         Close
-        <Script>
-          {el => {
-            el.addEventListener('click', () => document.getElementById('docs-menu')!.setAttribute('aria-expanded', 'false'));
-          }}
-        </Script>
+        <Script>{el => el.$publish('docsmenu:mobile:close')}</Script>
       </button>
+      <Script>
+        {el => {
+          el.$subscribe('docsmenu:mobile:open', () => el.setAttribute('aria-expanded', 'true'));
+          el.$subscribe('docsmenu:mobile:close', () => el.setAttribute('aria-expanded', 'false'));
+        }}
+      </Script>
     </aside>
   );
 }
@@ -183,11 +191,7 @@ export function DocsMenuMobile({tree}: {tree: MarkdownNode[]}) {
           })}
         >
           ≣ Docs
-          <Script>
-            {el => {
-              el.addEventListener('click', () => document.getElementById('docs-menu')!.setAttribute('aria-expanded', 'true'));
-            }}
-          </Script>
+          <Script>{el => el.addEventListener('click', () => el.$publish('docsmenu:mobile:open'))}</Script>
         </button>
         <button
           type="button"

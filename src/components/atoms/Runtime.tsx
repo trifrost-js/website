@@ -1,5 +1,5 @@
 import {css} from '../../css';
-import {Script} from '@trifrost/core/modules/JSX';
+import {Script} from '../../script';
 
 export type RuntimeName = 'bun' | 'node' | 'workerd';
 

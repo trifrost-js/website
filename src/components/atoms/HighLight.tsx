@@ -1,6 +1,6 @@
 import hljs from 'highlight.js';
 import {css} from '../../css';
-import {Script} from '@trifrost/core/modules/JSX';
+import {Script} from '../../script';
 
 type HighLightProps = {
   code?: string;

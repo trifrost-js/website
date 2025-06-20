@@ -2,7 +2,7 @@ import {TriFrostEmblem} from '../atoms/Icons';
 import {Theme} from '../atoms/Theme';
 import {GitHub, NPM, Discord} from '../atoms/Icons';
 import {css} from '../../css';
-import {Script} from '@trifrost/core/modules/JSX';
+import {Script} from '../../script';
 
 enum HeaderSections {
   Home = 'home',
@@ -12,6 +12,9 @@ enum HeaderSections {
 }
 
 export type HeaderSection = `${HeaderSections}`;
+export type HeaderEvents = {
+  'header:mobile:status': {isOpen: boolean};
+};
 
 const list = [
   {name: HeaderSections.Home, label: 'About', to: '/'},
@@ -91,9 +94,11 @@ function HeaderTrigger() {
       <span></span>
       <Script>
         {el => {
+          let isOpen = false;
           el.addEventListener('click', () => {
+            isOpen = !isOpen;
             el.toggleAttribute('data-open');
-            el.parentElement!.toggleAttribute('data-open');
+            el.$publish('header:mobile:status', {isOpen});
           });
         }}
       </Script>
@@ -248,6 +253,14 @@ export function Header({active, ...rest}: HeaderProps) {
         </aside>
       </nav>
       <HeaderTrigger />
+      <Script>
+        {el => {
+          el.$subscribe('header:mobile:status', ({isOpen}) => {
+            if (isOpen) el.setAttribute('data-open', 'true');
+            else el.removeAttribute('data-open');
+          });
+        }}
+      </Script>
     </header>
   );
 }
