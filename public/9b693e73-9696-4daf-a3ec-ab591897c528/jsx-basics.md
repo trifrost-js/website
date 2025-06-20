@@ -7,7 +7,7 @@ This document covers the **basics** of using JSX with TriFrost, from setup to re
 👉 For more advanced usage, see:
 - [JSX Script Behavior](/docs/jsx-script-behavior)
 - [JSX Style System](/docs/jsx-style-system)
-- [JSX Utilities](/docs/jsx-utils)
+- [JSX Atomic Runtime](/docs/jsx-atomic)
 
 ---
 
@@ -57,17 +57,23 @@ Behind the scenes, `ctx.html()`:
 ---
 
 ### 🧬 Context Awareness
-TriFrost's JSX engine can access the active request context via utilities:
-- `env(key)`: Access environment variables from the currently rendering context's `ctx.env`
-- `state(key)`: Access route state (eg: path parameters, state set by middleware, ...) from the currently rendering context's `ctx.state`
-- `nonce()`: Access the CSP nonce for script/style tags
+TriFrost's JSX engine can access the active request context via utilities that are available through the `createScript` factory.
+```ts
+// script.ts
+const {Script, script} = createScript({ atomic: true });
+```
+
+From the above `script` object we can get:
+- `script.env(key)`: Access environment variables from the currently rendering context's `ctx.env` in **a typesafe way**
+- `script.state(key)`: Access route state (eg: path parameters, state set by middleware, ...) from the currently rendering context's `ctx.state`
+- `script.nonce()`: Access the CSP nonce for script/style tags
 
 Example:
 ```tsx
-import {env} from '@trifrost/core';
+import {script} from './script';
 
 export function Meta() {
-  return <meta name="env" content={env('NODE_ENV')} />;
+  return <meta name="env" content={script.env('NODE_ENV')} />;
 }
 ```
 
@@ -179,4 +185,4 @@ When calling `ctx.html(...)` with JSX:
 For deeper JSX capabilities and understanding, explore:
 - [JSX Script Behavior](/docs/jsx-script-behavior)
 - [JSX Style System](/docs/jsx-style-system)
-- [JSX Utilities](/docs/jsx-utils)
+- [JSX Atomic Runtime](/docs/jsx-atomic)

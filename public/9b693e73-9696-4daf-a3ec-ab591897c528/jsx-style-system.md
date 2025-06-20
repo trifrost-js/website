@@ -261,4 +261,4 @@ Or inline:
 For further JSX learnings, explore:
 - [JSX Basics](/docs/jsx-basics)
 - [JSX Script Behavior](/docs/jsx-script-behavior)
-- [JSX Utilities](/docs/jsx-utils)
+- [JSX Atomic Runtime](/docs/jsx-atomic)
