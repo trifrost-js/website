@@ -30,7 +30,10 @@ const app = await new App<Env>({
       ];
     },
   },
-  client: {css, script},
+  /**
+   * @todo Fix issue with specific CSSInstance typing???
+   */
+  client: {css: css as any, script},
 })
   .use(
     Security({
