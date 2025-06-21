@@ -6,6 +6,8 @@ import {rootRouter} from './pages/root';
 import {docsRouter} from './pages/docs';
 import {examplesRouter} from './pages/examples';
 import {newsRouter} from './pages/news';
+import {css} from './css';
+import {script} from './script';
 
 export {TriFrostDurableObject} from '@trifrost/core';
 
@@ -28,6 +30,7 @@ const app = await new App<Env>({
       ];
     },
   },
+  client: {css, script},
 })
   .use(
     Security({
