@@ -70,10 +70,10 @@ const cls = css.use(
     textAlign: 'left',
     border: '1px solid ' + css.$t.panel_border,
     [css.media.desktop]: css.mix('sp_l', {
-		[css.hover]: {
-			borderColor: css.$t.panel_border_active,
-		},
-	}),
+      [css.hover]: {
+        borderColor: css.$t.panel_border_active,
+      },
+    }),
     [css.media.tablet]: css.mix('sp_m'),
   },
   style || {},
@@ -184,7 +184,7 @@ The `css.media` object includes built-in breakpoints like:
 ```typescript
 const cls = css.use({
   [css.media.mobile]: {
-  	fontSize: '1.4rem',
+    fontSize: '1.4rem',
   },
   [css.media.tablet]: {
     fontSize: '1.6rem',
