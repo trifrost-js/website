@@ -103,6 +103,28 @@ export function ArrowLeft({width, ...rest}: IconProps) {
   );
 }
 
+export function Menu({width, ...rest}: IconProps) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={width} {...rest}>
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  );
+}
+
+export function TableOfContents({width, ...rest}: IconProps) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={width} {...rest}>
+      <path
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M8 6h13M8 12h13M8 18h13M3 7h1V6H3v1Zm0 6h1v-1H3v1Zm0 6h1v-1H3v1Z"
+      />
+    </svg>
+  );
+}
+
 export function Filter({width, ...rest}: IconProps) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={width} {...rest}>

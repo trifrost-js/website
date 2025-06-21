@@ -10,6 +10,8 @@ import {Script} from '../../script';
 import {Collapsible} from '../../components/atoms/Collapsible';
 import {Page} from '../../components/molecules/Page';
 import {NextPrevious} from '../../components/molecules/NextPrevious';
+import {MarkdownLinks} from '../../components/molecules/MarkdownLinks';
+import {Menu, TableOfContents} from '../../components/atoms/Icons';
 
 export type DocsEvents = {
   'docsmenu:mobile:open': void;
@@ -104,7 +106,11 @@ export function DocsSidebar({entry}: {entry: Doc}) {
         })}
       >
         Close
-        <Script>{el => el.$publish('docsmenu:mobile:close')}</Script>
+        <Script>
+          {el => {
+            el.addEventListener('click', () => el.$publish('docsmenu:mobile:close'));
+          }}
+        </Script>
       </button>
       <Script>
         {el => {
@@ -116,132 +122,37 @@ export function DocsSidebar({entry}: {entry: Doc}) {
   );
 }
 
-export function DocsOnThisPage({tree}: {tree: MarkdownNode[]}) {
-  const cls = css.use('f', 'fv', 'fs0', 'sp_v_l', {
-    maxWidth: '30rem',
-    width: '30rem',
-    alignSelf: 'flex-start',
-    h2: css.mix('text_form_label'),
-    div: css.mix('f', 'fv', 'sm_t_l'),
-    a: css.mix('text_body', 'sp_xs', {
-      cursor: 'pointer',
-      userSelect: 'none',
-      border: 'none',
-      overflow: 'hidden',
-      color: css.$t.body_fg,
-      fontSize: css.$v.font_s_small,
-      letterSpacing: '.1rem',
-      lineHeight: 1.4,
-      textDecoration: 'none',
-      marginLeft: 0,
-      [css.attr('data-level', '5')]: {
-        marginLeft: css.$v.space_m,
-      },
-      [css.hover]: {
-        textDecoration: 'underline',
-      },
-      [css.not(css.lastChild)]: {
-        borderBottom: '1px solid ' + css.$t.panel_border,
-      },
-    }),
-    [css.media.desktop]: css.mix('panel', 'br_m', 'sp_h_l', {
-      border: '1px solid ' + css.$t.panel_border,
-      position: 'sticky',
-      top: css.$v.space_l,
-    }),
-    [css.media.tablet]: css.mix('hide'),
-  });
-
-  return (
-    <nav aria-label="Table of contents for article" className={cls}>
-      <h2>On this page</h2>
-      <div>
-        {Markdown.extractHeadersFromNodes(tree).map(el => (
-          <a href={`#${el.id}`} key={el.id} data-level={el.level}>
-            {el.title}
-          </a>
-        ))}
-      </div>
-    </nav>
-  );
-}
-
-export function DocsMenuMobile({tree}: {tree: MarkdownNode[]}) {
+export function DocsOnThisPage({tree, id}: {tree: MarkdownNode[]; id: string}) {
   return (
     <nav
       aria-label="Table of contents for article"
-      aria-expanded="false"
-      className={css.use('f', 'fv', {
-        [css.media.desktop]: css.mix('hide', 'sm_v_l'),
-        [css.media.tablet]: css.mix('sm_b_m', {
-          [css.attr('aria-expanded', false)]: {
-            [` div${css.lastOfType}`]: css.mix('hide'),
-          },
-        }),
+      className={css.use('f', 'fv', 'fs0', 'sp_v_l', 'panel', 'br_m', 'sp_h_l', {
+        border: '1px solid ' + css.$t.panel_border,
+        width: '30rem',
+        alignSelf: 'flex-start',
+        gap: css.$v.space_l,
+        h2: css.mix('text_form_label'),
+        [css.media.desktop]: {
+          position: 'sticky',
+          top: css.$v.space_l,
+        },
+        [css.media.tablet]: {
+          position: 'absolute',
+          [css.not(css.attr('aria-expanded'))]: css.mix('hide'),
+          [css.attr('aria-expanded', false)]: css.mix('hide'),
+        },
       })}
+      id={id}
     >
-      <div className={css.use('f', 'sm_t_s', 'sm_b_l', {gap: css.$v.space_s})}>
-        <button
-          type="button"
-          className={css.use('f', 'fh', 'fa_c', 'fj_c', 'button', 'button_s', 'button_t_blue', {
-            justifySelf: 'center',
-            alignSelf: 'flex-start',
-            gap: css.$v.space_s,
-            [css.media.desktop]: css.mix('hide'),
-          })}
-        >
-          ≣ Docs
-          <Script>{el => el.addEventListener('click', () => el.$publish('docsmenu:mobile:open'))}</Script>
-        </button>
-        <button
-          type="button"
-          className={css.use('f', 'fh', 'fa_c', 'fj_c', 'button', 'button_s', 'button_t_blue', {
-            justifySelf: 'center',
-            alignSelf: 'flex-start',
-            gap: css.$v.space_s,
-            [css.media.desktop]: css.mix('hide'),
-          })}
-        >
-          ≣ Table of contents
-          <Script>
-            {el => {
-              el.addEventListener('click', () => {
-                const nav = el.closest('nav')!;
-                const isOpen = nav.getAttribute('aria-expanded') + '' === 'true';
-                nav.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
-              });
-            }}
-          </Script>
-        </button>
-      </div>
-      <div className={css.use('f', 'fv', 'panel_alt', 'sm_b_l', 'sp_s', 'br_m')}>
-        {Markdown.extractHeadersFromNodes(tree).map(el => (
-          <a
-            href={`#${el.id}`}
-            key={el.id}
-            className={css.use('text_body', 'sp_xs', {
-              cursor: 'pointer',
-              userSelect: 'none',
-              border: 'none',
-              overflow: 'hidden',
-              color: css.$t.body_fg,
-              fontSize: css.$v.font_s_small,
-              letterSpacing: '.1rem',
-              lineHeight: 1.4,
-              textDecoration: 'none',
-              marginLeft: el.level > 3 ? css.$v.space_m : 0,
-              [css.hover]: {
-                textDecoration: 'underline',
-              },
-              [css.not(css.lastChild)]: {
-                borderBottom: '1px solid ' + css.$t.panel_border,
-              },
-            })}
-          >
-            {el.title}
-          </a>
-        ))}
-      </div>
+      <h2>On this page</h2>
+      <MarkdownLinks tree={tree} />
+      <Script>
+        {el => {
+          el.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => el.setAttribute('aria-expanded', 'false'));
+          });
+        }}
+      </Script>
     </nav>
   );
 }
@@ -256,6 +167,8 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
       /* Get doc */
       const doc = await DocsService.load(ctx);
       if (!doc) return ctx.setStatus(404);
+
+      const tableOfContentsId = css.cid();
 
       return ctx.html(
         <Layout section="docs" title={entry.title} description={entry.desc}>
@@ -291,28 +204,63 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                       [css.media.tablet]: {width: '100%'},
                     })}
                   >
-                    <h2
-                      className={css.use({
-                        fontFamily: css.$v.font_header,
-                        lineHeight: 1.2,
-                        fontWeight: '100 !important',
-                        [css.media.desktop]: {
-                          marginBottom: `${css.$v.space_xl} !important`,
-                        },
-                        [css.media.tablet]: {
-                          marginBottom: `${css.$v.space_m} !important`,
-                        },
+                    <div
+                      className={css.use('f', 'fh', 'fa_c', {
+                        gap: css.$v.space_s,
+                        [css.media.desktop]: css.mix('sm_b_xl'),
+                        [css.media.tablet]: css.mix('sm_b_m'),
                       })}
                     >
-                      {entry.title}
-                    </h2>
-                    <DocsMenuMobile tree={doc.tree} />
+                      <button
+                        type="button"
+                        className={css.use('f', 'fa_c', 'button', 'button_s', 'button_t_grey', {
+                          height: '4rem',
+                          [css.media.desktop]: css.mix('hide'),
+                        })}
+                      >
+                        <Menu width={20} />
+                        <Script>{el => el.addEventListener('click', () => el.$publish('docsmenu:mobile:open'))}</Script>
+                      </button>
+                      <h2
+                        className={css.use('fg', {
+                          fontFamily: css.$v.font_header,
+                          lineHeight: 1.2,
+                          fontWeight: '100 !important',
+                          marginTop: '0 !important',
+                          marginBottom: '0 !important',
+                        })}
+                      >
+                        {entry.title}
+                      </h2>
+                      <button
+                        type="button"
+                        className={css.use('f', 'fa_c', 'button', 'button_s', 'button_t_grey', {
+                          height: '4rem',
+                          [css.media.desktop]: css.mix('hide'),
+                        })}
+                      >
+                        <TableOfContents width={20} />
+                        <Script data={{tableOfContentsId}}>
+                          {(el, data) => {
+                            el.addEventListener('click', () => {
+                              const nav = document.getElementById(data.tableOfContentsId)!;
+                              nav.setAttribute('aria-expanded', String(nav.getAttribute('aria-expanded')) === 'true' ? 'false' : 'true');
+
+                              const elBounds = el.getBoundingClientRect();
+                              const navBounds = nav.getBoundingClientRect();
+                              nav.style.top = elBounds.top + elBounds.height + 'px';
+                              nav.style.left = elBounds.left - navBounds.width + elBounds.width + 'px';
+                            });
+                          }}
+                        </Script>
+                      </button>
+                    </div>
                     {Markdown.renderTree(doc.tree)}
                     <NextPrevious next={entry.next} previous={entry.previous} reversed={true} />
                   </Article>
                   <ShareThis url={ctx.path} title={entry.title} />
                 </div>
-                <DocsOnThisPage tree={doc.tree} />
+                <DocsOnThisPage tree={doc.tree} id={tableOfContentsId} />
                 <Style />
               </div>
             </div>
