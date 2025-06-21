@@ -113,9 +113,9 @@ const ROUTES = [
         desc: 'Learn how to turn a static page into an interactive masterpiece using <Script /> and the atomic core.',
       },
       {
-        title: 'Utilities',
-        slug: 'jsx-utils',
-        desc: 'Learn about helpers like env(), state(), nonce() and how they hook into context',
+        title: 'TriFrost Atomic',
+        slug: 'jsx-atomic',
+        desc: 'Learn about the TriFrost Atomic client-side runtime, where others ship megabyte bundles, we go atomic',
       },
     ],
   },
