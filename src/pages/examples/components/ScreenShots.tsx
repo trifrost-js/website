@@ -24,7 +24,7 @@ export function ScreenShots({entry}: {entry: Example}) {
       <h2>Screenshots</h2>
       <div className={css.use('f', 'fv', {gap: css.$v.space_s})}>
         {entry.screenshots.map(el => (
-          <Image src={ExamplesService.asset(entry, `/assets/${el.file}`)} alt={el.title} />
+          <Image src={ExamplesService.asset(entry, `assets/${el.file}`)} alt={el.title} />
         ))}
       </div>
     </div>
