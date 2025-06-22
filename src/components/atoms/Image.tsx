@@ -34,7 +34,7 @@ export function Image({src, alt, style, ...rest}: ImageProps) {
               bottom: 0,
               padding: css.$v.space_xl,
               background: 'rgba(1, 7, 15, .75)',
-              zIndex: 100000,
+              zIndex: 200,
               cursor: 'zoom-out',
               marginTop: 0,
             }),
