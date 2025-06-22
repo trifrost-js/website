@@ -33,6 +33,8 @@ trifrost-mini-site/
 The app is initialized in `index.ts` using TriFrost’s `App` class. Middleware like security and CORS are added, then routing groups (`homeRouter`, `aboutRouter`, `blogRouter`) are wired in.
 
 Each page uses server-rendered JSX, the blog section includes dynamic comment handling through HTMX.
+
+The client option with our css instance ensures TriFrost Atomic (0.36+) automounts our css root to `/__atomics__/client.css`, ensuring no repeat global styles but only page-specific styles get inlined.
 ```typescript
 // src/index.ts
 import {App, Security, Cors, OtelHttpExporter} from '@trifrost/core';
@@ -41,12 +43,9 @@ import {homeRouter} from './pages/home';
 import {aboutRouter} from './pages/about';
 import {blogRouter} from './pages/blog';
 import {notFoundHandler} from './pages/notfound';
+import {css} from './css';
 
-new App<Env>({
-  env: process.env as Env,
-  name: 'TriFrost_Website',
-  version: '1.0.0',
-})
+new App<Env>({client: {css}})
   .use(Security())
   .use(Cors())
   .group('/', homeRouter)
@@ -69,6 +68,10 @@ They use a shared layout wrapper for consistency, pulling in navigation, headers
 Styling is centralized in `css.ts` using TriFrost’s `createCss` system. It defines dark/light themes, font families, spacing scales, and responsive helpers, enabling consistent component styling and easy overrides.
 
 Once a var/theme variable is defined they are respectively available at `css.$v.[variable name]` and `css.$t.[variable name]` anywhere in your app.
+
+Important Notes:
+- **definitions** are not included in the css if not used. They form your backbone to centralize reusable pieces of styling without bloating the page if not used, they get merged in with client styles by using `css.use` and `css.mix`.
+- Since TriFrost 0.36 Atomic, **global styles** such as the **css reset** and **theme/global variables** get bundled in a file and mounted at `__atomics__/client.css` if you pass your `css` instance as part of the **client options on App**. The system takes care of adding the link automatically to your output HTML.
 
 ```typescript
 // src/css.ts
@@ -140,6 +143,7 @@ document.documentElement.setAttribute('data-theme', 'light'); // Switch to light
 The `Containerfile` uses a multi-stage build: first compiling the TypeScript project, then packaging only production files.
 
 This is also the file that builds your source into a container ready for deployment.
+
 ```dockerfile
 # =============================================================================
 # Development Stage
@@ -203,6 +207,8 @@ services:
     tty: true
     environment:
       - PORT=3000
+      - TRIFROST_NAME="TriFrost_Website"
+      - TRIFROST_VERSION="1.0.0"
     ports:
       - "3000:3000"
     volumes:
