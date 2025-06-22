@@ -88,6 +88,7 @@ export function Image({src, alt, style, ...rest}: ImageProps) {
             position: 'relative',
             zIndex: 2,
             height: 'auto',
+            maxWidth: '80%',
           })}
           {...rest}
         />

@@ -1,11 +1,11 @@
 type IconProps = {
-  width: number;
   className?: string;
+  width?: number;
 };
 
-export function Facebook({width, ...rest}: IconProps) {
+export function Facebook({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...rest}>
       <path
         fill="currentColor"
         d="M12,2C6.477,2,2,6.477,2,12c0,5.013,3.693,9.153,8.505,9.876V14.65H8.031v-2.629h2.474v-1.749 c0-2.896,1.411-4.167,3.818-4.167c1.153,0,1.762,0.085,2.051,0.124v2.294h-1.642c-1.022,0-1.379,0.969-1.379,2.061v1.437h2.995 l-0.406,2.629h-2.588v7.247C18.235,21.236,22,17.062,22,12C22,6.477,17.523,2,12,2z"
@@ -14,9 +14,9 @@ export function Facebook({width, ...rest}: IconProps) {
   );
 }
 
-export function LinkedIn({width, ...rest}: IconProps) {
+export function LinkedIn({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...rest}>
       <path
         fill="currentColor"
         d="M19,3H5C3.895,3,3,3.895,3,5v14c0,1.105,0.895,2,2,2h14c1.105,0,2-0.895,2-2V5C21,3.895,20.105,3,19,3z M9,17H6.477v-7H9 V17z M7.694,8.717c-0.771,0-1.286-0.514-1.286-1.2s0.514-1.2,1.371-1.2c0.771,0,1.286,0.514,1.286,1.2S8.551,8.717,7.694,8.717z M18,17h-2.442v-3.826c0-1.058-0.651-1.302-0.895-1.302s-1.058,0.163-1.058,1.302c0,0.163,0,3.826,0,3.826h-2.523v-7h2.523v0.977 C13.93,10.407,14.581,10,15.802,10C17.023,10,18,10.977,18,13.174V17z"
@@ -25,9 +25,9 @@ export function LinkedIn({width, ...rest}: IconProps) {
   );
 }
 
-export function Twitter({width, ...rest}: IconProps) {
+export function Twitter({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...rest}>
       <path
         stroke="none"
         fill="currentColor"
@@ -37,9 +37,9 @@ export function Twitter({width, ...rest}: IconProps) {
   );
 }
 
-export function GitHub({width, ...rest}: IconProps) {
+export function GitHub({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" {...rest}>
       <path
         fill-rule="evenodd"
         fill="currentColor"
@@ -49,9 +49,9 @@ export function GitHub({width, ...rest}: IconProps) {
   );
 }
 
-export function Discord({width, ...rest}: IconProps) {
+export function Discord({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" {...rest}>
       <path
         fill="currentColor"
         d="M21 20a3 3 0 0 1-3-3c0-2 1-3 3-3a3 3 0 0 1 3 3c0 2-1 3-3 3zm-10 0a3 3 0 0 1-3-3c0-2 2-3 3-3a3 3 0 0 1 3 3c0 2-1 3-3 3zM26 6l-6-1-1 1a22 22 0 0 0-7 0h1l-1-1-7 2 1-1a25 25 0 0 0-5 18l7 3h1l1-2-2-1v-1l8 2 8-2a11 11 0 0 0 0 1l-2 1 1 2c3 0 6-2 8-3v-3c0-5-2-10-5-15z"
@@ -60,9 +60,9 @@ export function Discord({width, ...rest}: IconProps) {
   );
 }
 
-export function NodeJS({width, ...rest}: IconProps) {
+export function NodeJS({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 145" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 145" {...rest}>
       <g fill="#83CD29">
         <path d="m470 51-3 1-34 20c-2 1-4 3-4 6v39c0 2 2 5 4 6l9 5 7 2c7 0 10-4 10-10V81l-1-1h-4l-1 1v39c0 3-3 6-8 3l-9-5-1-1V78l1-1 34-20a1 1 0 0 1 1 0l34 20v41l-34 19h-1l-9-5a1 1 0 0 0-1 0c-2 2-3 2-5 2v2l12 7a7 7 0 0 0 3 1 7 7 0 0 0 4-1l34-20c2-1 3-4 3-6V78c0-3-1-5-3-6l-34-20-4-1z" />
         <path d="M479 79c-9 0-15 4-15 11s6 10 15 10c11 2 12 3 12 5 0 4-3 6-10 6-9 0-11-3-12-7l-1-1h-4l-1 1c0 6 3 13 18 13 10 0 17-5 17-12s-5-9-16-11c-10-1-11-2-11-4s0-5 8-5c7 0 10 2 11 6l1 1h5v-1c-1-8-6-12-17-12z" />
@@ -79,41 +79,41 @@ export function NodeJS({width, ...rest}: IconProps) {
   );
 }
 
-export function NPM({width, ...rest}: IconProps) {
+export function NPM({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...rest}>
       <path fill="currentColor" d="M20 4H4v16h8V8h4v12h4V4" />
     </svg>
   );
 }
 
-export function ArrowRight({width, ...rest}: IconProps) {
+export function ArrowRight({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 19" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 19" {...rest}>
       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m1 1 8 9-8 8" fill="none" />
     </svg>
   );
 }
 
-export function ArrowLeft({width, ...rest}: IconProps) {
+export function ArrowLeft({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 19" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 19" {...rest}>
       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m9 1-8 9 8 8" fill="none" />
     </svg>
   );
 }
 
-export function Menu({width, ...rest}: IconProps) {
+export function Menu({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...rest}>
       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
     </svg>
   );
 }
 
-export function TableOfContents({width, ...rest}: IconProps) {
+export function TableOfContents({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" {...rest}>
       <path
         stroke="currentColor"
         stroke-linecap="round"
@@ -125,17 +125,17 @@ export function TableOfContents({width, ...rest}: IconProps) {
   );
 }
 
-export function Filter({width, ...rest}: IconProps) {
+export function Filter({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" {...rest}>
       <path fill="currentColor" d="m30 6-2-1H4a2 2 0 0 0-2 3l10 11v9a1 1 0 0 0 2 1l6-4v-6L30 8V6z" />
     </svg>
   );
 }
 
-export function HTMX({width, ...rest}: IconProps) {
+export function HTMX({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" viewBox="0 0 512 118" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" viewBox="0 0 512 118" {...rest}>
       <path
         fill="currentColor"
         d="M241 1v32c31-8 37 13 37 23v40h-18V57c0-6-3-14-19-9v48h-18V5l18-4Zm196 57v38h-17V58c0-7-6-15-18-10v48h-18V58c0-6-2-14-18-12v50h-17V35c5-2 27-9 45 2 29-15 43 1 43 21ZM311 12v20h23v14h-22v25l1 7c6 4 13 5 21 2l2 14c-18 5-30 3-37-5-3-4-5-10-5-17V16l17-4Z"
@@ -147,9 +147,9 @@ export function HTMX({width, ...rest}: IconProps) {
   );
 }
 
-export function TriFrost({width, ...rest}: IconProps) {
+export function TriFrost({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 118 126" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 118 126" {...rest}>
       <g fill="#1491b6">
         <rect transform="rotate(150 69.2 19) scale(.20714)" rx="13" height="200.3" width="21" y="-4" x="326.2" />
         <rect transform="rotate(-150 50.5 19) scale(.20714)" rx="13" height="200.3" width="21" y="-8.4" x="238.3" />
@@ -170,9 +170,9 @@ export function TriFrost({width, ...rest}: IconProps) {
   );
 }
 
-export function TriFrostEmblem({width, ...rest}: IconProps) {
+export function TriFrostEmblem({...rest}: IconProps) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" width={width} {...rest}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150" {...rest}>
       <g fill="#1491b6" stroke-width="0">
         <rect width="21" height="200.3" x="288" y="-93" rx="13" transform="rotate(150 76 14) scale(.24134)" />
         <rect width="21" height="200.3" x="142" y="-20" rx="13" transform="rotate(-150 51 18) scale(.24134)" />

@@ -2,7 +2,7 @@ This example showcases a multi-page server-rendered **TriFrost** application run
 
 It demonstrates runtime-agnostic rendering, [HTMX](https://htmx.org/)-driven interactivity (for comments), and optional observability with [SigNoz](https://signoz.io/).
 
-### How It Works
+## How It Works
 The app uses TriFrost’s flexible routing and JSX rendering to deliver a home page, about page, and a blog page with dynamic comments.
 
 HTMX handles comment posting and deletion via fragment swaps, making it lightweight and responsive without a heavy frontend framework.
@@ -13,7 +13,7 @@ This example is set up to optionally send OpenTelemetry traces to [SigNoz](https
 
 To enable it, provide your `SIGNOZ_API_TOKEN` in a `.env` file and uncomment the  `OtelHttpExporter` block in `index.ts` and you're good to go.
 
-### Project Structure
+##### Project Structure
 ```bash
 trifrost-mini-site/
 ├─ src/
@@ -29,7 +29,7 @@ trifrost-mini-site/
 └─ .env
 ```
 
-### App Logic
+## Logic
 The app is initialized in `index.ts` using TriFrost’s `App` class. Middleware like security and CORS are added, then routing groups (`homeRouter`, `aboutRouter`, `blogRouter`) are wired in.
 
 Each page uses server-rendered JSX, the blog section includes dynamic comment handling through HTMX.
@@ -43,29 +43,29 @@ import {blogRouter} from './pages/blog';
 import {notFoundHandler} from './pages/notfound';
 
 new App<Env>({
-    env: process.env as Env,
-    name: 'TriFrost_Website',
-    version: '1.0.0',
+  env: process.env as Env,
+  name: 'TriFrost_Website',
+  version: '1.0.0',
 })
-    .use(Security())
-    .use(Cors())
-    .group('/', homeRouter)
-    .group('/about', aboutRouter)
-    .group('/blog', blogRouter)
-    .onNotFound(notFoundHandler)
-    .boot({port: Number(process.env.PORT || 3000)});
+  .use(Security())
+  .use(Cors())
+  .group('/', homeRouter)
+  .group('/about', aboutRouter)
+  .group('/blog', blogRouter)
+  .onNotFound(notFoundHandler)
+  .boot({port: Number(process.env.PORT || 3000)});
 ```
 
-### Page Breakdown: Home, About, Blog
+## Page Breakdown
 Each of these pages is set up as its own router group (`homeRouter`, `aboutRouter`, `blogRouter`) and connected in the main `index.ts`.
 
 They use a shared layout wrapper for consistency, pulling in navigation, headers, and theme-aware styles.
 
-- **Home Page** (`/`)\\nProvides a welcoming introduction to TriFrost, explaining its mission as a runtime-agnostic, fast server framework. Uses a simple JSX layout with hero text and buttons.
-- **About Page** (`/about`)\\n Gives background on what makes TriFrost special,  its **composable middleware**, **multi-runtime compatibility** (Node, Bun, Workerd), and **built-in observability**. This page uses bullet lists and styled sections.
-- **Blog Page** (`/blog`)\\nThe most interactive section, listing blog posts and allowing users to submit and delete comments live via HTMX. This showcases TriFrost’s ability to handle fragment rendering and dynamic state updates without a heavy frontend framework.
+- **Home Page** (`/`)\nProvides a welcoming introduction to TriFrost, explaining its mission as a runtime-agnostic, fast server framework. Uses a simple JSX layout with hero text and buttons.
+- **About Page** (`/about`)\n Gives background on what makes TriFrost special,  its **composable middleware**, **multi-runtime compatibility** (Node, Bun, Workerd), and **built-in observability**. This page uses bullet lists and styled sections.
+- **Blog Page** (`/blog`)\nThe most interactive section, listing blog posts and allowing users to submit and delete comments live via HTMX. This showcases TriFrost’s ability to handle fragment rendering and dynamic state updates without a heavy frontend framework.
 
-### CSS/Theming
+## Styling
 Styling is centralized in `css.ts` using TriFrost’s `createCss` system. It defines dark/light themes, font families, spacing scales, and responsive helpers, enabling consistent component styling and easy overrides.
 
 Once a var/theme variable is defined they are respectively available at `css.$v.[variable name]` and `css.$t.[variable name]` anywhere in your app.
@@ -73,59 +73,59 @@ Once a var/theme variable is defined they are respectively available at `css.$v.
 ```typescript
 // src/css.ts
 export const css = createCss({
-	reset: true,
-	var: {
-		font_header: "'Fira Code', monospace",
-		font_body: "'Roboto', Sans-serif",
-		radius: '0.5rem',
-		space_s: '0.5rem',
-		space_m: '1rem',
-		space_l: '2rem',
-		space_xl: '4rem',
+  reset: true,
+  var: {
+    font_header: "'Fira Code', monospace",
+    font_body: "'Roboto', Sans-serif",
+    radius: '0.5rem',
+    space_s: '0.5rem',
+    space_m: '1rem',
+    space_l: '2rem',
+    space_xl: '4rem',
+  },
+  theme: {
+    bg: {
+      light: '#f9fafb',
+      dark: '#1f2937',
     },
-    theme: {
-        bg: {
-            light: '#f9fafb',
-            dark: '#1f2937',
-        },
-        fg: {
-            light: '#1f2937',
-            dark: '#f9fafb',
-        },
-        nav_bg: {
-            dark: '#020810',
-            light: '#c7c7c7',
-        },
-        nav_fg: {
-            dark: '#ffffff',
-            light: '#000000',
-        },
-        ...
+    fg: {
+      light: '#1f2937',
+      dark: '#f9fafb',
     },
-    definitions: (mod) => ({
-        f: {display: 'flex'},
-        fh: {flexDirection: 'row'},
-        fv: {flexDirection: 'column'},
-        fa_c: {alignItems: 'center'},
-        fj_c: {justifyContent: 'center'},
-        sm_v_l: {marginBottom: mod.$v.space_l, marginTop: mod.$v.space_l},
-        text_header: {
-            fontFamily: mod.$v.font_header,
-            fontWeight: 'bold',
-            [mod.media.desktop]: {
-                fontSize: '2.2rem',
-            },
-            [mod.media.tablet]: {
-                fontSize: '2rem',
-            },
-        },
-        text_title: {
-            fontFamily: mod.$v.font_header,
-            fontWeight: 'bold',
-            fontSize: '2rem',
-        },
-        ...
-    }),
+    nav_bg: {
+      dark: '#020810',
+      light: '#c7c7c7',
+    },
+    nav_fg: {
+      dark: '#ffffff',
+      light: '#000000',
+    },
+    ...
+  },
+  definitions: (mod) => ({
+    f: {display: 'flex'},
+    fh: {flexDirection: 'row'},
+    fv: {flexDirection: 'column'},
+    fa_c: {alignItems: 'center'},
+    fj_c: {justifyContent: 'center'},
+    sm_v_l: {marginBottom: mod.$v.space_l, marginTop: mod.$v.space_l},
+    text_header: {
+      fontFamily: mod.$v.font_header,
+      fontWeight: 'bold',
+      [mod.media.desktop]: {
+        fontSize: '2.2rem',
+      },
+      [mod.media.tablet]: {
+        fontSize: '2rem',
+      },
+    },
+    text_title: {
+      fontFamily: mod.$v.font_header,
+      fontWeight: 'bold',
+      fontSize: '2rem',
+    },
+    ...
+  }),
 });
 ```
 
@@ -136,7 +136,7 @@ document.documentElement.setAttribute('data-theme', 'dark'); // Switch to dark m
 document.documentElement.setAttribute('data-theme', 'light'); // Switch to light mode
 ```
 
-### Containerization
+## Containerization
 The `Containerfile` uses a multi-stage build: first compiling the TypeScript project, then packaging only production files.
 
 This is also the file that builds your source into a container ready for deployment.
@@ -145,50 +145,50 @@ This is also the file that builds your source into a container ready for deploym
 # Development Stage
 # =============================================================================
 
-    FROM node:22-alpine AS development
+  FROM node:22-alpine AS development
 
-    WORKDIR /app
+  WORKDIR /app
 
-    COPY package*.json ./
-    RUN npm install
+  COPY package*.json ./
+  RUN npm install
 
-    # Copy source
-    COPY . .
+  # Copy source
+  COPY . .
 
-    # Start dev server
-    CMD ["npm", "run", "dev"]
+  # Start dev server
+  CMD ["npm", "run", "dev"]
 
 # =============================================================================
 # Build Stage
 # =============================================================================
 
-    FROM development as builder
-    RUN npm run build
+  FROM development as builder
+  RUN npm run build
 
 # =============================================================================
 # Production Stage
 # =============================================================================
 
-    FROM node:22-alpine AS production
+  FROM node:22-alpine AS production
 
-    # Set NODE_ENV to production
-    ENV NODE_ENV=production
+  # Set NODE_ENV to production
+  ENV NODE_ENV=production
 
-    WORKDIR /app
-    COPY package*.json ./
-    COPY --from=builder /app/dist ./dist
+  WORKDIR /app
+  COPY package*.json ./
+  COPY --from=builder /app/dist ./dist
 
-    # Install dependencies and prune
-    RUN npm install --omit=dev && npm prune
+  # Install dependencies and prune
+  RUN npm install --omit=dev && npm prune
 
-    # Change to 1000 user
-    RUN chown 1000:1000 /app
+  # Change to 1000 user
+  RUN chown 1000:1000 /app
 
-    # Switch user
-    USER 1000:1000
+  # Switch user
+  USER 1000:1000
 
-    # Start prod server
-    CMD ["node", "./dist/index.js"]
+  # Start prod server
+  CMD ["node", "./dist/index.js"]
 ```
 
 `compose.yml` defines the service, port mappings, and volume mounts for **local** orchestration.
@@ -212,7 +212,7 @@ volumes:
   node_modules:
 ```
 
-### Environment
+## Environment
 We define an `Env` type in `types.ts` to describe environment bindings like `PORT` and optional observability tokens like `SIGNOZ_API_TOKEN`. This lets the app pull runtime config from `process.env` without hardcoding values, making it deployment-flexible.
 
 We also define our own app-specific `Context` and `Router` types here. These will automatically be aware of our Environment simply by passing it as a generic.
@@ -224,8 +224,8 @@ We also define our own app-specific `Context` and `Router` types here. These wil
 import {type TriFrostRouter, type TriFrostContext} from '@trifrost/core';
 
 export type Env = {
-    PORT: string;
-    SIGNOZ_API_TOKEN: string;
+  PORT: string;
+  SIGNOZ_API_TOKEN: string;
 };
 
 export type Context<State extends Record<string, unknown> = {}> = TriFrostContext<Env, State>;
@@ -233,7 +233,7 @@ export type Context<State extends Record<string, unknown> = {}> = TriFrostContex
 export type Router<State extends Record<string, unknown> = {}> = TriFrostRouter<Env, State>;
 ```
 
-### Resources
+## Resources
 - [TriFrost](https://trifrost.dev): The runtime-agnostic server framework behind this example.
 - [HTMX](https://htmx.org): Add AJAX, WebSockets, and more to HTML using attributes.
 - [Podman](https://podman.io): Open source container engine for rootless containers.

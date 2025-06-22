@@ -32,7 +32,6 @@ export function HighLight({code, language = 'ts', copyEnabled = true, children, 
             right: css.$v.space_s,
             border: 'none',
             appearance: 'none',
-            zIndex: 10,
           })}
         >
           copy

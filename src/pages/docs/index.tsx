@@ -1,4 +1,4 @@
-import {ApiKeyAuth, Style} from '@trifrost/core';
+import {ApiKeyAuth} from '@trifrost/core';
 import {Layout} from '../../components/layout/Layout';
 import {type Router} from '../../types';
 import {DocsService, type Doc} from './Service';
@@ -122,7 +122,7 @@ export function DocsSidebar({entry}: {entry: Doc}) {
   );
 }
 
-export function DocsOnThisPage({tree, id}: {tree: MarkdownNode[]; id: string}) {
+export function OnThisPage({tree, id}: {tree: MarkdownNode[]; id: string}) {
   return (
     <nav
       aria-label="Table of contents for article"
@@ -260,8 +260,7 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                   </Article>
                   <ShareThis url={ctx.path} title={entry.title} />
                 </div>
-                <DocsOnThisPage tree={doc.tree} id={tableOfContentsId} />
-                <Style />
+                <OnThisPage tree={doc.tree} id={tableOfContentsId} />
               </div>
             </div>
           </Page>

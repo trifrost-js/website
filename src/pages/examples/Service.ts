@@ -3,7 +3,9 @@ import {type Context} from '../../types';
 import {Markdown} from '../../utils/Markdown';
 import {isNeString} from '@valkyriestudios/utils/string';
 import {siteMapEntry} from '../../utils/sitemap';
-import {HTMX, NodeJS, TriFrost} from '../../components/atoms/Icons';
+import {type ScreenShot} from './components/ScreenShots';
+
+export type Logo = 'trifrost' | 'htmx' | 'nodejs';
 
 export type Example = {
   slug: string;
@@ -11,11 +13,13 @@ export type Example = {
   desc: string;
   tags: string[];
   live: string;
-  logo1: JSX.Element;
-  logo2: JSX.Element;
+  logo1: Logo;
+  logo2: Logo;
   to: string;
-  screenshots: {file: string; title: string}[];
+  screenshots: ScreenShot[];
 };
+
+const FOLDER = 'adc0b918-84c6-4474-9269-a48fac8755cc';
 
 const EXAMPLES = [
   {
@@ -24,8 +28,8 @@ const EXAMPLES = [
     desc: 'A fully interactive, stateful todo application using TriFrost with HTMX, running on the edge.',
     tags: ['HTMX', 'JSX', 'CloudFlare', 'DurableObject', 'UpTrace'],
     live: 'https://htmx-todos.trifrost.dev/',
-    logo1: TriFrost,
-    logo2: HTMX,
+    logo1: 'trifrost',
+    logo2: 'htmx',
     screenshots: [
       {
         file: 'htmx_todos_view.png',
@@ -43,8 +47,8 @@ const EXAMPLES = [
     desc: 'A container-ready, multi-page TriFrost example with HTMX, theming, and observability.',
     tags: ['Node.js', 'Podman', 'HTMX', 'JSX', 'SigNoz'],
     live: 'https://website-node-container.trifrost.dev/',
-    logo1: TriFrost,
-    logo2: NodeJS,
+    logo1: 'trifrost',
+    logo2: 'nodejs',
     screenshots: [
       {
         file: 'trifrost_node_mini_site_dark.png',
@@ -64,6 +68,10 @@ for (let i = 0; i < EXAMPLES.length; i++) {
 }
 
 export class ExamplesService {
+  static isValidSlug(slug: string) {
+    return typeof slug === 'string' && /^[a-zA-Z0-9_-]{1,128}$/.test(slug);
+  }
+
   static list() {
     return EXAMPLES;
   }
@@ -72,9 +80,13 @@ export class ExamplesService {
    * Retrieve the entry from our flattened routes
    */
   static one<State extends {slugId: string}>(ctx: Context<State>): Example | null {
-    if (!isNeString(ctx.state.slugId)) return null;
+    if (!ExamplesService.isValidSlug(ctx.state.slugId)) return null;
 
     return EXAMPLES.find(el => el.slug === ctx.state.slugId) || null;
+  }
+
+  static asset(entry: Example, file: string) {
+    return `/${FOLDER}/${entry.slug}/${file}`;
   }
 
   /**
@@ -84,8 +96,11 @@ export class ExamplesService {
   @cache(ctx => `example:${ctx.state.slugId}`, {ttl: 86400})
   static async load<State extends {slugId: string}>(ctx: Context<State>) {
     try {
+      const entry = ExamplesService.one(ctx);
+      if (!entry) throw new Error('Entry not found');
+
       /* Try to load asset */
-      const resp = await ctx.env.ASSETS.fetch(`https://assets/adc0b918-84c6-4474-9269-a48fac8755cc/${ctx.state.slugId}.md`);
+      const resp = await ctx.env.ASSETS.fetch(`https://assets${ExamplesService.asset(entry, 'example.md')}`);
       if (!resp.ok) throw new Error('Failed to fetch example asset');
 
       /* Load data */
