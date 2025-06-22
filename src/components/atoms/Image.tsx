@@ -14,7 +14,6 @@ export function Image({src, alt, style, ...rest}: ImageProps) {
       className={css.use(
         'br_m',
         {
-          position: 'relative',
           overflow: 'hidden',
           border: '1px solid ' + css.$t.border,
           cursor: 'zoom-in',
@@ -35,7 +34,7 @@ export function Image({src, alt, style, ...rest}: ImageProps) {
               bottom: 0,
               padding: css.$v.space_xl,
               background: 'rgba(1, 7, 15, .75)',
-              zIndex: 100,
+              zIndex: 100000,
               cursor: 'zoom-out',
               marginTop: 0,
             }),
@@ -46,10 +45,6 @@ export function Image({src, alt, style, ...rest}: ImageProps) {
     >
       <div
         className={css({
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 1,
           width: '100%',
           height: '100%',
           backgroundColor: css.$t.stencil_bg,
@@ -69,8 +64,6 @@ export function Image({src, alt, style, ...rest}: ImageProps) {
         title={alt}
         loading="lazy"
         className={css({
-          position: 'relative',
-          zIndex: 2,
           display: 'block',
           width: 'auto',
           maxWidth: '100%',
@@ -95,16 +88,20 @@ export function Image({src, alt, style, ...rest}: ImageProps) {
       </div>
       <Script>
         {el => {
+          function loaded() {
+            el.setAttribute('data-loaded', 'true');
+            el.style.minHeight = 'unset';
+          }
+
           const modalDiv = el.querySelector(':scope > div:last-of-type');
-          modalDiv!.addEventListener('click', () => el.toggleAttribute('data-viewing'));
+          modalDiv!.addEventListener('click', () => el.removeAttribute('data-viewing'));
 
           const img = el.querySelector(':scope > img') as HTMLImageElement;
-          img.onerror = () => el.toggleAttribute('data-error');
-          img.onclick = () => el.toggleAttribute('data-viewing');
-          img.onload = () => {
-            el.toggleAttribute('data-loaded');
-            el.style.minHeight = 'unset';
-          };
+          img.onerror = () => el.setAttribute('data-error', 'true');
+          img.onclick = () => el.setAttribute('data-viewing', 'true');
+          img.onload = loaded;
+
+          if (img.complete || img.naturalWidth > 0) loaded();
         }}
       </Script>
     </div>

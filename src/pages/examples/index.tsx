@@ -78,8 +78,9 @@ export async function examplesRouter<State extends Record<string, unknown>>(r: R
               <div className={css.use('f', 'fv')}>
                 <div
                   className={css.use('f', 'fv', {
-                    gap: css.$v.space_l,
+                    gap: css.$v.space_m,
                     position: 'sticky',
+                    zIndex: 10000,
                     top: css.$v.space_l,
                     [css.media.tablet]: css.mix('hide'),
                   })}
