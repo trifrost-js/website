@@ -184,7 +184,7 @@ You can import and attach these directly from `@trifrost/core`.
 ---
 
 ### Next Steps
-- Dive into [Authentication Middleware](/docs/auth-middleware-apis)
+- Dive into [Authentication Middleware](/docs/middleware-api-auth)
 - Learn about [Rate Limiting](/docs/ratelimiting-api)
 
 ---
