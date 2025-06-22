@@ -26,6 +26,9 @@ my-todos/
 
 ## Logic
 The main app logic lives in `src/index.tsx`, where TriFrost routes, renders, and manages state for the entire todo application using a Durable Object–backed cache.
+
+The client option with our css instance ensures TriFrost Atomic (0.36+) automounts our css root to `/__atomics__/client.css`, ensuring no repeat global styles but only page-specific styles get inlined.
+
 ```tsx
 // src/index.tsx
 import {App, DurableObjectCache, OtelHttpExporter} from '@trifrost/core';
@@ -37,8 +40,7 @@ import {css} from './css';
 export {TriFrostDurableObject} from '@trifrost/core';
 
 const app = await new App<Env>({
-  name: "TriFrost_HTMX_Todos",
-  version: "1.0.0",
+  client: {css},
   cache: new DurableObjectCache({store: ({env}) => env.MAIN_DURABLE}),
   tracing: {exporters: ({env}) => [
     new OtelHttpExporter({
@@ -104,8 +106,8 @@ export default app;
 All UI elements like the todo form and todo list live in self-contained components under `src/components/`. Each component renders server-side JSX and uses HTMX attributes to hook into behavior as well as using the TriFrost css instance for styling.
 ```tsx
 // src/components/Todos.tsx
-import { Style } from "@trifrost/core";
-import { css } from "../css";
+import {Style} from "@trifrost/core";
+import {css} from "../css";
 
 export type Todo = {
   id:string;
@@ -193,15 +195,13 @@ export function TodoList (props:{children?:any; todos:Todo[]}) {
 ```
 
 ##### Layout
-The layout component wraps full-page responses, injecting meta tags, global styles, the HTMX script, and optional UI elements like footers or loading indicators.
+The layout component wraps full-page responses, injecting meta tags, the HTMX script, and optional UI elements like footers, ....
 ```tsx
 // src/components/Layout.tsx
 import {Style} from '@trifrost/core';
 import {css} from '../css';
 
 export function Layout (props:{children:any}) {
-  css.root(); /* Root style */
-
   return (<html lang="en">
     <head>
       <title>TriFrost & HTMX | Todos</title>
@@ -220,11 +220,14 @@ export function Layout (props:{children:any}) {
 ```
 
 ## Styling
-Instead of a prebuilt css file which gets included everywhere (and of which probably 10% is used per page) the css module automatically collects what is used on the page's components and injects it as inline styling.
+Instead of a single prebuilt global css file which gets included everywhere (and of which probably 10% is used per page) the css module automatically collects what is used on the page's components and injects it as inline styling.
 
-It does just a bit more than that, in this particular case we're also injecting a **css reset** as well as defining **reusable definitions** and **theme/global variables.**
+It does just a bit more than that, in this particular case we're also injecting a **css reset** as well as defining **reusable definitions** and **theme/global variables.**.
 
-An important note on those **definitions** is that they are not included in the css if not used. They form your backbone to centralize reusable pieces of styling without bloating the page if not used.
+Important Notes:
+- **definitions** are not included in the css if not used. They form your backbone to centralize reusable pieces of styling without bloating the page if not used, they get merged in with client styles by using `css.use` and `css.mix`.
+- Since TriFrost 0.36 Atomic, **global styles** such as the **css reset** and **theme/global variables** get bundled in a file and mounted at `__atomics__/client.css` if you pass your `css` instance as part of the **client options on App**. The system takes care of adding the link automatically to your output HTML.
+
 ```typescript
 // src/css.ts
 import {createCss} from "@trifrost/core";
@@ -315,12 +318,19 @@ export type Env = {
 
 ##### Cloudflare
 The `wrangler.toml` config defines how your app runs on Cloudflare — including bindings for assets and durable objects, compatibility flags, and deployment metadata.
+
+> **Note:** If you're using Otel tracing ensure to add `TRIFROST_NAME` and (optionally) `TRIFROST_VERSION` to your environment variables. These get picked up by TriFrost to **automatically enrich your trace spans**. If not set we will default to `trifrost` and `1.0.0` if not set.
+
 ```toml
 // wrangler.toml
 name = "trifrost_htmx_todos"
 main = "src/index.tsx"
 compatibility_date = "2025-05-08"
 compatibility_flags = ["nodejs_compat"]
+
+[vars]
+TRIFROST_NAME = "TriFrost_HTMX_Todos"
+TRIFROST_VERSION = "1.0.0"
 
 [assets]
 directory = "./public/"
