@@ -8,7 +8,6 @@ import {Page} from '../../components/molecules/Page';
 import {css} from '../../css';
 import {Features} from './components/Features';
 import {Benchmark} from './components/Benchmark';
-import {HighLight} from '../../components/atoms/HighLight';
 import {exampleSitemap} from '../examples';
 import {NewsService} from '../news/Service';
 import {DocsService} from '../docs/Service';
@@ -47,27 +46,20 @@ export async function getHome(ctx: Context) {
         <Benchmark />
       </Page>
       <div
-        className={css.use('sm_h_auto', {
-          fontFamily: css.$v.font_header,
-          fontWeight: 400,
+        className={css.use('sm_h_auto', 'text_header_thin', {
           textAlign: 'center',
-          fontSize: '1.8rem',
           [css.media.desktop]: css.mix('sm_b_l'),
           [css.media.mobile]: css.mix('sm_b_s'),
         })}
       >
         <p className={css.use('sm_b_s')}>Ready for the frontier?</p>
-        <HighLight
-          language="bash"
-          copyEnabled={false}
-          className={css.use({
-            backgroundColor: css.$t.panel_bg + ' !important',
-            color: css.$t.panel_fg + ' !important',
+        <div
+          className={css.use('panel', 'sp_s', 'br_m', {
             border: '1px solid ' + css.$t.panel_border,
           })}
         >
-          {'npm install @trifrost/core'}
-        </HighLight>
+          npm install <strong>@trifrost/core</strong>
+        </div>
       </div>
     </Layout>,
   );
