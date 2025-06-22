@@ -56,6 +56,7 @@ export async function getHome(ctx: Context) {
         <div
           className={css.use('panel', 'sp_s', 'br_m', {
             border: '1px solid ' + css.$t.panel_border,
+            fontSize: css.$v.font_s_small,
           })}
         >
           npm install <strong>@trifrost/core</strong>
