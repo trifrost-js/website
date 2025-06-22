@@ -1,3 +1,4 @@
+import {ApiKeyAuth} from '@trifrost/core';
 import {css} from '../../css';
 import {Badge} from '../../components/atoms/Badge';
 import {Layout} from '../../components/layout/Layout';
@@ -122,5 +123,18 @@ export async function examplesRouter<State extends Record<string, unknown>>(r: R
       if (!entry) return ctx.setStatus(404);
 
       return ctx.file(ExamplesService.asset(entry, 'download.zip'), {download: `${entry.title}.zip`});
-    });
+    })
+    .route('/cache_purge', route =>
+      route
+        .use(
+          ApiKeyAuth({
+            apiKey: {header: 'x-trifrost-auth'},
+            validate: (ctx, {apiKey}) => apiKey === ctx.env.TRIFROST_API_TOKEN,
+          }),
+        )
+        .post(async ctx => {
+          await ExamplesService.evict(ctx);
+          return ctx.status(200);
+        }),
+    );
 }
