@@ -8,7 +8,7 @@ import {Page} from '../../components/molecules/Page';
 import {css} from '../../css';
 import {Features} from './components/Features';
 import {Benchmark} from './components/Benchmark';
-import {exampleSitemap} from '../examples';
+import {ExamplesService} from '../examples/Service';
 import {NewsService} from '../news/Service';
 import {DocsService} from '../docs/Service';
 import {siteMapEntry} from '../../utils/sitemap';
@@ -73,7 +73,7 @@ export async function rootRouter<State extends Record<string, unknown>>(r: Route
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
         siteMapEntry('/'),
-        ...(await exampleSitemap()),
+        ...(await ExamplesService.siteMap()),
         ...(await NewsService.siteMap(ctx)),
         ...(await DocsService.siteMap()),
       ];
