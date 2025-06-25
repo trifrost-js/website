@@ -105,7 +105,7 @@ export function DocsSidebar({entry}: {entry: Doc}) {
         })}
       >
         Close
-        <Script>{el => (el.onclick = () => el.$dispatch('docsmenu:mobile:close'))}</Script>
+        <Script>{el => el.addEventListener('click', () => el.$dispatch('docsmenu:mobile:close'))}</Script>
       </button>
       <Script>
         {el => {
@@ -214,7 +214,7 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                         })}
                       >
                         <Menu width={20} />
-                        <Script>{el => (el.onclick = () => el.$publish('docsmenu:mobile:open'))}</Script>
+                        <Script>{el => el.addEventListener('click', () => el.$publish('docsmenu:mobile:open'))}</Script>
                       </button>
                       <h2
                         className={css.use('fg', {
@@ -237,7 +237,7 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                         <TableOfContents width={20} />
                         <Script data={{tableOfContentsId}}>
                           {(el, data) => {
-                            el.onclick = () => {
+                            el.addEventListener('click', () => {
                               const nav = document.getElementById(data.tableOfContentsId)!;
                               nav.setAttribute('aria-expanded', String(nav.getAttribute('aria-expanded')) === 'true' ? 'false' : 'true');
 
@@ -245,7 +245,7 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                               const navBounds = nav.getBoundingClientRect();
                               nav.style.top = elBounds.top + elBounds.height + 'px';
                               nav.style.left = elBounds.left - navBounds.width + elBounds.width + 'px';
-                            };
+                            });
                           }}
                         </Script>
                       </button>

@@ -177,7 +177,7 @@ function SidebarWrapper({buckets}: {buckets: Record<string, {count: number; labe
         })}
       >
         <Filter width={14} /> Filter
-        <Script>{el => (el.onclick = () => el.$dispatch('newsfilter:open'))}</Script>
+        <Script>{el => el.addEventListener('click', () => el.$dispatch('newsfilter:open'))}</Script>
       </button>
       <div
         className={css.use('f', 'fv', {
@@ -201,7 +201,7 @@ function SidebarWrapper({buckets}: {buckets: Record<string, {count: number; labe
           })}
         >
           Close
-          <Script>{el => (el.onclick = () => el.$dispatch('newsfilter:close'))}</Script>
+          <Script>{el => el.addEventListener('click', () => el.$dispatch('newsfilter:close'))}</Script>
         </button>
       </div>
       <Script>

@@ -37,12 +37,12 @@ export function HighLight({code, language = 'ts', copyEnabled = true, children, 
           copy
           <Script>
             {el => {
-              el.onclick = () => {
+              el.addEventListener('click', () => {
                 navigator.clipboard
                   .writeText(el.nextSibling!.textContent || '')
                   .then(() => (el.innerText = 'copied!'))
                   .then(() => setTimeout(() => (el.innerText = 'copy'), 1000));
-              };
+              });
             }}
           </Script>
         </button>

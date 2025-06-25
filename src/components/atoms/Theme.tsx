@@ -107,12 +107,12 @@ export function Theme() {
       </svg>
       <Script>
         {el => {
-          el.onclick = () => {
+          el.addEventListener('click', () => {
             const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', next);
             localStorage.setItem('trifrost-theme', next);
             el.setAttribute('aria-label', next);
-          };
+          });
         }}
       </Script>
     </button>

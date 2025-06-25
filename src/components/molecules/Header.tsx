@@ -92,11 +92,11 @@ function HeaderTrigger() {
       <Script>
         {el => {
           let isOpen = false;
-          el.onclick = () => {
+          el.addEventListener('click', () => {
             isOpen = !isOpen;
             el.toggleAttribute('data-open');
             el.$dispatch('header:mobile:status', {data: {isOpen}});
-          };
+          });
         }}
       </Script>
     </button>
