@@ -5,7 +5,7 @@ type RadioProps = {
   value: string;
   label: string;
   defaultChecked?: boolean;
-  checked: boolean;
+  checked?: boolean;
   [key: string]: unknown;
 };
 

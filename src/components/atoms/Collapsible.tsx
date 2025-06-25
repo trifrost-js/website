@@ -84,7 +84,7 @@ export function Collapsible({title, tag, children, defaultExpanded = false, grou
                 );
               });
 
-              el.addEventListener('click', () => el.$publish('collapsible:toggle', {vmId: el.$uid}));
+              el.onclick = () => el.$publish('collapsible:toggle', {vmId: el.$uid});
             }}
           </Script>
         </TAG>
@@ -105,10 +105,10 @@ export function Collapsible({title, tag, children, defaultExpanded = false, grou
           <Script>
             {el => {
               const parent = el.parentElement!;
-              el.addEventListener('click', () => {
+              el.onclick = () => {
                 const isOpen = parent.getAttribute('aria-expanded') + '' === 'true';
                 parent.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
-              });
+              };
             }}
           </Script>
         </TAG>

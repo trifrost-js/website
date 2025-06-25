@@ -15,7 +15,6 @@ import {Menu, TableOfContents} from '../../components/atoms/Icons';
 
 export type DocsEvents = {
   'docsmenu:mobile:open': void;
-  'docsmenu:mobile:close': void;
 };
 
 export function DocsSidebar({entry}: {entry: Doc}) {
@@ -106,16 +105,12 @@ export function DocsSidebar({entry}: {entry: Doc}) {
         })}
       >
         Close
-        <Script>
-          {el => {
-            el.addEventListener('click', () => el.$publish('docsmenu:mobile:close'));
-          }}
-        </Script>
+        <Script>{el => (el.onclick = () => el.$dispatch('docsmenu:mobile:close'))}</Script>
       </button>
       <Script>
         {el => {
           el.$subscribe('docsmenu:mobile:open', () => el.setAttribute('aria-expanded', 'true'));
-          el.$subscribe('docsmenu:mobile:close', () => el.setAttribute('aria-expanded', 'false'));
+          el.addEventListener('docsmenu:mobile:close', () => el.setAttribute('aria-expanded', 'false'));
         }}
       </Script>
     </aside>
@@ -149,7 +144,7 @@ export function OnThisPage({tree, id}: {tree: MarkdownNode[]; id: string}) {
       <Script>
         {el => {
           el.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => el.setAttribute('aria-expanded', 'false'));
+            link.onclick = () => el.setAttribute('aria-expanded', 'false');
           });
         }}
       </Script>
@@ -219,7 +214,7 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                         })}
                       >
                         <Menu width={20} />
-                        <Script>{el => el.addEventListener('click', () => el.$publish('docsmenu:mobile:open'))}</Script>
+                        <Script>{el => (el.onclick = () => el.$publish('docsmenu:mobile:open'))}</Script>
                       </button>
                       <h2
                         className={css.use('fg', {
@@ -242,7 +237,7 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                         <TableOfContents width={20} />
                         <Script data={{tableOfContentsId}}>
                           {(el, data) => {
-                            el.addEventListener('click', () => {
+                            el.onclick = () => {
                               const nav = document.getElementById(data.tableOfContentsId)!;
                               nav.setAttribute('aria-expanded', String(nav.getAttribute('aria-expanded')) === 'true' ? 'false' : 'true');
 
@@ -250,7 +245,7 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                               const navBounds = nav.getBoundingClientRect();
                               nav.style.top = elBounds.top + elBounds.height + 'px';
                               nav.style.left = elBounds.left - navBounds.width + elBounds.width + 'px';
-                            });
+                            };
                           }}
                         </Script>
                       </button>

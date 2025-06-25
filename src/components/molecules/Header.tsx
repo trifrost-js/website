@@ -12,9 +12,6 @@ enum HeaderSections {
 }
 
 export type HeaderSection = `${HeaderSections}`;
-export type HeaderEvents = {
-  'header:mobile:status': {isOpen: boolean};
-};
 
 const list = [
   {name: HeaderSections.Home, label: 'About', to: '/'},
@@ -95,11 +92,11 @@ function HeaderTrigger() {
       <Script>
         {el => {
           let isOpen = false;
-          el.addEventListener('click', () => {
+          el.onclick = () => {
             isOpen = !isOpen;
             el.toggleAttribute('data-open');
-            el.$publish('header:mobile:status', {isOpen});
-          });
+            el.$dispatch('header:mobile:status', {data: {isOpen}});
+          };
         }}
       </Script>
     </button>
@@ -255,8 +252,8 @@ export function Header({active, ...rest}: HeaderProps) {
       <HeaderTrigger />
       <Script>
         {el => {
-          el.$subscribe('header:mobile:status', ({isOpen}) => {
-            if (isOpen) el.setAttribute('data-open', 'true');
+          el.addEventListener('header:mobile:status', evt => {
+            if ((evt as CustomEvent<{isOpen: boolean}>).detail.isOpen) el.setAttribute('data-open', 'true');
             else el.removeAttribute('data-open');
           });
         }}

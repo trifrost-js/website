@@ -15,11 +15,6 @@ import {Panel} from '../../components/molecules/Panel';
 import {NewsService, type NewsItem} from './Service';
 import {ReleaseService} from './releases/Service';
 
-export type NewsEvents = {
-  'newsfilter:open': void;
-  'newsfilter:close': void;
-};
-
 function bucketKey(val: Date | string | number) {
   return format(new Date(val), 'YYYY-MM');
 }
@@ -103,9 +98,9 @@ function Sidebar({buckets}: {buckets: Record<string, {count: number; label: stri
           Type
         </legend>
         <div className={css.use('f', 'fv', {gap: css.$v.space_xs})}>
-          <Radio name="type" value="all" label="All" defaultChecked checked={true} />
-          <Radio name="type" value="blog" label="Blog" checked={false} />
-          <Radio name="type" value="release" label="Release" checked={false} />
+          <Radio name="type" value="all" label="All" />
+          <Radio name="type" value="blog" label="Blog" />
+          <Radio name="type" value="release" label="Release" />
         </div>
       </fieldset>
       <fieldset className={css.use('f', 'fv')}>
@@ -118,20 +113,27 @@ function Sidebar({buckets}: {buckets: Record<string, {count: number; label: stri
           By Month
         </legend>
         <div className={css.use('f', 'fv', {gap: css.$v.space_xs})}>
-          <Radio name="bucket" value="all" label="All" defaultChecked checked={true} />
+          <Radio name="bucket" value="all" label="All" />
           {Object.entries(buckets).map(([month, el]) => (
-            <Radio key={month} name="bucket" value={month} label={`${el.label} (${el.count})`} checked={false} />
+            <Radio key={month} name="bucket" value={month} label={`${el.label} (${el.count})`} />
           ))}
         </div>
       </fieldset>
-      <Script>
-        {el => {
+      <Script data={{form: {type: 'all', bucket: 'all'}}}>
+        {(el, data) => {
+          data.$bind('form.bucket', 'input[name="bucket"]');
+          data.$bind('form.type', 'input[name="type"]');
+
           async function load() {
-            const res = await fetch('/news', {method: 'POST', body: new FormData(el as unknown as HTMLFormElement)});
+            const res = await fetch('/news', {
+              method: 'POST',
+              body: JSON.stringify(data.form),
+              headers: {'Content-Type': 'application/json'},
+            });
             if (res.ok) document.querySelector('#news-list')!.outerHTML = await res.text();
           }
 
-          el.querySelectorAll('input').forEach(input => input.addEventListener('change', load));
+          data.$watch('form', load);
         }}
       </Script>
     </form>
@@ -175,7 +177,7 @@ function SidebarWrapper({buckets}: {buckets: Record<string, {count: number; labe
         })}
       >
         <Filter width={14} /> Filter
-        <Script>{el => el.addEventListener('click', () => el.$publish('newsfilter:open'))}</Script>
+        <Script>{el => (el.onclick = () => el.$dispatch('newsfilter:open'))}</Script>
       </button>
       <div
         className={css.use('f', 'fv', {
@@ -199,13 +201,13 @@ function SidebarWrapper({buckets}: {buckets: Record<string, {count: number; labe
           })}
         >
           Close
-          <Script>{el => el.addEventListener('click', () => el.$publish('newsfilter:close'))}</Script>
+          <Script>{el => (el.onclick = () => el.$dispatch('newsfilter:close'))}</Script>
         </button>
       </div>
       <Script>
         {el => {
-          el.$subscribe('newsfilter:open', () => el.setAttribute('aria-expanded', 'true'));
-          el.$subscribe('newsfilter:close', () => el.setAttribute('aria-expanded', 'false'));
+          el.addEventListener('newsfilter:open', () => el.setAttribute('aria-expanded', 'true'));
+          el.addEventListener('newsfilter:close', () => el.setAttribute('aria-expanded', 'false'));
         }}
       </Script>
     </div>
