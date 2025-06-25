@@ -153,6 +153,11 @@ const _css = createCss({
       dark: 'linear-gradient(110deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.05) 100%)',
       light: 'linear-gradient(110deg, rgba(186, 186, 186, 0.15) 0%, rgba(186, 186, 186, 0.50) 50%, rgba(186, 186, 186, 0.15) 100%)',
     },
+    synth_lines: {
+      dark: 'linear-gradient(to right, rgba(0, 221, 255, 0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 221, 255, 0.2) 1px, transparent 1px)',
+      light:
+        'linear-gradient(to right, rgba(60, 62, 63, 0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(60, 62, 63, 0.2) 1px, transparent 1px)',
+    },
     /* Algolia */
     '--docsearch-searchbox-background': {
       dark: '#02080F !important',

@@ -1,4 +1,5 @@
 import {css} from '../../css';
+import {SynthBackground} from '../atoms/SynthBackground';
 
 type PageProps = {
   width?: string;
@@ -27,6 +28,7 @@ export function Page({width, style, children, ...rest}: PageProps) {
 
   return (
     <div className={clsWrapper} {...rest}>
+      <SynthBackground />
       <div className={cls}>{children}</div>
     </div>
   );
