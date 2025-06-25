@@ -8,6 +8,7 @@ import {Page} from '../../components/molecules/Page';
 import {css} from '../../css';
 import {Features} from './components/Features';
 import {Benchmark} from './components/Benchmark';
+import {Cli} from './components/CLI';
 import {ExamplesService} from '../examples/Service';
 import {NewsService} from '../news/Service';
 import {DocsService} from '../docs/Service';
@@ -44,11 +45,12 @@ export async function getHome(ctx: Context) {
         </div>
         <Features />
         <Benchmark />
+        <Cli />
       </Page>
       <div
         className={css.use('sm_h_auto', 'text_header_thin', {
           textAlign: 'center',
-          [css.media.desktop]: css.mix('sm_b_l'),
+          [css.media.desktop]: css.mix('sm_b_xl'),
           [css.media.mobile]: css.mix('sm_b_s'),
         })}
       >
@@ -59,7 +61,7 @@ export async function getHome(ctx: Context) {
             fontSize: css.$v.font_s_small,
           })}
         >
-          npm install <strong>@trifrost/core</strong>
+          npm create <strong>trifrost@latest</strong>
         </div>
       </div>
     </Layout>,

@@ -6,8 +6,8 @@ export function Benchmark() {
   const cls = css.use('f', 'fv', 'panel', 'br_m', {
     width: '100%',
     border: '1px solid ' + css.$t.panel_border,
-    [css.media.desktop]: css.mix('sm_t_xs', 'sm_b_m', 'sp_l', {maxWidth: '99rem'}),
-    [css.media.tablet]: css.mix('sm_t_xs', 'sm_b_m', 'sp_m', {maxWidth: '100rem'}),
+    [css.media.desktop]: css.mix('sm_t_xs', 'sm_b_s', 'sp_l', {maxWidth: '99rem'}),
+    [css.media.tablet]: css.mix('sm_t_xs', 'sm_b_s', 'sp_m', {maxWidth: '100rem'}),
   });
 
   const data = [
