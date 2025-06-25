@@ -28,6 +28,8 @@ export function PreviewHeader({logo1, logo2, type, style, ...rest}: PreviewHeade
       background: css.$t.body_bg,
       color: css.$t.body_fg,
       svg: {
+        width: '100%',
+        height: 'auto',
         maxHeight: type === 'small' ? '8rem' : '12rem',
         maxWidth: type === 'small' ? '16rem' : '25rem',
       },
