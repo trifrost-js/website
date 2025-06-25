@@ -26,3 +26,9 @@ class_name = "TriFrostDurableObject"
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["TriFrostDurableObject"]
+
+[[r2_buckets]]
+binding = "TRIFROST_BUCKET"
+bucket_name = "trifrost-r2-eu"
+preview_bucket_name = "trifrost-r2-eu"
+jurisdiction = "eu"

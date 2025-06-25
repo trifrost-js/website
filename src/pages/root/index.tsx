@@ -69,6 +69,13 @@ export async function getHome(ctx: Context) {
 export async function rootRouter<State extends Record<string, unknown>>(r: Router<State>) {
   r.get('/', getHome)
     .get('/favicon.ico', ctx => ctx.file('./assets/favicon.ico'))
+    .get('/r2assets/:key', async ctx => {
+      const res = await ctx.env.TRIFROST_BUCKET.get(ctx.state.key);
+      if (!res?.body) return ctx.status(404);
+
+      const {body, size = null} = res;
+      return ctx.file({stream: body, size, name: ctx.state.key});
+    })
     .get('/sitemap.xml', async ctx => {
       const sitemap = [
         '<?xml version="1.0" encoding="UTF-8"?>',

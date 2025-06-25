@@ -36,6 +36,11 @@ const ROUTES = [
         desc: 'Build your first TriFrost app with a simple Hello World example.',
       },
       {
+        title: 'CLI Quickstart',
+        slug: 'cli-quickstart',
+        desc: 'Get started with TriFrost in seconds using the official create-trifrost CLI — a zero-config scaffolder for modern runtimes.'
+      },
+      {
         title: 'Understanding Context',
         slug: 'understanding-context',
         desc: "Learn how TriFrost's context object works and how it flows through middleware and handlers.",

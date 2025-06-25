@@ -4,6 +4,24 @@ We’ll walk you through the minimal setup to get a TriFrost app running locally
 
 ---
 
+### 🧭 Prefer a guided setup instead?
+You can skip the manual steps and let the CLI scaffold everything for you, including runtime setup, middleware, styling, and more.
+
+Run:
+```bash
+# Bun
+bun create trifrost@latest
+
+# NPM
+npm create trifrost@latest
+```
+
+... and you’ll get a fully functional project in under a minute.
+
+[▶️ See the CLI in action](/docs/cli-quickstart)
+
+---
+
 ### 📦 1. Install TriFrost
 First, install the core package using your favorite package manager:
 ```bash

@@ -1,6 +1,7 @@
 import {join} from '@valkyriestudios/utils/array';
 import {HighLight} from '../components/atoms/HighLight';
 import {Image} from '../components/atoms/Image';
+import {Video} from '../components/atoms/Video';
 import {Runtime, RuntimeBlock, type RuntimeName} from '../components/atoms/Runtime';
 
 export type MarkdownHeader = {
@@ -23,6 +24,7 @@ type StrongNode = {type: 'strong'; children: MarkdownNode[]};
 type EmphasisNode = {type: 'emphasis'; children: MarkdownNode[]};
 type LinkNode = {type: 'link'; href: string; children: MarkdownNode[]};
 type ImageNode = {type: 'image'; src: string; alt?: string};
+type VideoNode = {type: 'video'; src: string; alt?: string};
 type HorizontalRuleNode = {type: 'horizontalRule'};
 type RuntimeWrapperNode = {type: 'runtimeWrapper'; runtimes: RuntimeName[]; children: RuntimeBlockNode[]};
 type RuntimeBlockNode = {type: 'runtimeBlock'; runtime: RuntimeName; children: MarkdownNode[]};
@@ -42,6 +44,7 @@ export type MarkdownNode =
   | EmphasisNode
   | LinkNode
   | ImageNode
+  | VideoNode
   | HorizontalRuleNode
   | RuntimeWrapperNode
   | RuntimeBlockNode;
@@ -91,7 +94,11 @@ export class Markdown {
         nodes.push({type: 'inlineCode', content: match[6]});
       } else if (match[7]) {
         /* ![alt](src) */
-        nodes.push({type: 'image', alt: match[7], src: match[8]});
+        if (match[8].endsWith('mp4')) {
+          nodes.push({type: 'video', alt: match[7], src: match[8]});
+        } else {
+          nodes.push({type: 'image', alt: match[7], src: match[8]});
+        }
       } else if (match[9]) {
         /* [text](href) */
         nodes.push({type: 'link', href: match[10], children: [{type: 'text', content: match[9]}]});
@@ -430,6 +437,8 @@ export class Markdown {
           );
         case 'image':
           return <Image src={node.src} alt={node.alt || ''} />;
+        case 'video':
+          return <Video src={node.src} />;
         case 'runtimeWrapper':
           return (
             <Runtime key={i} runtimes={node.runtimes}>
