@@ -38,7 +38,7 @@ const ROUTES = [
       {
         title: 'CLI Quickstart',
         slug: 'cli-quickstart',
-        desc: 'Get started with TriFrost in seconds using the official create-trifrost CLI — a zero-config scaffolder for modern runtimes.'
+        desc: 'Get started with TriFrost in seconds using the official create-trifrost CLI — a zero-config scaffolder for modern runtimes.',
       },
       {
         title: 'Understanding Context',
