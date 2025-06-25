@@ -22,7 +22,7 @@ const ROUTES = [
       {
         title: 'Supported Runtimes',
         slug: 'supported-runtimes',
-        desc: 'A detailed look at the environments where TriFrost runs: Node.js, Bun, uWS, and Cloudflare Workers.',
+        desc: 'A detailed look at the environments where TriFrost runs: Node.js, Bun, and Cloudflare Workers.',
       },
     ],
   },
@@ -137,11 +137,6 @@ const ROUTES = [
         title: 'Bun Runtime',
         slug: 'bun-runtime',
         desc: 'Guide for running TriFrost on Bun, with details on performance and compatibility.',
-      },
-      {
-        title: 'uWS Runtime',
-        slug: 'uws-runtime',
-        desc: 'Guide for using TriFrost on Node.js with uWebSockets.js for ultra-fast backend performance.',
       },
       {
         title: 'Cloudflare Workers',

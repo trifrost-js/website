@@ -177,7 +177,7 @@ ctx.env.DB_URL;
 ctx.env.COOKIE_SECRET;
 ```
 
-Each runtime adapter (Node, Bun, uWS, Cloudflare Workers) populates this object automatically.
+Each runtime adapter (Node, Bun, Cloudflare Workers) populates this object automatically.
 
 > **Note**: We suggest, much like your own `Router` and `Context` types that you create an **Env** type, see [Type-Safe Context Definitions](#type-safe-context-definitions). 😞 This is something we can't automatically infer, but at least we can make its shape easily accessible 🤌.
 

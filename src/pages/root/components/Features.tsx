@@ -4,7 +4,7 @@ import {css} from '../../../css';
 const features = [
   {
     title: '🧠 Runtime-Agnostic',
-    desc: 'Run on Node, Bun, Workerd, uWS — no rewrites',
+    desc: 'Run on Node, Bun, Workerd — no rewrites',
   },
   {
     title: '📦 Modular Middleware',

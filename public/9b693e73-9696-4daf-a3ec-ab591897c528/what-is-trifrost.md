@@ -1,6 +1,6 @@
 Welcome to **TriFrost** — your soon-to-be favorite server framework.
 
-TriFrost isn’t just another server library; it’s a runtime-agnostic, performance-obsessed, TypeScript-first framework designed to run **anywhere** — Node.js, Bun, uWS, Cloudflare Workers — you name it.
+TriFrost isn’t just another server library; it’s a runtime-agnostic, performance-obsessed, TypeScript-first framework designed to run **anywhere** — Node.js, Bun, Cloudflare Workers — you name it.
 
 ---
 
@@ -26,7 +26,7 @@ It gives you:
 Pretty much anywhere modern JavaScript can run.
 
 TriFrost is built with an adaptive core that plugs into:
-- Node.js (with or without uWebSockets.js)
+- Node.js
 - Bun
 - Cloudflare Workers (Workerd)
 - Future runtime

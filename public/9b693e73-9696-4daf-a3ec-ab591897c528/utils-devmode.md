@@ -66,7 +66,7 @@ If neither are provided, it falls back to `false` (production mode).
 TriFrost’s internal tracing + observability changes behavior based on dev mode status:
 
 - **Dev mode**\nAll runtimes will default to using [ConsoleExporter](/docs/exporters-console) with **no inclusions**
-- **Prod Mode**\nNode/Bun/uWS will default to using [ConsoleExporter](/docs/exporters-console) with `trace_id` inclusion\nWorkerd will default to using [JsonExporter](/docs/exporters-json)
+- **Prod Mode**\nNode/Bun will default to using [ConsoleExporter](/docs/exporters-console) with `trace_id` inclusion\nWorkerd will default to using [JsonExporter](/docs/exporters-json)
 
 > ✅ In **dev mode**, all runtimes fall back to `ConsoleExporter` to make debugging easy and consistent — even on the edge.
 
@@ -75,7 +75,7 @@ TriFrost’s internal tracing + observability changes behavior based on dev mode
 ### 🧪 Best Practice
 To ensure consistency, **always explicitly** set TRIFROST_DEV in your **local dev** environment file.
 
-**Local (Node, Bun, uWS):**
+**Local (Node, Bun):**
 ```toml
 # .env
 TRIFROST_DEV=true

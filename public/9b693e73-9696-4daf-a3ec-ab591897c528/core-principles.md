@@ -44,7 +44,6 @@ TriFrost doesn’t lock you into one environment.
 It adapts — whether you’re running on:
 - Node.js
 - Bun
-- uWebSockets.js
 - Cloudflare Workers
 - Or wherever the JS ecosystem moves next
 

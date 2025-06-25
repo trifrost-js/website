@@ -220,7 +220,7 @@ TriFrost ships with:
 
 Exporters are configured once when creating your `App` instance (see `tracing.exporters` in the App config). You can combine multiple exporters to target both local logs and external collectors.
 
-> ✨ **Note**: If no exporter is configured **each runtime will instantiate their default exporter**. Node.js/Bun/uWS use `ConsoleExporter` and Workerd uses `JsonExporter`
+> ✨ **Note**: If no exporter is configured **each runtime will instantiate their default exporter**. Node.js/Bun use `ConsoleExporter` and Workerd uses `JsonExporter`
 
 For more details, see:
 - [Core Concepts: Logging & Observability](/docs/logging-observability)

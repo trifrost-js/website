@@ -99,7 +99,7 @@ This ensures the request always ends with a complete and well-formed response â€
 
 ##### 7. After hooks
 Any callbacks registered via ctx.after(...) are now executed, **post-response**.
-- In **Node, Bun, and uWS**, these run as microtasks (`queueMicrotask()`).
+- In **Node, Bun**, these run as microtasks (`queueMicrotask()`).
 - In Cloudflare Workerd, theyâ€™re passed to `waitUntil()` for guaranteed background execution.
 
 These hooks:

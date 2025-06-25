@@ -15,23 +15,7 @@ TriFrost integrates smoothly with Node.js, making it an ideal choice for:
 - Seamless use of **npm packages** and Node APIs
 - Traditional **server environments** or cloud VMs
 
-For **high-performance** use cases, TriFrost can optionally combine Node.js with **uWebSockets.js (uWS)** for dramatically faster request handling.
-
 👉 See the TriFrost-specific guide: [Node.js Runtime](/nodejs-runtime)
-
----
-
-### Runtime: uWS
-[uWebSockets.js](https://github.com/uNetworking/uWebSockets.js/) is a **low-level, high-performance** WebSocket and HTTP server library known for its **exceptional throughput**.
-
-TriFrost includes a dedicated uWS runtime adapter, enabling:
-- **Ultra-low-latency** HTTP handling
-- Minimal resource overhead
-- Ideal setups for **latency-sensitive**, high-concurrency workloads
-
-This runtime is especially valuable when squeezing **maximum performance** from Node-based deployments.
-
-👉 See the TriFrost-specific guide: [uWS Runtime](/uws-runtime)
 
 ---
 
