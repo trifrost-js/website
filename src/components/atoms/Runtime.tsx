@@ -1,5 +1,6 @@
 import {css} from '../../css';
 import {Script} from '../../script';
+import {Radio} from './Radio';
 
 export type RuntimeName = 'bun' | 'node' | 'workerd';
 
@@ -34,24 +35,23 @@ export function Runtime({runtimes, children, ...rest}: RuntimeOptions) {
   }
 
   return (
-    <div className={`runtime ${css.use('panel_alt', 'sp_s', 'br_m', cssBlock)}`} data-active-runtime={runtimes[0]} {...rest}>
-      <div className={css.use('f', 'fh', 'fa_c', 'fj_l', 'sm_b_s', {gap: css.$v.space_s})}>
+    <form className={`runtime ${css.use(cssBlock)}`} data-active-runtime={runtimes[0]} {...rest}>
+      <div
+        className={css.use('f', 'fh', 'fa_c', 'fj_l', 'sp_xs', 'sm_b_s', 'br_l', {
+          border: '4px solid ' + css.$t.panel_border,
+        })}
+      >
         {runtimes.map(runtime => (
-          <button type="button" key={runtime} data-runtime={runtime}>
-            {runtime.toUpperCase()}
-          </button>
+          <Radio name="runtime" value={runtime} label={runtime} />
         ))}
       </div>
       <div>{children}</div>
-      <Script>
-        {el => {
-          el.querySelectorAll('button').forEach(node => {
-            node.addEventListener('click', () => {
-              el.setAttribute('data-active-runtime', node.getAttribute('data-runtime') || '');
-            });
-          });
+      <Script data={{runtime: 'bun'}}>
+        {(el, data) => {
+          data.$bind('runtime', 'input[name="runtime"]');
+          data.$watch('runtime', () => el.setAttribute('data-active-runtime', data.runtime));
         }}
       </Script>
-    </div>
+    </form>
   );
 }
