@@ -2,7 +2,7 @@ import {css} from '../../css';
 import {Separator} from '../atoms/Separator';
 
 export function Footer() {
-  const cls = css.use('f', 'sp_v_l', 'sp_h_m', 'fj_c', 'fa_c', {
+  const cls = css.use('f', 'sm_t_giga', 'sp_b_l', 'sp_h_m', 'fj_c', 'fa_c', {
     width: '100%',
     backgroundColor: css.$t.body_bg,
     textAlign: 'center',

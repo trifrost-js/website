@@ -15,6 +15,7 @@ export function Page({width, style, children, ...rest}: PageProps) {
     'fg',
     'fa_c',
     {
+      position: 'relative',
       [css.media.desktop]: css.mix('sp_h_m', 'sm_v_xl'),
       [css.media.tablet]: css.mix('sm_b_xl'),
     },

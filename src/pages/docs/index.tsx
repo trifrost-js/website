@@ -32,7 +32,7 @@ export function DocsSidebar({entry}: {entry: Doc}) {
     [css.media.tablet]: {
       [css.attr('aria-expanded', false)]: css.mix('hide'),
       [css.attr('aria-expanded', true)]: {
-        position: 'absolute',
+        position: 'fixed',
         top: 0,
         left: 0,
         right: 0,

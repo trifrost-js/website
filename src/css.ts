@@ -154,9 +154,8 @@ const _css = createCss({
       light: 'linear-gradient(110deg, rgba(186, 186, 186, 0.15) 0%, rgba(186, 186, 186, 0.50) 50%, rgba(186, 186, 186, 0.15) 100%)',
     },
     synth_lines: {
-      dark: 'linear-gradient(to right, rgba(0, 221, 255, 0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 221, 255, 0.2) 1px, transparent 1px)',
-      light:
-        'linear-gradient(to right, rgba(60, 62, 63, 0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(60, 62, 63, 0.2) 1px, transparent 1px)',
+      dark: 'rgba(0,255,255,0.07)',
+      light: 'rgba(53, 53, 53, 0.07)',
     },
     /* Algolia */
     '--docsearch-searchbox-background': {
@@ -267,6 +266,7 @@ const _css = createCss({
     sm_t_m: {marginTop: mod.$v.space_m},
     sm_t_l: {marginTop: mod.$v.space_l},
     sm_t_xl: {marginTop: mod.$v.space_xl},
+    sm_t_giga: {marginTop: 'calc(' + mod.$v.space_xl + ' * 2)'},
     /* Margin Right */
     sm_r_xs: {marginRight: mod.$v.space_xs},
     sm_r_s: {marginRight: mod.$v.space_s},

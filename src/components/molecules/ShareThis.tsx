@@ -25,7 +25,7 @@ export function ShareThis({url, title}: ShareThisProps) {
         },
       },
     },
-    [css.media.desktop]: css.mix('sm_v_l'),
+    [css.media.desktop]: css.mix('sm_t_giga', 'sm_b_l'),
     [css.media.tablet]: css.mix('sm_t_xl'),
   });
 

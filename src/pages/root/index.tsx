@@ -46,24 +46,24 @@ export async function getHome(ctx: Context) {
         <Features />
         <Benchmark />
         <Cli />
-      </Page>
-      <div
-        className={css.use('sm_h_auto', 'text_header_thin', {
-          textAlign: 'center',
-          [css.media.desktop]: css.mix('sm_b_xl'),
-          [css.media.mobile]: css.mix('sm_b_s'),
-        })}
-      >
-        <p className={css.use('sm_b_s')}>Ready for the frontier?</p>
         <div
-          className={css.use('panel', 'sp_s', 'br_m', {
-            border: '1px solid ' + css.$t.panel_border,
-            fontSize: css.$v.font_s_small,
+          className={css.use('sm_h_auto', 'text_header_thin', {
+            textAlign: 'center',
+            [css.media.desktop]: css.mix('sm_t_giga', 'sm_b_xl'),
+            [css.media.mobile]: css.mix('sm_b_s'),
           })}
         >
-          npm create <strong>trifrost@latest</strong>
+          <p className={css.use('sm_b_s')}>Ready for the frontier?</p>
+          <div
+            className={css.use('panel', 'sp_s', 'br_m', {
+              border: '1px solid ' + css.$t.panel_border,
+              fontSize: css.$v.font_s_small,
+            })}
+          >
+            npm create <strong>trifrost@latest</strong>
+          </div>
         </div>
-      </div>
+      </Page>
     </Layout>,
   );
 }

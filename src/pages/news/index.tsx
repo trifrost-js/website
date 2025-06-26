@@ -153,7 +153,7 @@ function SidebarWrapper({buckets}: {buckets: Record<string, {count: number; labe
         [css.media.tablet]: {
           [`${css.attr('aria-expanded', false)} > div`]: css.mix('hide'),
           [`${css.attr('aria-expanded', true)} > div`]: css.mix('f', 'fj_l', {
-            position: 'absolute',
+            position: 'fixed',
             top: 0,
             left: 0,
             right: 0,
