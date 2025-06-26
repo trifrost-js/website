@@ -238,14 +238,23 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                         <TableOfContents width={20} />
                         <Script data={{tableOfContentsId}}>
                           {(el, data) => {
+                            function absoluteOffset(el: HTMLElement) {
+                              const offset = {x: 0, y: 0};
+                              let cursor = el;
+                              while (cursor) {
+                                offset.x += cursor.offsetLeft - cursor.scrollLeft + cursor.clientLeft;
+                                offset.y += cursor.offsetTop - cursor.scrollTop + cursor.clientTop;
+                                cursor = cursor.offsetParent as HTMLElement;
+                              }
+                              return offset;
+                            }
                             el.addEventListener('click', () => {
                               const nav = document.getElementById(data.tableOfContentsId)!;
                               nav.setAttribute('aria-expanded', String(nav.getAttribute('aria-expanded')) === 'true' ? 'false' : 'true');
-
-                              const elBounds = el.getBoundingClientRect();
-                              const navBounds = nav.getBoundingClientRect();
-                              nav.style.top = elBounds.top + elBounds.height + 'px';
-                              nav.style.left = elBounds.left - navBounds.width + elBounds.width + 'px';
+                              const bounds = el.getBoundingClientRect();
+                              const offset = absoluteOffset(el);
+                              nav.style.top = `${Math.floor(offset.y) - bounds.height + 5}px`;
+                              nav.style.right = `${document.documentElement.clientWidth - offset.x - bounds.width - 5}px`;
                             });
                           }}
                         </Script>
