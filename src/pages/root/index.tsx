@@ -47,10 +47,21 @@ export async function getHome(ctx: Context) {
         <Benchmark />
         <Cli />
         <div
-          className={css.use('sm_h_auto', 'text_header_thin', {
+          className={css.use('sm_t_giga', 'sm_h_auto', 'text_header_thin', {
             textAlign: 'center',
-            [css.media.desktop]: css.mix('sm_t_giga', 'sm_b_xl'),
-            [css.media.mobile]: css.mix('sm_b_s'),
+            position: 'relative',
+            [css.before]: {
+              content: '""',
+              position: 'absolute',
+              top: 'calc(50% - 10rem)',
+              left: 'calc(50% - 30rem)',
+              background: 'radial-gradient(' + css.$t.body_fg + ' 0%, transparent 70%)',
+              display: 'inline-block',
+              width: '60rem',
+              height: '20rem',
+              zIndex: -1,
+              opacity: 0.1,
+            },
           })}
         >
           <p className={css.use('sm_b_s')}>Ready for the frontier?</p>
