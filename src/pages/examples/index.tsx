@@ -72,6 +72,8 @@ export async function examplesRouter<State extends Record<string, unknown>>(r: R
       const example = await ExamplesService.load(ctx);
       if (!example) return ctx.setStatus(500);
 
+      const contentId = css.cid();
+
       return ctx.html(
         <Layout title={entry.title} description={entry.desc} section="examples">
           <Page width={'130rem'}>
@@ -86,7 +88,7 @@ export async function examplesRouter<State extends Record<string, unknown>>(r: R
                     [css.media.tablet]: css.mix('hide'),
                   })}
                 >
-                  <OnThisPage tree={example.tree} />
+                  <OnThisPage id={contentId} />
                   <ScreenShots entry={entry} />
                 </div>
               </div>
@@ -104,12 +106,14 @@ export async function examplesRouter<State extends Record<string, unknown>>(r: R
                 >
                   <PreviewHeader type={'large'} logo1={entry.logo1} logo2={entry.logo2} />
                   <h1>{entry.title}</h1>
-                  <div className={css.use('f', 'sm_t_s', 'sm_b_l', {gap: css.$v.space_s})}>
-                    <Back to="/examples" label="Examples" />
-                    <Button to={entry.live} label="View Live" size="s" blank={true} style={css.mix('sm_b_l')} />
-                    <Button to={`/examples/${entry.slug}/download`} label="Download" size="s" style={css.mix('sm_b_l')} />
+                  <div id={contentId}>
+                    <div className={css.use('f', 'sm_t_s', 'sm_b_l', {gap: css.$v.space_s})}>
+                      <Back to="/examples" label="Examples" />
+                      <Button to={entry.live} label="View Live" size="s" blank={true} style={css.mix('sm_b_l')} />
+                      <Button to={`/examples/${entry.slug}/download`} label="Download" size="s" style={css.mix('sm_b_l')} />
+                    </div>
+                    {Markdown.renderTree(example.tree)}
                   </div>
-                  {Markdown.renderTree(example.tree)}
                 </Article>
                 <ShareThis url={ctx.path} title={entry.title} />
               </div>

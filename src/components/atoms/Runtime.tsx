@@ -49,7 +49,10 @@ export function Runtime({runtimes, children, ...rest}: RuntimeOptions) {
       <Script data={{runtime: 'bun'}}>
         {(el, data) => {
           data.$bind('runtime', 'input[name="runtime"]');
-          data.$watch('runtime', () => el.setAttribute('data-active-runtime', data.runtime));
+          data.$watch('runtime', () => {
+            el.setAttribute('data-active-runtime', data.runtime);
+            el.$publish('markdownlinks:rerender');
+          });
         }}
       </Script>
     </form>

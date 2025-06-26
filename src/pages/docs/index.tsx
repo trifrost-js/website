@@ -2,7 +2,7 @@ import {ApiKeyAuth} from '@trifrost/core';
 import {Layout} from '../../components/layout/Layout';
 import {type Router} from '../../types';
 import {DocsService, type Doc} from './Service';
-import {Markdown, type MarkdownNode} from '../../utils/Markdown';
+import {Markdown} from '../../utils/Markdown';
 import {ShareThis} from '../../components/molecules/ShareThis';
 import {Article} from '../../components/molecules/Article';
 import {css} from '../../css';
@@ -117,7 +117,7 @@ export function DocsSidebar({entry}: {entry: Doc}) {
   );
 }
 
-export function OnThisPage({tree, id}: {tree: MarkdownNode[]; id: string}) {
+export function OnThisPage({contentId, id}: {contentId: string; id: string}) {
   return (
     <nav
       aria-label="Table of contents for article"
@@ -140,7 +140,7 @@ export function OnThisPage({tree, id}: {tree: MarkdownNode[]; id: string}) {
       id={id}
     >
       <h2>On this page</h2>
-      <MarkdownLinks tree={tree} />
+      <MarkdownLinks id={contentId} />
       <Script>
         {el => {
           el.querySelectorAll('a').forEach(link => {
@@ -164,6 +164,7 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
       if (!doc) return ctx.setStatus(404);
 
       const tableOfContentsId = css.cid();
+      const contentId = css.cid();
 
       return ctx.html(
         <Layout section="docs" title={entry.title} description={entry.desc}>
@@ -250,12 +251,12 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                         </Script>
                       </button>
                     </div>
-                    {Markdown.renderTree(doc.tree)}
+                    <div id={contentId}>{Markdown.renderTree(doc.tree)}</div>
                     <NextPrevious next={entry.next} previous={entry.previous} reversed={true} />
                   </Article>
                   <ShareThis url={ctx.path} title={entry.title} />
                 </div>
-                <OnThisPage tree={doc.tree} id={tableOfContentsId} />
+                <OnThisPage contentId={contentId} id={tableOfContentsId} />
               </div>
             </div>
           </Page>

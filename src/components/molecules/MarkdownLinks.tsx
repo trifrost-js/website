@@ -1,13 +1,17 @@
-import {type MarkdownNode, Markdown} from '../../utils/Markdown';
 import {css} from '../../css';
+import {Script} from '../../script';
+
+export type MarkdownLinkEvents = {
+  'markdownlinks:rerender': void;
+};
 
 type MarkdownLinksPanelOptions = {
-  tree: MarkdownNode[];
+  id: string;
   style?: Record<string, unknown>;
   [key: string]: unknown;
 };
 
-export function MarkdownLinks({tree, style, ...rest}: MarkdownLinksPanelOptions) {
+export function MarkdownLinks({id, style, ...rest}: MarkdownLinksPanelOptions) {
   const cls = css.use(
     'f',
     'fv',
@@ -39,11 +43,45 @@ export function MarkdownLinks({tree, style, ...rest}: MarkdownLinksPanelOptions)
 
   return (
     <div className={cls} {...rest}>
-      {Markdown.extractHeadersFromNodes(tree).map(el => (
-        <a href={`#${el.id}`} key={el.id} data-level={el.level}>
-          {el.title}
-        </a>
-      ))}
+      <Script data={{id}}>
+        {(el, data) => {
+          function isVisible(el: HTMLElement): boolean {
+            // Naive version: walk up the DOM and check for hidden styles
+            while (el) {
+              const style = window.getComputedStyle(el);
+              if (style.display === 'none' || style.visibility === 'hidden') return false;
+              el = el.parentElement!;
+            }
+            return true;
+          }
+
+          function render() {
+            const node = document.getElementById(data.id);
+            if (!node) return;
+
+            const fragment = document.createDocumentFragment();
+            node.querySelectorAll<HTMLElement>('h1, h2, h3, h4, h5').forEach(header => {
+              if (!header.id) return;
+
+              if (!isVisible(header)) return;
+
+              const link = document.createElement('a');
+              link.setAttribute('href', '#' + header.id);
+              link.setAttribute('data-level', header.tagName.slice(1));
+              link.textContent = header.textContent?.trim() || '';
+
+              fragment.appendChild(link);
+            });
+
+            while (el.firstChild) el.removeChild(el.firstChild);
+            el.appendChild(fragment);
+          }
+
+          render();
+
+          el.$subscribe('markdownlinks:rerender', render);
+        }}
+      </Script>
     </div>
   );
 }

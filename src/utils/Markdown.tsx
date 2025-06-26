@@ -343,30 +343,6 @@ export class Markdown {
     );
   }
 
-  static extractHeadersFromNodes(nodes: MarkdownNode[]): MarkdownHeader[] {
-    const headers: MarkdownHeader[] = [];
-
-    const walk = (cursor: MarkdownNode[]) => {
-      for (const node of cursor) {
-        if (node.type === 'heading') {
-          const title = Markdown.extractTextFromNodes(node.children);
-          const id = Markdown.slugify(title);
-          headers.push({
-            id,
-            title,
-            level: node.level,
-          });
-        } else if ('children' in node && Array.isArray(node.children)) {
-          walk(node.children);
-        }
-      }
-    };
-
-    walk(nodes);
-
-    return headers;
-  }
-
   static getIntroFromTree(tree: MarkdownNode[]): string | null {
     if (tree.length === 0) return null;
 

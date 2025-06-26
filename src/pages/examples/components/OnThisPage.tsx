@@ -1,8 +1,7 @@
 import {MarkdownLinks} from '../../../components/molecules/MarkdownLinks';
-import {type MarkdownNode} from '../../../utils/Markdown';
 import {css} from '../../../css';
 
-export function OnThisPage({tree}: {tree: MarkdownNode[]}) {
+export function OnThisPage({id}: {id: string}) {
   return (
     <nav
       aria-label="Table of contents for example"
@@ -15,7 +14,7 @@ export function OnThisPage({tree}: {tree: MarkdownNode[]}) {
       })}
     >
       <h2>On this page</h2>
-      <MarkdownLinks tree={tree} />
+      <MarkdownLinks id={id} />
     </nav>
   );
 }
