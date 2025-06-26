@@ -3,6 +3,7 @@ import {HighLight} from '../components/atoms/HighLight';
 import {Image} from '../components/atoms/Image';
 import {Video} from '../components/atoms/Video';
 import {Runtime, RuntimeBlock, type RuntimeName} from '../components/atoms/Runtime';
+import {Link} from '../components/atoms/Link';
 
 export type MarkdownHeader = {
   id: string;
@@ -430,11 +431,7 @@ export class Markdown {
         case 'inlineCode':
           return <code key={i}>{node.content}</code>;
         case 'link':
-          return (
-            <a key={i} href={node.href}>
-              {Markdown.renderTree(node.children)}
-            </a>
-          );
+          return <Link to={node.href}>{Markdown.renderTree(node.children)}</Link>;
         case 'image':
           return <Image src={node.src} alt={node.alt || ''} />;
         case 'video':

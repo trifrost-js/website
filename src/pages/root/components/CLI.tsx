@@ -1,5 +1,6 @@
 import {css} from '../../../css';
 import {Video} from '../../../components/atoms/Video';
+import {Link} from '../../../components/atoms/Link';
 
 export function Cli() {
   return (
@@ -21,15 +22,7 @@ export function Cli() {
         <p className={css.use('text_body', 'sm_b_l', {maxWidth: '40rem', lineHeight: 1.4})}>
           Spin up a new TriFrost project in seconds with a single command, no config, no hassle.
         </p>
-        <a
-          href="/docs/cli-quickstart"
-          title="Try the CLI"
-          className={css.use({
-            color: css.$t.body_fg,
-          })}
-        >
-          CLI Quickstart Guide
-        </a>
+        <Link to="/docs/cli-quickstart">CLI Quickstart Guide</Link>
       </div>
       <div>
         <Video

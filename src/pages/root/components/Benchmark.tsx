@@ -1,5 +1,6 @@
 import {humanizeNumber} from '@valkyriestudios/utils/string';
 import {Separator} from '../../../components/atoms/Separator';
+import {Link} from '../../../components/atoms/Link';
 import {css} from '../../../css';
 
 export function Benchmark() {
@@ -24,15 +25,7 @@ export function Benchmark() {
     <section className={cls}>
       <div className={css.use('f', 'fh', 'fa_c', 'fj_sb', 'sm_b_l', {width: '100%'})}>
         <h2 className={css.use('text_header')}>🟢 Built for speed</h2>
-        <a
-          href="/news/blog/hello_world_benchmark_trifrost"
-          title="Hello World Benchmark"
-          className={css.use({
-            color: css.$t.body_fg,
-          })}
-        >
-          Learn More
-        </a>
+        <Link to="/news/blog/hello_world_benchmark_trifrost">Read the blog post</Link>
       </div>
       <div className={css.use('f', 'fv', {gap: css.$v.space_s})}>
         {data.map(({name, rps, latency}) => (

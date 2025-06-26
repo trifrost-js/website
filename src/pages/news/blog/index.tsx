@@ -11,6 +11,7 @@ import {ShareThis} from '../../../components/molecules/ShareThis';
 import {NextPrevious} from '../../../components/molecules/NextPrevious';
 import {BlogService} from './Service';
 import {NewsService} from '../Service';
+import {Link} from '../../../components/atoms/Link';
 
 export async function blogRouter<State extends Record<string, unknown>>(r: Router<State>) {
   r.get('/:slugId', async ctx => {
@@ -34,9 +35,9 @@ export async function blogRouter<State extends Record<string, unknown>>(r: Route
           >
             <Time date={blog.date} style={css.mix('text_body_thin')} />
             <Separator style={{[css.media.tablet]: css.mix('hide')}} />
-            <a className={css.use('text_body_thin', {color: css.$t.body_fg})} href={blog.author_link} target="_blank">
+            <Link to={blog.author_link} style={css.mix('text_body_thin')}>
               {blog.author_name}
-            </a>
+            </Link>
           </p>
           <Article
             style={{

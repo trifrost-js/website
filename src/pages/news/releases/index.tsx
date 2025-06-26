@@ -11,6 +11,7 @@ import {Time} from '../../../components/atoms/Time';
 import {Markdown} from '../../../utils/Markdown';
 import {ReleaseService} from './Service';
 import {NewsService} from '../Service';
+import {Link} from '../../../components/atoms/Link';
 
 export async function releaseRouter<State extends Record<string, unknown>>(r: Router<State>) {
   r.get('/:slugId', async ctx => {
@@ -37,9 +38,9 @@ export async function releaseRouter<State extends Record<string, unknown>>(r: Ro
           >
             <Time date={release.date} style={css.mix('text_body_thin')} />
             <Separator style={{[css.media.mobile]: css.mix('hide')}} />
-            <a className={css.use('text_body_thin', {color: css.$t.body_fg})} href={release.author_link} target="_blank">
+            <Link to={release.author_link} style={css.mix('text_body_thin')}>
               {release.author_name}
-            </a>
+            </Link>
           </p>
           <Article
             style={{
