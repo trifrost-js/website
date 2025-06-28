@@ -10,18 +10,18 @@
     "types": "tsc -p ./tsconfig.json --noEmit"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250620.0",
-    "eslint": "^9.29.0",
+    "@cloudflare/workers-types": "^4.20250628.0",
+    "eslint": "^9.30.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.5.1",
-    "prettier": "^3.6.1",
+    "prettier": "^3.6.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.35.0",
-    "wrangler": "^4.21.2"
+    "wrangler": "^4.22.0"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
-    "@trifrost/core": "^0.38.1",
+    "@trifrost/core": "^0.41.3",
     "@valkyriestudios/utils": "^12.42.0",
     "highlight.js": "^11.11.1"
   }
