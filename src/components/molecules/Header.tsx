@@ -90,12 +90,12 @@ function HeaderTrigger() {
       <span></span>
       <span></span>
       <Script>
-        {el => {
+        {({el, $}) => {
           let isOpen = false;
-          el.addEventListener('click', () => {
+          $.on(el, 'click', () => {
             isOpen = !isOpen;
             el.toggleAttribute('data-open');
-            el.$dispatch('header:mobile:status', {data: {isOpen}});
+            $.fire(el, 'header:mobile:status', {data: {isOpen}});
           });
         }}
       </Script>
@@ -251,9 +251,9 @@ export function Header({active, ...rest}: HeaderProps) {
       </nav>
       <HeaderTrigger />
       <Script>
-        {el => {
-          el.addEventListener('header:mobile:status', evt => {
-            if ((evt as CustomEvent<{isOpen: boolean}>).detail.isOpen) el.setAttribute('data-open', 'true');
+        {({el, $}) => {
+          $.on<{isOpen: boolean}>(el, 'header:mobile:status', evt => {
+            if (evt.detail.isOpen) el.setAttribute('data-open', 'true');
             else el.removeAttribute('data-open');
           });
         }}

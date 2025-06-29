@@ -36,8 +36,8 @@ export function HighLight({code, language = 'ts', copyEnabled = true, children, 
         >
           copy
           <Script>
-            {el => {
-              el.addEventListener('click', () => {
+            {({el, $}) => {
+              $.on(el, 'click', () => {
                 navigator.clipboard
                   .writeText(el.nextSibling!.textContent || '')
                   .then(() => (el.innerText = 'copied!'))

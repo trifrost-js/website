@@ -53,8 +53,8 @@ export function Video({src, style, ...rest}: VideoProps) {
         })}
       />
       <Script>
-        {el => {
-          const video = el.querySelector(':scope > video') as HTMLVideoElement;
+        {({el, $}) => {
+          const video = $.query(el, 'video') as HTMLVideoElement;
 
           video.onerror = () => el.setAttribute('data-error', 'true');
 

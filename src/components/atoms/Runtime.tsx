@@ -47,9 +47,8 @@ export function Runtime({runtimes, children, ...rest}: RuntimeOptions) {
       </div>
       <div>{children}</div>
       <Script data={{runtime: 'bun'}}>
-        {(el, data) => {
-          data.$bind('runtime', 'input[name="runtime"]');
-          data.$watch('runtime', () => {
+        {({el, data}) => {
+          data.$bind('runtime', 'input[name="runtime"]', () => {
             el.setAttribute('data-active-runtime', data.runtime);
             el.$publish('markdownlinks:rerender');
           });

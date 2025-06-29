@@ -29,7 +29,7 @@ export function DocSearch() {
           apiKey: script.env('ALGOLIA_DOCSEARCH_APIKEY'),
         }}
       >
-        {(_, data) => {
+        {({data}) => {
           const script = document.createElement('script');
           script.src = 'https://cdn.jsdelivr.net/npm/@docsearch/js@3';
           script.defer = true;

@@ -120,20 +120,13 @@ function Sidebar({buckets}: {buckets: Record<string, {count: number; label: stri
         </div>
       </fieldset>
       <Script data={{form: {type: 'all', bucket: 'all'}}}>
-        {(el, data) => {
+        {({data, $}) => {
           data.$bind('form.bucket', 'input[name="bucket"]');
           data.$bind('form.type', 'input[name="type"]');
-
-          async function load() {
-            const res = await fetch('/news', {
-              method: 'POST',
-              body: JSON.stringify(data.form),
-              headers: {'Content-Type': 'application/json'},
-            });
-            if (res.ok) document.querySelector('#news-list')!.outerHTML = await res.text();
-          }
-
-          data.$watch('form', load);
+          data.$watch('form', async () => {
+            const res = await $.fetch<DocumentFragment>('/news', {method: 'POST', body: data.form});
+            if (res.ok && res.content) document.getElementById('news-list')!.replaceWith(res.content);
+          });
         }}
       </Script>
     </form>
@@ -177,7 +170,7 @@ function SidebarWrapper({buckets}: {buckets: Record<string, {count: number; labe
         })}
       >
         <Filter width={14} /> Filter
-        <Script>{el => el.addEventListener('click', () => el.$dispatch('newsfilter:open'))}</Script>
+        <Script>{({el, $}) => $.on(el, 'click', () => $.fire(el, 'newsfilter:open'))}</Script>
       </button>
       <div
         className={css.use('f', 'fv', {
@@ -201,13 +194,13 @@ function SidebarWrapper({buckets}: {buckets: Record<string, {count: number; labe
           })}
         >
           Close
-          <Script>{el => el.addEventListener('click', () => el.$dispatch('newsfilter:close'))}</Script>
+          <Script>{({el, $}) => $.on(el, 'click', () => $.fire(el, 'newsfilter:close'))}</Script>
         </button>
       </div>
       <Script>
-        {el => {
-          el.addEventListener('newsfilter:open', () => el.setAttribute('aria-expanded', 'true'));
-          el.addEventListener('newsfilter:close', () => el.setAttribute('aria-expanded', 'false'));
+        {({el, $}) => {
+          $.on(el, 'newsfilter:open', () => el.setAttribute('aria-expanded', 'true'));
+          $.on(el, 'newsfilter:close', () => el.setAttribute('aria-expanded', 'false'));
         }}
       </Script>
     </div>

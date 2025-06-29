@@ -28,7 +28,7 @@ export function SynthBackground() {
         return <line key={`h-${i}`} x1="0%" y1={`${y}%`} x2="100%" y2={`${y}%`} stroke={css.$t.synth_lines} strokeWidth="1" />;
       })}
       <Script data={{columns, rows}}>
-        {(el, data) => {
+        {({el, data}) => {
           const horizontalEntropy = 0.15;
 
           function addLine(x1: number, y1: number, x2: number, y2: number) {

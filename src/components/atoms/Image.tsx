@@ -87,16 +87,16 @@ export function Image({src, alt, style, ...rest}: ImageProps) {
         />
       </div>
       <Script>
-        {el => {
+        {({el, $}) => {
           function loaded() {
             el.setAttribute('data-loaded', 'true');
             el.style.minHeight = 'unset';
           }
 
-          const modalDiv = el.querySelector(':scope > div:last-of-type');
-          modalDiv!.addEventListener('click', () => el.removeAttribute('data-viewing'));
+          const modal = $.query(el, '> div:last-of-type')!;
+          $.on(modal, 'click', () => el.removeAttribute('data-viewing'));
 
-          const img = el.querySelector(':scope > img') as HTMLImageElement;
+          const img = $.query(el, '> img') as HTMLImageElement;
           img.onerror = () => el.setAttribute('data-error', 'true');
           img.onclick = () => el.setAttribute('data-viewing', 'true');
           img.onload = loaded;

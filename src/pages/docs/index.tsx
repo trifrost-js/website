@@ -105,12 +105,12 @@ export function DocsSidebar({entry}: {entry: Doc}) {
         })}
       >
         Close
-        <Script>{el => el.addEventListener('click', () => el.$dispatch('docsmenu:mobile:close'))}</Script>
+        <Script>{({el, $}) => $.on(el, 'click', () => $.fire(el, 'docsmenu:mobile:close'))}</Script>
       </button>
       <Script>
-        {el => {
+        {({el, $}) => {
           el.$subscribe('docsmenu:mobile:open', () => el.setAttribute('aria-expanded', 'true'));
-          el.addEventListener('docsmenu:mobile:close', () => el.setAttribute('aria-expanded', 'false'));
+          $.on(el, 'docsmenu:mobile:close', () => el.setAttribute('aria-expanded', 'false'));
         }}
       </Script>
     </aside>
@@ -142,9 +142,9 @@ export function OnThisPage({contentId, id}: {contentId: string; id: string}) {
       <h2>On this page</h2>
       <MarkdownLinks id={contentId} />
       <Script>
-        {el => {
-          el.querySelectorAll('a').forEach(link => {
-            link.onclick = () => el.setAttribute('aria-expanded', 'false');
+        {({el, $}) => {
+          $.queryAll(el, 'a').forEach(link => {
+            $.on(link, 'click', () => el.setAttribute('aria-expanded', 'false'));
           });
         }}
       </Script>
@@ -215,7 +215,7 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                         })}
                       >
                         <Menu width={20} />
-                        <Script>{el => el.addEventListener('click', () => el.$publish('docsmenu:mobile:open'))}</Script>
+                        <Script>{({el, $}) => $.on(el, 'click', () => el.$publish('docsmenu:mobile:open'))}</Script>
                       </button>
                       <h2
                         className={css.use('fg', {
@@ -237,7 +237,7 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                       >
                         <TableOfContents width={20} />
                         <Script data={{tableOfContentsId}}>
-                          {(el, data) => {
+                          {({el, data, $}) => {
                             function absoluteOffset(el: HTMLElement) {
                               const offset = {x: 0, y: 0};
                               let cursor = el;
@@ -248,7 +248,7 @@ export async function docsRouter<State extends Record<string, unknown>>(r: Route
                               }
                               return offset;
                             }
-                            el.addEventListener('click', () => {
+                            $.on(el, 'click', () => {
                               const nav = document.getElementById(data.tableOfContentsId)!;
                               nav.setAttribute('aria-expanded', String(nav.getAttribute('aria-expanded')) === 'true' ? 'false' : 'true');
                               const bounds = el.getBoundingClientRect();

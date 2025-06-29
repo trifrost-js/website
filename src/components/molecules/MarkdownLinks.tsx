@@ -44,7 +44,7 @@ export function MarkdownLinks({id, style, ...rest}: MarkdownLinksPanelOptions) {
   return (
     <div className={cls} {...rest}>
       <Script data={{id}}>
-        {(el, data) => {
+        {({el, data, $}) => {
           function isVisible(el: HTMLElement): boolean {
             // Naive version: walk up the DOM and check for hidden styles
             while (el) {
@@ -60,7 +60,7 @@ export function MarkdownLinks({id, style, ...rest}: MarkdownLinksPanelOptions) {
             if (!node) return;
 
             const fragment = document.createDocumentFragment();
-            node.querySelectorAll<HTMLElement>('h1, h2, h3, h4, h5').forEach(header => {
+            $.queryAll(node, 'h1, h2, h3, h4, h5').forEach(header => {
               if (!header.id) return;
 
               if (!isVisible(header)) return;

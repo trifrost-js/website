@@ -75,7 +75,7 @@ export function Collapsible({title, tag, children, defaultExpanded = false, grou
         <TAG aria-controls={group}>
           <span>{title}</span>
           <Script>
-            {el => {
+            {({el, $}) => {
               const parent = el.parentElement!;
               el.$subscribe('collapsible:toggle', val => {
                 parent.setAttribute(
@@ -84,7 +84,7 @@ export function Collapsible({title, tag, children, defaultExpanded = false, grou
                 );
               });
 
-              el.addEventListener('click', () => el.$publish('collapsible:toggle', {vmId: el.$uid}));
+              $.on(el, 'click', () => el.$publish('collapsible:toggle', {vmId: el.$uid}));
             }}
           </Script>
         </TAG>
@@ -103,9 +103,9 @@ export function Collapsible({title, tag, children, defaultExpanded = false, grou
         <TAG>
           <span>{title}</span>
           <Script>
-            {el => {
+            {({el, $}) => {
               const parent = el.parentElement!;
-              el.addEventListener('click', () => {
+              $.on(el, 'click', () => {
                 const isOpen = parent.getAttribute('aria-expanded') + '' === 'true';
                 parent.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
               });
