@@ -12,9 +12,7 @@ You define your styling system using `createCss()`. This function returns a type
 - Built-in CSS Reset (`reset: true`)
 - SSR-safe root style injection (`css.root()`)
 
----
-
-### ☝️ Only define once
+##### ☝️ Only define once
 Call `createCss()` **once** in your app. We recommend isolating it in a single file (our preference is `css.ts`):
 ```ts
 // src/css.ts
