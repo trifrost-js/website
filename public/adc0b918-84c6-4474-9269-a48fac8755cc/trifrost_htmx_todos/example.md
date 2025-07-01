@@ -106,7 +106,6 @@ export default app;
 All UI elements like the todo form and todo list live in self-contained components under `src/components/`. Each component renders server-side JSX and uses HTMX attributes to hook into behavior as well as using the TriFrost css instance for styling.
 ```tsx
 // src/components/Todos.tsx
-import {Style} from "@trifrost/core";
 import {css} from "../css";
 
 export type Todo = {
@@ -189,7 +188,6 @@ export function TodoList (props:{children?:any; todos:Todo[]}) {
         className={css.use('button', 'button_l', {marginTop: css.$v.space_m})}
       >Complete</button>
     </form>)}
-    <Style />
   </section>);
 }
 ```
@@ -198,7 +196,6 @@ export function TodoList (props:{children?:any; todos:Todo[]}) {
 The layout component wraps full-page responses, injecting meta tags, the HTMX script, and optional UI elements like footers, ....
 ```tsx
 // src/components/Layout.tsx
-import {Style} from '@trifrost/core';
 import {css} from '../css';
 
 export function Layout (props:{children:any}) {
@@ -209,8 +206,6 @@ export function Layout (props:{children:any}) {
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="description" content="Manage your todos with TriFrost and HTMX" />
       <script src="https://unpkg.com/htmx.org"></script>
-      {/* TriFrost Style Injection */}
-      <Style />
     </head>
     <body className={css.use(...)}>
       {props.children}
