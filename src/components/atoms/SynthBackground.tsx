@@ -29,83 +29,92 @@ export function SynthBackground() {
       })}
       <Script data={{columns, rows}}>
         {({el, data}) => {
-          const horizontalEntropy = 0.15;
+          const POOL_SIZE = 64;
+          const pool: SVGLineElement[] = [];
+          const pool_using: Set<SVGLineElement> = new Set();
+          const w = el.clientWidth;
+          const h = el.clientHeight;
+          const col_w = w / data.columns;
+          const row_h = h / data.rows;
+
+          /* Pre-create the pool */
+          for (let i = 0; i < POOL_SIZE; i++) {
+            const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            l.style.display = 'none'; // Hide initially
+            l.setAttribute('stroke-width', '1');
+            l.setAttribute('stroke-linecap', 'round');
+            el.appendChild(l);
+            pool.push(l);
+          }
+
+          function getLine(): SVGLineElement | null {
+            for (const l of pool) {
+              if (!pool_using.has(l)) {
+                pool_using.add(l);
+                l.style.display = '';
+                return l;
+              }
+            }
+            return null; /* Pool exhausted */
+          }
+
+          function releaseLine(line: SVGLineElement) {
+            pool_using.delete(line);
+            line.style.display = 'none';
+          }
 
           function addLine(x1: number, y1: number, x2: number, y2: number) {
-            const baseHue = 160 + Math.floor(Math.random() * 60);
-            const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            const l = getLine();
+            if (!l) return;
+
+            const base_hue = 160 + Math.floor(Math.random() * 60);
+            const stroke =
+              document.documentElement.getAttribute('data-theme') === 'dark'
+                ? `hsla(${base_hue}, 100%, 75%, 0.8)`
+                : `hsla(${base_hue}, 75%, 40%, 0.8)`;
+
             l.setAttribute('x1', '' + x1);
             l.setAttribute('y1', '' + y1);
             l.setAttribute('x2', '' + x2);
             l.setAttribute('y2', '' + y2);
-            l.setAttribute(
-              'stroke',
-              document.documentElement.getAttribute('data-theme') === 'dark'
-                ? `hsla(${baseHue}, 100%, 75%, 0.8)`
-                : `hsla(${baseHue}, 75%, 40%, 0.8)`,
-            );
-            l.setAttribute('stroke-width', '1');
-            l.setAttribute('stroke-linecap', 'round');
+            l.setAttribute('stroke', stroke);
 
-            el.appendChild(l);
-
-            setTimeout(() => {
-              if (l.parentNode === el) el.removeChild(l);
-            }, 1600);
+            setTimeout(() => releaseLine(l), 1600);
           }
 
           function spawn() {
-            const width = el.clientWidth;
-            const height = el.clientHeight;
-
-            const colWidth = width / data.columns;
-            const rowHeight = height / data.rows;
-
             let col = Math.floor(Math.random() * data.columns);
             let row = 0;
 
-            let prevX = col * colWidth;
-            let prevY = height - row * rowHeight;
-            let lastDir = 0;
+            let prev_x = col * col_w;
+            let prev_y = h - row * row_h;
+            let last_dir = 0;
 
             function step() {
               if (row >= data.rows) return;
 
-              /* Advance row (always moves up) */
               row++;
-              const newY = height - row * rowHeight;
+              const new_y = h - row * row_h;
 
-              /* Optionally change column */
-              if (Math.random() < horizontalEntropy) {
-                let direction;
-
-                /* Bias toward continuing direction */
-                if (lastDir !== 0 && Math.random() < 0.7) {
-                  direction = lastDir;
+              /* Optional column shift */
+              if (Math.random() < 0.15) {
+                const dir = last_dir !== 0 && Math.random() < 0.7 ? last_dir : Math.random() < 0.5 ? -1 : 1;
+                const next_col = col + dir;
+                if (next_col >= 0 && next_col < data.columns) {
+                  col = next_col;
+                  last_dir = dir;
                 } else {
-                  direction = Math.random() < 0.5 ? -1 : 1;
-                }
-
-                const nextCol = col + direction;
-                if (nextCol >= 0 && nextCol < data.columns) {
-                  col = nextCol;
-                  lastDir = direction;
-                } else {
-                  lastDir = 0;
+                  last_dir = 0;
                 }
               }
 
-              const newX = col * colWidth;
-              if (newX !== prevX) addLine(prevX, prevY, newX, prevY);
-              addLine(newX, prevY, newX, newY);
-              prevX = newX;
-              prevY = newY;
+              const new_x = col * col_w;
+              if (new_x !== prev_x) addLine(prev_x, prev_y, new_x, prev_y);
+              addLine(new_x, prev_y, new_x, new_y);
+              prev_x = new_x;
+              prev_y = new_y;
 
-              const lingerChance = 0.25;
-              const linger = Math.random() < lingerChance;
-              const pauseDuration = linger ? 300 + Math.random() * 400 : 120 + Math.random() * 100;
-
-              setTimeout(step, pauseDuration);
+              setTimeout(step, Math.random() < 0.25 ? 300 + Math.random() * 400 : 120 + Math.random() * 100);
             }
 
             step();
