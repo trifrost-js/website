@@ -1,4 +1,3 @@
-import {Style} from '@trifrost/core';
 import {isNeString} from '@valkyriestudios/utils/string';
 import {css} from '../../css';
 import {ThemeSetter} from '../atoms/Theme';
@@ -116,9 +115,8 @@ export function Root({children, title, description}: RootProps) {
         <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
         <link rel="manifest" href="/site.webmanifest" />
 
-        {/* TriFrost Style/Script injection */}
+        {/* TriFrost theme switcher */}
         <ThemeSetter />
-        <Style />
       </head>
       <body
         className={css.use('f', 'fv', 'fa_c', 'fj_sb', {
