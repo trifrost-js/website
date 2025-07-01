@@ -175,6 +175,11 @@ const ROUTES = [
         desc: 'Reference for the Cookies module, including available methods and properties.',
       },
       {
+        title: 'JWT',
+        slug: 'jwt-api',
+        desc: 'Reference for the JWT module, including available methods such as jwtVerify, jwtSign, jwtDecode.',
+      },
+      {
         title: 'Logger',
         slug: 'logger-api',
         desc: 'Detailed reference for the built-in logging and tracing system.',
