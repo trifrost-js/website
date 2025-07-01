@@ -106,6 +106,19 @@ Think of it like a wax seal on your data — except crypto-powered.
 > Note: **HMAC** (Hash-based Message Authentication Code) ensures that even if someone sees the cookie, they can’t fake or modify it without knowing the secret key.
 > This ensures that we can verify serverside that the value of a cookie **has not been tampered with**.
 
+##### 🧰 Generate a secure HMAC secret:**
+```bash
+npm create trifrost@latest
+# → Choose: Security Keys → HS256 (or HS384/HS512)
+```
+Output:
+```bash
+SECRET="ZtFqM9TPeDp+Y0..."
+```
+Add to your projects' `.env` file and use as such.
+
+👉 See [TriFrost Creation CLI](/docs/cli-quickstart) for more info
+
 ---
 
 ### 🔍 Verifying Signed Cookies
@@ -176,4 +189,5 @@ console.log('What’s in the jar?', allCookies);
 - [OWASP: Secure Cookie Guidelines](https://owasp.org/www-community/controls/SecureCookieAttribute)
 - [Wikipedia: HMAC](https://en.wikipedia.org/wiki/HMAC)
 - [RFC 6265: HTTP State Management Mechanism](https://datatracker.ietf.org/doc/html/rfc6265)
+- [TriFrost Creation CLI](/docs/cli-quickstart)
 
