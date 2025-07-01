@@ -108,16 +108,14 @@ export function AnalyticsBeacon() {
 }
 ```
 
-Example (TriFrost `<Script>` and `<Style>` primitives, no nonce needed):
+Example (TriFrost `<Script>` primitive, no nonce needed):
 ```tsx
-import {Script, Style} from '@trifrost/core';
+import {Script} from '@trifrost/core';
 
 export function Layout() {
   return (
     <html>
-      <head>
-        <Style /> {/* Automatically gets nonce */}
-      </head>
+      ...
       <body>
         ...
         <Script>{() => {
@@ -269,7 +267,7 @@ Values can be:
 - ✅ Always set **Strict-Transport-Security** if you serve over HTTPS.
 - ✅ Use **CSP** to block unexpected content, especially scripts.
 - ✅ Use `"'nonce'"` literal in your CSP config to trigger injection
-- ✅ Rely on `<Script>` and `<Style>` wherever possible, they’ll handle nonce automatically
+- ✅ Rely on `<Script>` and the styling engine wherever possible, they’ll handle nonce automatically
 - ✅ Use **X-Frame-Options** to prevent clickjacking.
 - ⚠️ Avoid **X-XSS-Protection** unless supporting legacy IE.
 - ✅ Review your **cross-origin policies** carefully.
