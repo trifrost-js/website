@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
-    "@trifrost/core": "^0.42.3",
+    "@trifrost/core": "^0.42.5",
     "@valkyriestudios/utils": "^12.42.0",
     "highlight.js": "^11.11.1"
   }
