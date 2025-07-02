@@ -136,6 +136,8 @@ Result? Only the `#news-list` is swapped. Styles are reused. No flash. No rehydr
 ---
 
 ### Next Up
-- [JSX Atomic Runtime](/docs/jsx-atomic)
-- [JSX Script Behavior](/docs/jsx-script-behavior)
-- [JSX Style System](/docs/jsx-style-system)
+Ready to learn more?
+- Learn about [JSX Atomic Runtime](/docs/jsx-atomic) for reactivity, stores, global pubsub and more
+- Need a refresher on [JSX Basics](/docs/jsx-basics)?
+- Script your first interactive component with [createScript](/docs/jsx-script-behavior)
+- Or explore [styling with createCss](/docs/jsx-style-system)

@@ -1,140 +1,14 @@
-TriFrost supports **secure, efficient, and SSR-compatible scripting** directly within JSX via the `<Script>` component.
+TriFrost lets you attach client-side behavior directly inside your serverside JSX markup using `<Script>`. No bundlers, no hydration wrappers, no scope leaks.
 
-Unlike traditional frameworks that rely on global hydration roots or client bundles, TriFrost lets you **co-locate script logic** with markup, hydrate only what’s needed, and run per-node behaviors safely — all without sacrificing CSP, performance, or SSR correctness.
+It's **SSR-native**, **CSP-safe**, and supports **fine-grained interactivity without shipping full-page JS**. If you're used to React + client bundles, TriFrost scripting will feel both **simpler** and **more powerful**.
 
 > 🔄 Scripts are server-rendered, but client-executed. Think of `<Script>` as a secure, typed replacement for `<script>` tags, scoped to the DOM node they’re written inside.
+> ✅ Works with or without the [Atomic Runtime](/docs/jsx-atomic). Atomic adds reactivity, global state and utilities, but isn't required.
 
 ---
 
-### ✨ What is <Script>
-
-The `<Script>` component is TriFrost’s universal way to attach logic to your HTML:
-
-- ✅ Inline behavior via serialized function calls
-- ✅ External script tags with full CSP/nonce support
-- ✅ Built-in deduplication
-- ✅ Optional **atomic reactivity** when using `createScript({atomic: true})`
-
-👉 Learn about the [TriFrost Atomic Runtime](/docs/jsx-atomic) to craft reactive masterpieces.
-
----
-
-### 🔐 CSP-Aware by Default
-
-If a `nonce` is present in the current context, TriFrost injects it automatically:
-
-```tsx
-<Script src="https://example.com/app.js" />
-
-// Renders as:
-<script nonce="abc123" src="https://example.com/app.js" />
-```
-
-No configuration required, the nonce is read from `ctx` during rendering and applied to all scripts.
-
-This applies to **both external as well as inline scripts**.
-
----
-
-### ⚙️ External Scripts
-If you pass a `src` prop, the script is rendered as a normal `<script>` tag:
-```tsx
-<Script src="https://cdn.example.com/foo.js" defer />
-
-// Renders as:
-<script nonce="abc123" src="https://cdn.example.com/foo.js" defer></script>
-```
-
-All standard script attributes are supported (src, type, async, defer, ...), and the tag will be rendered directly into the HTML.
-
----
-
-### 🧠 Inline Scripts
-You can also use <Script> to bind behaviors directly to elements during hydration.
-```tsx
-<button type="button">
-  Click Me
-  <Script>{({el}) => {
-    el.addEventListener('click', () => {
-      alert('Clicked!');
-    });
-  }}</Script>
-</button>
-```
-
-This script is serialized at render time, registered with a unique hash, and re-attached to matching DOM nodes on the client via `data-tfhf="..."`.
-
-##### 🔄 Understanding the Hydration Model
-TriFrost scripts **run only on the client**, but are defined alongside your markup on the server.
-
-When JSX is rendered on the server, your script function is:
-- Captured as a string
-- Hashed and registered
-- Injected into a hydration payload
-
-On the client, this payload:
-- Locates the target node (via `data-tfhf`)
-- Re-attaches the function and invokes it with `{el, data, $}`
-
-> 🧠 Your function **does not run during SSR**. It is serialized as code, not executed.
-
-This means:
-- You can write `el.addEventListener(...)` as if you were in a `<script>` tag
-- You cannot access `ctx`, `request`, or anything server-bound inside `<Script>`
-- `data` is your bridge from SSR to client
-
-### 🧩 What's passed to Script?
-Each inline script receives:
-
-##### el: HTMLElement
-The DOM element the script is bound to.
-
-```tsx
-<div>
-  <Script>{({el}) => { /* el here is the div */
-    ...
-  }}</Script>
-</div>
-```
-
-##### data: object
-The `data={...}` you passed to the script. Writable. Not reactive by default (unless Atomic is enabled).
-
-🧬 Data is fully typed, TypeScript will infer the shape of your `data` object and reflect it in the script body.
-
-Example:
-```tsx
-<div>
-  <Script data={{count: 42}}>{({el, data}) => {
-    /* data here is {count: 42} and auto-typed as {count:number} */
-  }}</Script>
-</div>
-```
-
-✅ This gives you end-to-end type safety from SSR → client, **without manual casts or schema validation**.
-
-##### $: Atomic Utils
-A set of scoped, DOM-safe utilities:
-- `$.on`, `$.once`, `$.fire` for events
-- `$.query`, `$.clear` for DOM traversal
-- `$.storeSet`, `$.storeGet` for global store state
-- `$.uid`, `$.eq`, `$.sleep`, `$.fetch`, etc.
-
-```tsx
-<button type="button">
-  Click Me
-  <Script>{({el, $}) => {
-    $.on(el, 'click', () => alert('Clicked!'));
-  }}</Script>
-</button>
-```
-
-See [JSX Atomic Runtime](/docs/jsx-atomic) for the full list.
-
----
-
-### 📦 Setup with createScript
-You define your script system using `createScript()`:
+### 🧰 Defining Your Script System
+Create your scripting engine using `createScript()` and place it in a shared file (e.g. our recommendation `script.ts`).
 ```typescript
 // src/script.ts
 import {createScript} from '@trifrost/core';
@@ -155,76 +29,197 @@ type StoreData = {
 };
 
 export const {Script, script} = createScript<
-  Env,
+  Env, /* Env ensures that when you do eg script.env it is fully typed */
   RelayEvents,
   StoreData,
 >({
-  atomic: true // enables reactivity + scoped utilities
+  atomic: true /* Enables TriFrost Atomic reactivity + scoped utilities */
 });
 ```
 
-Then use across your app:
+> ⚠️ You should only ever call `createScript()` once per environment. Define it in one file and reuse the exported `<Script>` and `script` across your app.
+> 👉 RelayEvents/StoreData? Learn about these in the [TriFrost Atomic Runtime](/docs/jsx-atomic) doc
+
+##### Type Safety
+Just like with styling, TriFrost scripts are fully typed end-to-end:
+- `data={...}` is strongly typed and inferred
+- `el` is typed as `HTMLElement` (and some extensions if running on [TriFrost Atomic](/docs/jsx-atomic))
+- Atomic `$` utilities are fully typed
+
 ```tsx
-import {Script} from '~/script';
-
-export function Toggle() {
-  return (
-    <div>
-      <span>Toggle state</span>
-      <Script data={{open: false}}>{({el, data}) => {
-        el.addEventListener('click', () => {
-          data.open = !data.open;
-          el.setAttribute('aria-expanded', String(data.open));
-        });
-      }}</Script>
-    </div>
-  );
-}
+<Script data={{count: 1}}>{({data}) => {
+  data.count.toFixed(); // ✅ type-safe
+}}</Script>
 ```
 
-> **Note**: Call `createScript()` **once** in your app. We recommend isolating it in a single file (our preference is `script.ts`).
-
-> **Note**: 🧬 Want to learn how to broadcast and react to the `RelayEvents` and `StoreData` types?
-> Dive into [JSX Atomic Runtime](/docs/jsx-atomic) for full `$watch`, `$fire`, and `$bind` support.
-
-##### 🧠 App Integration
-Pass your `script` (and optional `css`) into the `client` option during initialization:
-```typescript
-import {App} from '@trifrost/core';
-import {script} from './script';
-import {css} from './css';
-import {type Env} from './types';
-
-const app = await new App<Env>({
-  client: {script, css},
-  ...
-}).boot();
-```
-
-This ensures:
-- Scripts are **automatically registered** during SSR
-- Nonces and hydration payloads are injected automatically
-- You do **not need to call** `script.root()` manually in routes or components
+This lets you build powerful UI without schema validation or runtime type-checking.
 
 ---
 
-### Examples
-##### Click Handler
-Attach a click event to a button element:
+### 🚀 Registering in the App
+To hydrate scripts, pass your instance to the app config:
+```typescript
+import {App} from '@trifrost/core';
+import {css} from './css';
+import {script} from './script';
+import {type Env} from './types';
+
+const app = new App<Env>({
+  client: {css, script},
+});
+```
+
+This ensures:
+- Global styles are emitted at build time (`/__atomics__/client.css`)
+- Per-request styles are injected automatically
+- Tokens, themes, and resets are registered exactly once
+- Nonces are automatically respected
+
+You never need to call `script.root()` manually, TriFrost handles that automatically.
+
+---
+
+### 🧭 Prefer a guided setup instead?
+You can skip the above manual steps and let the CLI scaffold everything for you, including runtime setup, middleware, styling, and more.
+
+Run:
+```bash
+# Bun
+bun create trifrost@latest
+
+# NPM
+npm create trifrost@latest
+```
+
+... giving you a fully functional project in under a minute.
+
+[▶️ See the CLI in action](/docs/cli-quickstart)
+
+---
+
+### ✨ What is <Script>
+
+The `<Script>` component is TriFrost’s universal way to attach logic to your HTML:
+
+- ✅ Inline behavior via serialized function calls
+- ✅ External script tags with full CSP/nonce support
+- ✅ Built-in deduplication
+- ✅ Optional **atomic reactivity** when using `createScript({atomic: true})`
+
+👉 Learn about the [TriFrost Atomic Runtime](/docs/jsx-atomic) to craft reactive masterpieces.
+
+---
+
+### ⚙️ External Scripts
+If you pass a `src` prop, the script is rendered as a normal `<script>` tag:
+```tsx
+<Script src="https://cdn.example.com/foo.js" defer />
+
+// Renders as:
+<script nonce="abc123" src="https://cdn.example.com/foo.js" defer></script>
+```
+
+All standard script attributes are supported (src, type, async, defer, ...), and the tag will be rendered directly into the HTML.
+
+---
+
+### 🧠 Inline Scripts
+You can also use `<Script>` to bind behaviors directly to elements during hydration.
 ```tsx
 <button type="button">
-  Submit
+  Click Me
   <Script>{({el}) => {
     el.addEventListener('click', () => {
-      console.log('Submitted!');
+      alert('Clicked!');
     });
   }}</Script>
 </button>
 ```
+
+This script is serialized at render time, registered with a unique hash, and re-attached to matching DOM nodes on the client via `data-tfhf="..."`.
+
+##### How: Hydration Model
+TriFrost scripts **run only on the client**, but are defined alongside your markup on the server.
+
+When JSX is rendered on the server, your script function is:
+- Captured as a string
+- Hashed and registered
+- Injected into a hydration payload
+
+On the client, this payload:
+- Locates the target node (via `data-tfhf`)
+- Re-attaches the function and invokes it with `{el, data, $}`
+
+> 🧠 Your function **does not run during SSR**. It is serialized as code, not executed.
+
+This means:
+- You can write `el.addEventListener(...)` as if you were in a `<script>` tag
+- You cannot access `ctx`, `request`, or anything server-bound inside `<Script>`
+- `data` is your bridge from SSR to client
+
+### What's passed to Script?
+Each inline script receives:
+
+**el: HTMLElement**
+The DOM element the script is bound to.
+
+```tsx
+<div>
+  <Script>{({el}) => { /* el here is the div */
+    ...
+  }}</Script>
+</div>
+```
+
+**data: object**
+The `data={...}` you passed to the script. Writable. Not reactive by default (unless Atomic is enabled).
+
+🧬 Data is fully typed, TypeScript will infer the shape of your `data` object and reflect it in the script body.
+
+Example:
+```tsx
+<div>
+  <Script data={{count: 42}}>{({el, data}) => {
+    /* data here is {count: 42} and auto-typed as {count:number} */
+  }}</Script>
+</div>
+```
+
+✅ This gives you end-to-end type safety from SSR → client, **without manual casts or schema validation**.
+
+**$: Atomic Utils**
+A set of scoped, DOM-safe utilities:
+- `$.on`, `$.once`, `$.fire` for events
+- `$.query`, `$.clear` for DOM traversal
+- `$.storeSet`, `$.storeGet` for global store state
+- `$.uid`, `$.eq`, `$.sleep`, `$.fetch`, etc.
+
+```tsx
+<button type="button">
+  Click Me
+  <Script>{({el, $}) => {
+    $.on(el, 'click', () => alert('Clicked!'));
+  }}</Script>
+</button>
+```
+
+See [JSX Atomic Runtime](/docs/jsx-atomic) for the full list.
+
+---
+
+### Examples
+##### Class Toggle
+Toggle a class on click:
+```tsx
+<Script>{({el}) => {
+  el.addEventListener('click', () => {
+    el.classList.toggle('active');
+  });
+}}</Script>
+```
 Whats happening here:
-- Hydrates only that button.
-- No global selectors or window pollution.
-- Logs to console when clicked.
+- You can bind this to any node, including SVG or custom elements.
+- No framework bindings or runtime needed.
 
 ##### Toggle with Data
 Track and mutate open state in-place:
@@ -244,37 +239,6 @@ Whats happening here:
 - Updates aria-expanded attribute accordingly.
 - Great for dropdowns, modals, etc.
 
-##### Event Relay (Atomic)
-Requires `createScript({atomic: true})`:
-```tsx
-<button>
-	Open Me
-	<Script>{({el, $, data}) => {
-	$.on(el, 'click', () => {
-		$.fire(el, 'modal:open');
-		$.storeSet('lastOpened', data?.id ?? 'unknown');
-	});
-	}}</Script>
-</button>
-```
-Whats happening here:
-- Publishes an event (modal:open)
-- Writes to a global store key
-- Event can be listened to by any other atomic VM on the page
-
-##### Class Toggle
-Toggle a class on click:
-```tsx
-<Script>{({el}) => {
-  el.addEventListener('click', () => {
-    el.classList.toggle('active');
-  });
-}}</Script>
-```
-Whats happening here:
-- You can bind this to any node, including SVG or custom elements.
-- No framework bindings or runtime needed.
-
 ##### Debounce (Atomic)
 ```tsx
 <Script>{({el, $}) => {
@@ -286,22 +250,6 @@ Whats happening here:
 Whats happening here:
 - Uses the `$.debounce()` utility
 - Triggers only after user finishes typing
-
-##### Unmount cleanup (Atomic)
-```tsx
-<Script>{({el}) => {
-  const timer = setInterval(() => {
-    console.log('Tick');
-  }, 1000);
-
-  el.$unmount = () => {
-    clearInterval(timer);
-  };
-}}</Script>
-```
-Whats happening here:
-- TriFrost calls `$unmount` automatically when the node is removed.
-- Avoids memory leaks in dynamic UI.
 
 ##### Reactive form (Atomic)
 ```tsx
@@ -358,13 +306,23 @@ This pattern is great for:
 
 And is exactly how the news section filter on this website works 🤓
 
+> Want another cool example? Check out this [Synth Background](https://github.com/trifrost-js/website/blob/main/src/components/atoms/SynthBackground.tsx) component (which is what you see if you scroll all the way down on this page on a desktop browser).
+
 ---
 
-### Security Notes
-- Scripts are safely serialized using a stringified function body (not `eval`)
-- Data payloads are safely embedded via JSON.stringify with escaping
-- Hydration code **is sandboxed** in an [IIFE](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) to **prevent scope leakage**.
-- You should still audit for unsafe inline logic if CSP policies are strict
+### 🛡 Security & CSP
+TriFrost scripts:
+- Respect `nonce` values from the context
+- Scripts are safely serialized without `eval`
+- Code and data payloads **are sandboxed** in an [IIFE](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) to **prevent scope leakage**.
+
+No runtime globals. No unsafe scopes.
+
+---
+
+### Best Practices
+- ✅ Define script once with createScript()
+- ✅ Co-locate behavior with elements
 
 ---
 
@@ -380,6 +338,8 @@ And is exactly how the news section filter on this website works 🤓
 ---
 
 ### Next Steps
-To become a true TriFrost-Samurai, learn how to:
-- Enable **fine-grained reactivity and state binding** with [JSX Atomic Runtime](/docs/jsx-atomic)
-- Style to your hearts content with [TriFrost Styling System](/docs/jsx-style-system)
+To become a true TriFrost-Samurai:
+- Learn about [JSX Atomic Runtime](/docs/jsx-atomic) for reactivity, stores, global pubsub and more
+- Need a refresher on [JSX Basics](/docs/jsx-basics)?
+- Take a technical dive into [JSX Fragments](/docs/jsx-fragments)?
+- Or explore [styling with createCss](/docs/jsx-style-system)

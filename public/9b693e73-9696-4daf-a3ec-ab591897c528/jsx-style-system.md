@@ -391,6 +391,8 @@ This prevents the style engine from collecting and emitting styles, but does NOT
 ---
 
 ### Next Steps
-- [JSX Basics](/docs/jsx-basics)
-- [JSX Script Behavior](/docs/jsx-script-behavior)
-- [JSX Atomic Runtime](/docs/jsx-atomic)
+Ready to learn more?
+- Learn about [JSX Atomic Runtime](/docs/jsx-atomic) for reactivity, stores, global pubsub and more
+- Need a refresher on [JSX Basics](/docs/jsx-basics)?
+- Take a technical dive into [JSX Fragments](/docs/jsx-fragments)?
+- Or explore [Scripting with createScript](/docs/jsx-script-behavior)

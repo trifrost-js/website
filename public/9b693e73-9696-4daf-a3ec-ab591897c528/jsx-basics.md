@@ -260,7 +260,7 @@ Here's a more full-fledged example (from the news section on the website) where 
 
 ### Next Steps
 Ready to learn more?
-- [JSX Script Behavior](/docs/jsx-script-behavior)
-- [JSX Style System](/docs/jsx-style-system)
-- [JSX Atomic Runtime](/docs/jsx-atomic)
-- [JSX Fragments](/docs/jsx-fragments)
+- Learn about [JSX Atomic Runtime](/docs/jsx-atomic) for reactivity, stores, global pubsub and more
+- Take a technical dive into [JSX Fragments](/docs/jsx-fragments)?
+- Script your first interactive component with [createScript](/docs/jsx-script-behavior)
+- Or explore [styling with createCss](/docs/jsx-style-system)
