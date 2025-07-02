@@ -108,6 +108,11 @@ const ROUTES = [
         desc: 'Learn how JSX works in TriFrost and how to write components.',
       },
       {
+        title: 'Fragments (Technical)',
+        slug: 'jsx-fragments',
+        desc: 'Learm more about the technical details of how JSX Fragment rendering works in TriFrost',
+      },
+      {
         title: 'Styling',
         slug: 'jsx-style-system',
         desc: 'Understand the CSS-in-JS system, how styles are scoped, media/pseudo support, ....',

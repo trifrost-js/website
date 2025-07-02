@@ -43,7 +43,7 @@ import {type Env} from './types.ts';
 export const {Script, script} = createScript<Env>({ atomic: true });
 ```
 
-And within your `App` pass them as `client` options:
+Then go to your `App` and pass them as `client` options:
 ```typescript
 import {App} from '@trifrost/core';
 import {css} from './css';
@@ -105,7 +105,7 @@ It's just JSX, but server-native.
 The `script` object (from `createScript`) gives you access to the current rendering context:
 - `script.env(key)`: ctx.env
 - `script.state(key)`: ctx.state
-- `script.nonce()`: (Though you shouldnt have to use this) Current CSP nonce
+- `script.nonce()`: (Though you shouldnt have to use this) The current CSP nonce
 
 These utilities work without needing to pass `ctx` explicitly. This makes JSX trees easier to reuse and reason about.
 
@@ -114,7 +114,9 @@ These utilities work without needing to pass `ctx` explicitly. This makes JSX tr
 ---
 
 ### 🪄 Behavior with <Script>
-Want interactivity? Just drop a `<Script>` inline. It executes on the client-side once the DOM is ready and gives you full reactivity:
+Want interactivity? Just drop a `<Script>` inline. It executes on the client-side once the DOM is ready and gives you full reactivity.
+
+Like this simple clicker:
 ```tsx
 <button>
   Click Me
@@ -124,7 +126,7 @@ Want interactivity? Just drop a `<Script>` inline. It executes on the client-sid
 </button>
 ```
 
-Or bind to state:
+Or a more advanced clicker with data watching:
 ```tsx
 <button>
   Click Me
@@ -143,8 +145,9 @@ Scripts are atomic, isolated, nonced, and deduplicated.
 ---
 
 ### 💅 Scoped Styling
-TriFrost ships with a fully atomic, SSR-native CSS engine. Define styles via your shared `css.ts`:
+TriFrost also ships with a fully atomic, SSR-native CSS engine. Define styles via your shared `css.ts`.
 
+And use your css instance wherever necessary to style however you want:
 ```tsx
 import {css} from '../css';
 
@@ -167,6 +170,8 @@ Out of the box you get:
 - Theming with `css.var` and `css.theme`
 - Built-in dark vs light mode
 - Reusable styles/definitions with `css.use()` and `css.mix()`
+
+... and yes, even keyframe support like the [shooting star effect on our homepage](https://github.com/trifrost-js/website/blob/main/src/components/atoms/GridBackground.tsx)
 
 ---
 
@@ -226,7 +231,9 @@ Here's a more full-fledged example (from the news section on the website) where 
     }}
   </Script>
 </form>
-<div id="news-list">{/* Server-rendered list gets replaced here */}</div>
+<div id="news-list">
+  {/* Initial render, will get replaced when filters change */}
+</div>
 ```
 
 > 👉 Want a full breakdown? See [JSX Fragments](/docs/jsx-fragments)
@@ -234,10 +241,10 @@ Here's a more full-fledged example (from the news section on the website) where 
 ---
 
 ### Best Practices
-- Define and export `css` and `script` from shared modules (`css.ts`, `script.ts`)
-- Don’t create new `createCss()` or `createScript()` instances per render. Define them once and pass them to your app as well.
-- Use `script.env()`, `script.state()` instead of passing context manually
-- Keep hydration logic inside `<Script>` blocks colocated with their element
+- ✅ Define and export `css` and `script` from shared modules (`css.ts`, `script.ts`)
+- ❌ Don’t create new `createCss()` or `createScript()` instances per render. Define them once and pass them to your app as well.
+- ✅ Use `script.env()`, `script.state()` instead of passing context manually
+- ✅ Keep hydration logic inside `<Script>` blocks colocated with their element
 
 ---
 
