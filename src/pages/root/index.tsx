@@ -3,6 +3,7 @@ import {type Context, type Router} from '../../types';
 import {Layout} from '../../components/layout/Layout';
 import {TriFrost} from '../../components/atoms/Icons';
 import {Button} from '../../components/atoms/Button';
+import {GradientBorder} from '../../components/atoms/GradientBorder';
 import {GridBackground} from '../../components/atoms/GridBackground';
 import {Page} from '../../components/molecules/Page';
 import {css} from '../../css';
@@ -60,19 +61,21 @@ export async function getHome(ctx: Context) {
               width: '60rem',
               height: '20rem',
               zIndex: -1,
-              opacity: 0.1,
+              opacity: 0.05,
             },
           })}
         >
           <p className={css.use('sm_b_s')}>Ready for the frontier?</p>
-          <div
-            className={css.use('panel', 'sp_s', 'br_m', {
-              border: '1px solid ' + css.$t.panel_border,
-              fontSize: css.$v.font_s_small,
-            })}
-          >
-            npm create <strong>trifrost@latest</strong>
-          </div>
+          <GradientBorder style={css.mix('br_m')}>
+            <div
+              className={css.use('panel', 'sp_s', 'br_m', {
+                border: '1px solid ' + css.$t.panel_border,
+                fontSize: css.$v.font_s_small,
+              })}
+            >
+              npm create <strong>trifrost@latest</strong>
+            </div>
+          </GradientBorder>
         </div>
       </Page>
     </Layout>,
