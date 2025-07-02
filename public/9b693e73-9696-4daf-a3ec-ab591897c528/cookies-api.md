@@ -106,7 +106,7 @@ Think of it like a wax seal on your data — except crypto-powered.
 > Note: **HMAC** (Hash-based Message Authentication Code) ensures that even if someone sees the cookie, they can’t fake or modify it without knowing the secret key.
 > This ensures that we can verify serverside that the value of a cookie **has not been tampered with**.
 
-##### 🧰 Generate a secure HMAC secret:**
+##### 🧰 Generate a secure HMAC secret:
 ```bash
 npm create trifrost@latest
 # → Choose: Security Keys → HS256 (or HS384/HS512)
