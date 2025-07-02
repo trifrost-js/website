@@ -1,188 +1,259 @@
-TriFrost includes a fast, runtime-aware JSX rendering engine designed specifically for SSR use cases.
+TriFrost’s JSX engine is designed from the ground up to enable **fast, secure, fragment-ready rendering** for modern server-side applications.
 
-Unlike traditional React-based setups, TriFrost JSX compiles directly to HTML strings, with built-in support for **contextual rendering**, **scoped styles**, **secure script hydration**, and **per-request nonce injection**.
+Whether you're building static pages, streaming fragments, or progressively enhancing UI, TriFrost gives you the full power of JSX, without heavy bundlers or framework runtimes.
+
+No hydration wrappers. No giant JS payloads. Just HTML, with behavior when you need it.
 
 This document covers the **basics** of using JSX with TriFrost, from setup to rendering, and introduces the primitives available to all JSX files.
 
-👉 For more advanced usage, see:
-- [JSX Script Behavior](/docs/jsx-script-behavior)
-- [JSX Style System](/docs/jsx-style-system)
-- [JSX Atomic Runtime](/docs/jsx-atomic)
+> 🔐 TriFrost is fully **CSP-safe** out of the box, both scripts and styles are automatically assigned the correct nonce per request.
+> 👉 Learn how to enable a [Content Security Policy](/docs/middleware-api-security)
 
 ---
 
-### Configuration
-To use JSX in TriFrost, your `tsconfig.json` must be set up to use `@trifrost/core` as the JSX factory:
-
+### ⚙️ Setup
+To enable JSX, configure your `tsconfig.json` with the compilerOptions set to this:
 ```json
 {
+  ...
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "@trifrost/core",
-    ...
-  }
+    "jsxImportSource": "@trifrost/core"
+  },
+  ...
 }
 ```
 
-Make sure the **jsxImportSource** is set to `@trifrost/core`, which exports the appropriate JSX primitives (`jsx`, `jsxs`, `Fragment`) to compile JSX syntax into the TriFrost runtime-compatible shape.
+This tells TypeScript to compile JSX into calls compatible with TriFrost’s runtime-aware rendering system.
+
+You’ll also want to define two shared files:
+- `css.ts`: Creates and exports your app-wide `css` instance
+- `script.ts`: Creates and exports your shared `Script` component and `script` context helpers
+
+```typescript
+// css.ts
+import {createCss} from '@trifrost/core';
+export const css = createCss();
+```
+
+```typescript
+// script.ts
+import {createScript} from '@trifrost/core';
+import {type Env} from './types.ts';
+export const {Script, script} = createScript<Env>({ atomic: true });
+```
+
+And within your `App` pass them as `client` options:
+```typescript
+import {App} from '@trifrost/core';
+import {css} from './css';
+import {script} from './script';
+
+const app = new App({
+  ...
+  client: {css, script},
+  ...
+})
+```
+
+> 👉 Want a guided setup? Try the [TriFrost Creation CLI](/docs/cli-quickstart) and scaffold a project - batteries included - in seconds.
 
 ---
 
-### 🧠 How it works
-TriFrost uses a custom JSX runtime that translates JSX into a lightweight virtual element tree. This tree is processed by the `ctx.html(...)` method, which ultimately produces an HTML string for the response.
-
-Example usage:
+### 🚀 Rendering Pages
+JSX in TriFrost compiles to strings and works seamlessly with `ctx.html(...)`:
 ```tsx
+// routes/home.ts
+import {Script} from '../script';
+import {css} from '../css';
+
 export const handler = async ctx => {
   return ctx.html(
     <html>
       <head>
-        <title>My App</title>
+        <title>Welcome</title>
       </head>
       <body>
-        <h1>Hello, world!</h1>
+        <h1>Hello World</h1>
+        <button className={css({
+          backgroundColor: 'white',
+          color: 'black',
+          [css.hover]: {backgroundColor: 'red', color: 'white'}
+        })}>
+          Click me
+          <Script>{({el, $}) => {
+            $.on(el, 'click', () => alert('Hi'));
+          }}</Script>
+        </button>
       </body>
     </html>
   );
 };
 ```
 
-Behind the scenes, `ctx.html()`:
-- Activates a rendering context (styles, script registry, etc.)
-- Converts JSX into an HTML string via `render(...)`
-- Injects collected styles and scripts
-- Applies nonce where needed
-- Resets the rendering context
+TriFrost will handle:
+- Script + style collection
+- CSP nonce injection
+- Deduplication
+- Runtime hydration
+
+It's just JSX, but server-native.
 
 ---
 
-### 🧬 Context Awareness
-TriFrost's JSX engine can access the active request context via utilities that are available through the `createScript` factory.
-```ts
-// script.ts
-const {Script, script} = createScript({ atomic: true });
+### 🧬 Context-Aware Helpers
+The `script` object (from `createScript`) gives you access to the current rendering context:
+- `script.env(key)`: ctx.env
+- `script.state(key)`: ctx.state
+- `script.nonce()`: (Though you shouldnt have to use this) Current CSP nonce
+
+These utilities work without needing to pass `ctx` explicitly. This makes JSX trees easier to reuse and reason about.
+
+> Of course, you can still pass the ctx into every component, but you shouldn't have to.
+
+---
+
+### 🪄 Behavior with <Script>
+Want interactivity? Just drop a `<Script>` inline. It executes on the client-side once the DOM is ready and gives you full reactivity:
+```tsx
+<button>
+  Click Me
+  <Script>{({el, $}) => {
+    $.on(el, 'click', () => alert('Hello'));
+  }}</Script>
+</button>
 ```
 
-From the above `script` object we can get:
-- `script.env(key)`: Access environment variables from the currently rendering context's `ctx.env` in **a typesafe way**
-- `script.state(key)`: Access route state (eg: path parameters, state set by middleware, ...) from the currently rendering context's `ctx.state`
-- `script.nonce()`: Access the CSP nonce for script/style tags
-
-Example:
+Or bind to state:
 ```tsx
-import {script} from './script';
+<button>
+  Click Me
+  <Script data={{count: 0}}>
+    {({el, data, $}) => {
+      data.$watch('count', val => el.innerText = `Clicked: ${val}`);
 
-export function Meta() {
-  return <meta name="env" content={script.env('NODE_ENV')} />;
+      $.on(el, 'click', () => data.count++);
+    }}
+  </Script>
+</button>
+```
+
+Scripts are atomic, isolated, nonced, and deduplicated.
+
+---
+
+### 💅 Scoped Styling
+TriFrost ships with a fully atomic, SSR-native CSS engine. Define styles via your shared `css.ts`:
+
+```tsx
+import {css} from '../css';
+
+export function MyFancyBox () {
+  const box = css({
+    padding: '1rem',
+    backgroundColor: 'black',
+    color: 'white',
+    [css.hover]: {color: 'yellow'}
+  });
+
+  return <div className={box}>Hover me</div>;
 }
 ```
 
-These helpers ensure JSX output is aware of the current request lifecycle **without having to pass ctx around everywhere**.
-
-👉 Learn more about:
-- [Context](/docs/context-api)
-- [Context State Management](/docs/context-state-management)
-- [CSP Nonce](/docs/middleware-api-security)
-
----
-
-### 🖼 Components
-Any function that returns JSX can be used as a component:
-```tsx
-function Button() {
-  return <button>Click Me</button>;
-}
-
-function Page() {
-  return <main><Button /></main>;
-}
-```
-
-The compiler calls each function component during rendering, injecting any `props` you've passed.
+Out of the box you get:
+- Nesting
+- Pseudo selectors (`:hover`, `:focus`, etc)
+- Media queries via `css.media.*`
+- Theming with `css.var` and `css.theme`
+- Built-in dark vs light mode
+- Reusable styles/definitions with `css.use()` and `css.mix()`
 
 ---
 
-### 🧩 Primitives
-TriFrost includes two first-class JSX components:
+### 🔁 Fragment-Ready by Default
+One of TriFrost’s biggest strengths is how well it handles **progressive rendering** and **partial hydration**.
 
-##### <Script>
-This lets you write inline scripts in JSX:
+- CSS is sharded automatically for fragments
+- `<Script>` tags work even inside streamed HTML
+- Duplicate styles/scripts are skipped at runtime
+- The atomic VM merges new shards on the fly
+
+This makes it perfect for:
+- Pagination
+- Filter UIs
+- Infinite scroll
+- Multi-phase rendering
+
+Here's a more full-fledged example (from the news section on the website) where we're binding to form inputs to then load up an HTML fragment through a fetch call which replaces the currently loaded section.
 ```tsx
-<Script>{el => {
-  el.innerText = 'JS loaded';
-}}</Script>
+<form>
+  <fieldset>
+    <legend>Type</legend>
+    <label><input type="radio" name="type" value="all" /> All</label>
+    <label><input type="radio" name="type" value="blog" /> Blog</label>
+    <label><input type="radio" name="type" value="release" /> Release</label>
+  </fieldset>
+  <fieldset>
+    <legend>By Month</legend>
+    <label><input type="radio" name="month" value="all" /> All</label>
+    <label><input type="radio" name="month" value="2025-06" /> June 2025</label>
+    <label><input type="radio" name="month" value="2025-05" /> May 2025</label>
+  </fieldset>
+  {/* We pass the default state of our filters */}
+  <Script data={{filters: {type: 'all', month: 'all'}}}>
+    {({data, $}) => {
+      /* Bind the specific form inputs to the data object, this ensures we listen to changes */
+      data.$bind('filters.type', 'input[name="type"]');
+      data.$bind('filters.month', 'input[name="month"]');
+
+      /* Watch the filters leaf */
+      data.$watch('filters', async () => {
+        /**
+         * On change submit the latest filters to a server side endpoint which returns html.
+         * The $.fetch util automatically builds it into a DocumentFragment as well given that the server
+         * returns HTML.
+         */
+        const res = await $.fetch<DocumentFragment>('/filter-news', {
+          method: 'POST',
+          body: data.filters,
+        });
+
+        /* If all is good, we replace our news list with the new filtered result */
+        if (res.ok && res.content) {
+          document.getElementById('news-list')?.replaceWith(res.content);
+        }
+      });
+    }}
+  </Script>
+</form>
+<div id="news-list">{/* Server-rendered list gets replaced here */}</div>
 ```
 
-Scripts are de-duplicated, scoped, and automatically get the correct nonce.
-
-If you pass a `src`, it will render a remote script:
-```tsx
-<Script src="https://example.com/foo.js" />
-```
-
-👉 Learn more in [JSX Script Behavior](/docs/jsx-script-behavior)
-
-##### <Style>
-Used to inject collected styles from the `createCss()` system:
-
-```tsx
-<Style />
-```
-
-It’s typically used once in `<head>` and auto-replaced with all **used** CSS.
-
-> 💡 **Tip:** Note that when doing component-based renders (SSC) in combination with full-page renders (SSR) you might want to include `<Style />` in those components as well, this ensures the styles native to that component get served as well if that component is rendered standalone. Only the first `<Style />` instance gets injected (the one in `head` for example), all the rest get ignored safely unless they are the **first one** for that render.
-
-👉 Learn how to craft responsive masterpieces and more in [JSX Style System](/docs/jsx-style-system)
+> 👉 Want a full breakdown? See [JSX Fragments](/docs/jsx-fragments)
 
 ---
 
-### 💅 Styling with createCss
-TriFrost ships with an atomic, scoped, and SSR-safe CSS Engine:
-```tsx
-const css = createCss();
-
-const box = css({
-  padding: '1rem',
-  color: 'black',
-  ':hover': { color: 'blue' },
-});
-
-<div className={box}>Hover me</div>
-```
-
-Out of the box this gives you:
-- Nesting (like in sass)
-- Ergonomic access to pseudo selectors like `:hover`, `:focus`, etc.
-- Built-in media queries, exposed via `css.media`, for usage **at a component level**, etc.
-- Built-in theming and variable tokens via `css.var` and `css.theme`
-- Built-in reuse tokens via `definitions`
-
-👉 Learn how to craft responsive masterpieces and more in [JSX Style System](/docs/jsx-style-system)
-
----
-
-### 📤 Rendering Pipeline Summary
-When calling `ctx.html(...)` with JSX:
-- The internal `rootRender(...)` activates rendering engines (script, style, ...) and sets the current ctx as the active context
-- JSX is walked and rendered to HTML
-- Styles (`<Style>`) and Scripts (`<Script>`) get collected, deduped, and injected. Important to note that **only the used bits get injected**
-- CSP nonces are applied if present
-- Final HTML string is returned
+### Best Practices
+- Define and export `css` and `script` from shared modules (`css.ts`, `script.ts`)
+- Don’t create new `createCss()` or `createScript()` instances per render. Define them once and pass them to your app as well.
+- Use `script.env()`, `script.state()` instead of passing context manually
+- Keep hydration logic inside `<Script>` blocks colocated with their element
 
 ---
 
 ### TLDR
-- Configure TypeScript with `jsx: react-jsx` and `jsxImportSource: @trifrost/core`
-- Use `ctx.html(...)` to render JSX trees
-- Use `env()`, `state()`, and `nonce()` for request-aware rendering
-- `<Script>` and `<Style>` auto-handle nonce, deduping, and hydration
-- `createCss()` enables scoped, atomic styles without a client-side runtime
+- JSX compiles to strings, not VDOM
+- Full server-first pipeline: nonce-aware, deduped, reactive
+- Co-locate behavior with `<Script>`
+- Style to your hearts content with `css()` from a shared instance
+- Perfect for fragments and progressive UIs
+- CSP-safe by default (both scripts and styles)
 
 ---
 
 ### Next Steps
-For deeper JSX capabilities and understanding, explore:
+Ready to learn more?
 - [JSX Script Behavior](/docs/jsx-script-behavior)
 - [JSX Style System](/docs/jsx-style-system)
 - [JSX Atomic Runtime](/docs/jsx-atomic)
+- [JSX Fragments](/docs/jsx-fragments)
