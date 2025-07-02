@@ -19,8 +19,10 @@ export function Cli() {
     >
       <div className={css.mix('f', 'fv', 'fa_l', {gap: css.$v.space_m})}>
         <h2 className={css.use('sm_b_m', 'text_header')}>🚀 Try the CLI</h2>
-        <p className={css.use('text_body', 'sm_b_l', {maxWidth: '40rem', lineHeight: 1.4})}>
-          Spin up a new TriFrost project in seconds with a single command, no config, no hassle.
+        <p className={css.use('text_body', 'sm_b_l', {maxWidth: '45rem', lineHeight: 1.4})}>
+          Spin up a new TriFrost project in seconds or generate security keys on the fly with a single command.
+          <br />
+          No config, no hassle.
         </p>
         <Link to="/docs/cli-quickstart">CLI Quickstart Guide</Link>
       </div>
