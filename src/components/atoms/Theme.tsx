@@ -17,10 +17,7 @@ export function ThemeSetter() {
 }
 
 export function Theme() {
-  const icon = css.cid();
-  const moon = css.cid();
-  const sun = css.cid();
-  const sunbeams = css.cid();
+  const uid = css.cid();
 
   const cls = css.use({
     background: 'none',
@@ -31,35 +28,35 @@ export function Theme() {
     aspectRatio: 1,
     borderRadius: '50%',
     cursor: 'pointer',
-    [` .${icon}`]: {
+    svg: {
       inlineSize: '100%',
       blockSize: '100%',
       strokeLinecap: 'round',
-    },
-    [` .${moon}`]: {
-      transformOrigin: 'center center',
-      fill: css.$t.body_fg,
-      circle: {
-        transform: 'translateX(0)',
-        transition: 'transform .1s ease-in-out',
-        willChange: 'transform',
+      mask: {
+        transformOrigin: 'center center',
+        fill: css.$t.body_fg,
+        circle: {
+          transform: 'translateX(0)',
+          transition: 'transform .1s ease-in-out',
+          willChange: 'transform',
+        },
       },
-    },
-    [` .${sun}`]: {
-      transformOrigin: 'center center',
-      fill: css.$t.body_fg,
-      transition: 'transform .5s cubic-bezier(.5,1.25,.75,1.25)',
-    },
-    [` .${sunbeams}`]: {
-      transformOrigin: 'center center',
-      stroke: css.$t.body_fg,
-      strokeWidth: '2px',
-      transition: 'transform .45s cubic-bezier(.5,1.5,.75,1.25), opacity .5s cubic-bezier(.25,0,.3,1)',
+      ['> circle']: {
+        transformOrigin: 'center center',
+        fill: css.$t.body_fg,
+        transition: 'transform .5s cubic-bezier(.5,1.25,.75,1.25)',
+      },
+      g: {
+        transformOrigin: 'center center',
+        stroke: css.$t.body_fg,
+        strokeWidth: '2px',
+        transition: 'transform .45s cubic-bezier(.5,1.5,.75,1.25), opacity .5s cubic-bezier(.25,0,.3,1)',
+      },
     },
   });
 
   css.root({
-    [`${css.attr('data-theme', 'light')} #theme-switcher`]: {
+    [`${css.attr('data-theme', 'light')} #${uid}`]: {
       svg: {
         mask: {
           circle: {
@@ -68,33 +65,35 @@ export function Theme() {
         },
       },
     },
-    [`${css.attr('data-theme', 'dark')} #theme-switcher`]: {
-      [` .${sun}`]: {
+    [`${css.attr('data-theme', 'dark')} #${uid} svg`]: {
+      ['> circle']: {
         transform: 'scale(1.75)',
         transitionTimingFunction: 'cubic-bezier(.25,0,.3,1)',
         transitionDuration: '.25s',
       },
-      [` .${sunbeams}`]: {
+      g: {
         opacity: 0,
         transform: 'rotateZ(-25deg)',
         transitionDuration: '.15s',
       },
-      [` .${moon} circle`]: {
-        transform: 'translateX(-7px)',
-        transitionDelay: '.15s',
+      mask: {
+        circle: {
+          transform: 'translateX(-7px)',
+          transitionDelay: '.15s',
+        },
       },
     },
   });
 
   return (
-    <button id="theme-switcher" aria-label="auto" aria-live="polite" className={cls}>
-      <svg className={icon} aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
-        <mask id="moon-mask" className={moon}>
+    <button id={uid} aria-label="auto" aria-live="polite" className={cls}>
+      <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24">
+        <mask id="moon-mask">
           <rect x="0" y="0" width="100%" height="100%" fill="white" />
           <circle cx="24" cy="10" r="6" fill="black" />
         </mask>
-        <circle className={sun} cx="12" cy="12" r="6" mask="url(#moon-mask)" />
-        <g className={sunbeams}>
+        <circle cx="12" cy="12" r="6" mask="url(#moon-mask)" />
+        <g>
           <line x1="12" y1="1" x2="12" y2="3" />
           <line x1="12" y1="21" x2="12" y2="23" />
           <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
