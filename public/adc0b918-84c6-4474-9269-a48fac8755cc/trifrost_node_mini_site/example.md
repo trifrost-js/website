@@ -106,13 +106,13 @@ export const css = createCss({
     ...
   },
   definitions: (mod) => ({
-    f: {display: 'flex'},
-    fh: {flexDirection: 'row'},
-    fv: {flexDirection: 'column'},
-    fa_c: {alignItems: 'center'},
-    fj_c: {justifyContent: 'center'},
-    sm_v_l: {marginBottom: mod.$v.space_l, marginTop: mod.$v.space_l},
-    text_header: {
+    f: () => ({display: 'flex'}),
+    fh: () => ({flexDirection: 'row'}),
+    fv: () => ({flexDirection: 'column'}),
+    fa_c: () => ({alignItems: 'center'}),
+    fj_c: () => ({justifyContent: 'center'}),
+    sm_v_l: () => ({marginBottom: mod.$v.space_l, marginTop: mod.$v.space_l}),
+    text_header: () => ({
       fontFamily: mod.$v.font_header,
       fontWeight: 'bold',
       [mod.media.desktop]: {
@@ -121,12 +121,12 @@ export const css = createCss({
       [mod.media.tablet]: {
         fontSize: '2rem',
       },
-    },
-    text_title: {
+    }),
+    text_title: () => ({
       fontFamily: mod.$v.font_header,
       fontWeight: 'bold',
       fontSize: '2rem',
-    },
+    }),
     ...
   }),
 });

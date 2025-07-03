@@ -242,19 +242,19 @@ export const css = createCss({
     empty_fg: '#666',
   },
   definitions: mod => ({
-    f: {display: 'flex'},
-    fv: {flexDirection: 'column'},
-    fh: {flexDirection: 'row'},
-    fa_c: {alignItems: 'center'},
-    title: {
+    f: () => ({display: 'flex'}),
+    fv: () => ({flexDirection: 'column'}),
+    fh: () => ({flexDirection: 'row'}),
+    fa_c: () => ({alignItems: 'center'}),
+    title: () => ({
       fontSize: '1.8rem',
       fontWeight: 600,
-    },
-    form: {
+    }),
+    form: () => ({
       display: 'flex',
       margin: `${mod.$v.space_m} 0`,
-    },
-    button: {
+    }),
+    button: () => ({
       appearance: 'none',
       backgroundColor: 'black',
       color: 'white',
@@ -267,30 +267,30 @@ export const css = createCss({
       [mod.hover]: {
         backgroundColor: '#333',
       },
-    },
-    button_l: {
+    }),
+    button_l: () => ({
       lineHeight: '3rem',
       padding: `0 ${mod.$v.space_m}`,
       fontSize: '1rem',
-    },
-    button_s: {
+    }),
+    button_s: () => ({
       lineHeight: '2rem',
       padding: `0 ${mod.$v.space_s}`,
       fontSize: '.8rem',
-    },
-    form_el: {
+    }),
+    form_el: () => ({
       fontSize: '1rem',
       height: '3rem',
       padding: `0 ${mod.$v.space_m}`,
       borderRadius: mod.$v.radius,
-    },
-    form_icon: {
+    }),
+    form_icon: () => ({
       fontSize: '1rem',
       height: '2rem',
       width: '2rem',
       display: 'inline-block',
       flexShrink: '0',
-    },
+    }),
   })
 });
 ```
