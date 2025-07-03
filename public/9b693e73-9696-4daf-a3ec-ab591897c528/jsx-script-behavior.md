@@ -207,6 +207,56 @@ See [JSX Atomic Runtime](/docs/jsx-atomic) for the full list.
 
 ---
 
+### ⚡ Instant Execution Scripts
+When using `<Script>` with a **function that takes no arguments**, TriFrost optimizes it by **inlining the logic directly into the HTML**:
+```tsx
+<Script>{() => {
+  console.log('Inline script ran immediately');
+}}</Script>
+```
+
+This is:
+- ✅ Instant: no need to wait for the script engine
+- ✅ CSP-safe: nonce is automatically applied
+- ✅ Great for meta-level logic, e.g. setting theme or firing analytics
+
+> 💡 Think of this as a safer, scoped `<script>` tag, but written inline with full TypeScript support.
+
+Under the hood, this produces:
+```html
+<script nonce="abc123">(function(){console.log("Inline script ran immediately")})();</script>
+```
+
+This behavior is **only enabled for scripts with no arguments**:
+```tsx
+<Script>{() => { ... }}</Script> // ✅ inlined
+<Script>{({el}) => { ... }}</Script> // ❌ not inlined, handled via hydration
+```
+This means you get instant execution **only when no DOM binding is needed**, perfect for boot-time setup, cookie flags, or third-party hooks.
+
+For example:
+```tsx
+/* Theme detection */
+<Script>
+  {() => {
+    const saved = localStorage.getItem('theme');
+    const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', saved || preferred);
+  }}
+</Script>
+```
+```tsx
+/* Locale detection */
+<Script>
+  {() => {
+    const locale = navigator.language?.startsWith('fr') ? 'fr' : 'en';
+    document.documentElement.setAttribute('data-lang', locale);
+  }}
+</Script>
+```
+
+---
+
 ### Examples
 ##### Class Toggle
 Toggle a class on click:
