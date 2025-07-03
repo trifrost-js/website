@@ -30,17 +30,17 @@ export const css = createCss({
 
   // Reusable definitions (utility classnames)
   definitions: mod => ({
-    panel: {
+    panel: () => ({
       backgroundColor: mod.$t.bg_panel,
       padding: mod.$v.space_l,
-    },
-    text_header: {
+    }),
+    text_header: () => ({
       fontSize: mod.$v.font_header,
       fontWeight: 600,
       [mod.media.mobile]: {
         fontSize: '1rem',
       },
-    },
+    }),
   }),
 });
 ```
@@ -52,16 +52,27 @@ TriFrost's styling engine is fully typed, meaning you **can’t reference a toke
 - `css.use(...)` and `css.mix(...)` definitions
 - `css.$v` and `css.$t` tokens
 - `css.media.*` breakpoints
+- `css.defs` dynamic definitions (eg: `css.defs.alert('danger')`)
 
 For example:
 ```typescript
-css.use({
+css.use(css.defs.alert('danger'), { // ✅ aware of definitions, and their types
   fontSize: css.$v.font_header, // ✅ autocomplete + safety
   color: css.$t.bg_panel,       // ✅ aware of light/dark values
 });
 ```
 
 This gives you refactor-safe, IDE-friendly styles that scale with confidence, without runtime validation.
+
+##### Available Options
+- **var**: `Record<string, string>`\nStatic design tokens available as `css.var`/`css.$v`
+- **theme**: `Record<string, string|{light,dark}>`\nTheme-aware tokens available as `css.theme`/`css.$t`
+- **breakpoints**: `Record<string, string>`\nCustom media queries accessible via `css.media`. Overrides built-in set.
+- **reset**: `boolean`\nIf `true`, injects a minimal CSS reset at root.
+- **definitions**: `(mod) => Record<string, (...args:any[]) => CSSObject>`\nNamed utility-style functions for reuse via `css.use(...)`, `css.mix(...)` or `css.defs.*`
+- **animations**: `Record<string, {keyframes, duration, ...}>`\nPrebuilt keyframe configs accessible via `css.animation(...)`
+
+> 💡 All options are optional, you can start simple and progressively enhance.
 
 ---
 
@@ -177,6 +188,16 @@ const cls = css.use(
 );
 ```
 
+You can use `css.defs.[name]`() for direct access to definition outputs, ideal for inline use or dynamic composition.
+```typescript
+const cls = css.use(
+	css.defs.text_header(), // Direct use of definition output
+	{
+		fontSize: css.$v.font_s_small,
+	},
+);
+```
+
 > 💡 `css.mix` simply returns the merged object and does not register it with the style engine. `css.use` merges internally, registers a deterministic class name with the engine and returns it.
 > It's important to understand the difference as one allows for composition where the other is meant for getting the class to set on a dom node for SSR.
 
@@ -218,7 +239,7 @@ You can use these inside both definitions and inline styles.
 When defining utilities via `createCss({ definitions })`, you can reference `mod.media` to scope styles per breakpoint:
 ```typescript
 definitions: mod => ({
-  text_title: {
+  text_title: () => ({
     fontWeight: 700,
     fontSize: '1.8rem',
     [mod.media.mobile]: {
@@ -227,7 +248,7 @@ definitions: mod => ({
     [mod.media.desktop]: {
       fontSize: '2rem',
     },
-  },
+  }),
 })
 ```
 
@@ -259,13 +280,13 @@ export const css = createCss({
     mobile: '@media (max-width: 600px)',
   },
   definitions: mod => ({
-    base: {
+    base: () => ({
       padding: '1rem',
       [mod.media.mobile]: {
         padding: '.5rem',
         color: 'black',
       },
-    },
+    }),
   }),
 });
 ```
@@ -287,11 +308,43 @@ const animCls = css.use({
 });
 ```
 
-Here's two examples:
+Here's two examples of keyframe usage:
 - the [shooting star](https://github.com/trifrost-js/website/blob/main/src/components/atoms/GridBackground.tsx) effect from our website's homepage.
 - the [benchmark](https://github.com/trifrost-js/website/blob/c0c38dbd6bf2911edac559bbf244b0420492d8c7/src/pages/root/components/Benchmark.tsx#L57) component with a progress bar animation.
 
-> 🔮 Prebuilt animation definitions are planned for future versions of TriFrost. Let us know on the discord if this is something you as the reader would be interested in, that way we can potentially fast-track it.
+You can also register prebuilt animations using `createCss({ animations: { ... } })`, and use them via `css.animation('name', overrides?)`.
+
+For Example:
+```typescript
+// css.ts
+const css = createCss({
+  animations: {
+    fadeInUp: {
+      keyframes: {
+        from: { opacity: 0, transform: 'translateY(10px)' },
+        to: { opacity: 1, transform: 'translateY(0)' },
+      },
+      duration: '0.4s',
+      easingFunction: 'ease-out',
+    },
+  },
+  definitions: css => ({
+    card: () => ({
+      padding: '1rem',
+      borderRadius: '0.5rem',
+      backgroundColor: '#fff',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    }),
+  }),
+});
+```
+
+```tsx
+// Component.tsx
+const cls = css.use('card', css.animation('fadeInUp', { delay: '100ms' }));
+
+return <div className={cls}>Animated Card</div>;
+```
 
 ---
 
