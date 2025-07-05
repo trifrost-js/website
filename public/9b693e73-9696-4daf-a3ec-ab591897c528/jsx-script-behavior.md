@@ -30,8 +30,8 @@ type StoreData = {
 };
 
 const config = {
-	atomic: true, /* Enables TriFrost Atomic reactivity + scoped utilities */
-	css, /* Enables certain behaviors in TriFrost Atomic to be typed (such as $.cssVar and $.cssTheme) */
+  atomic: true, /* Enables TriFrost Atomic reactivity + scoped utilities */
+  css, /* Enables certain behaviors in TriFrost Atomic to be typed (such as $.cssVar and $.cssTheme) */
 } as const;
 
 export const {Script, script} = createScript<

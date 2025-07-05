@@ -73,7 +73,7 @@ type RelayEvents = {
 };
 
 const config = {
-	atomic: true,
+  atomic: true,
 } as const;
 
 const {Script, script} = createScript<typeof config, Env, RelayEvents>(config);

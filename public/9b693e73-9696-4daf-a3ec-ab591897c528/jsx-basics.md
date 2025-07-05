@@ -43,8 +43,8 @@ import {type Env} from './types.ts';
 import {css} from './css';
 
 const config = {
-	atomic: true,
-	css,
+  atomic: true,
+  css,
 } as const;
 
 export const {Script, script} = createScript<typeof config, Env>(config);
