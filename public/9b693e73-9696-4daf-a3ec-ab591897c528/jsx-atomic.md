@@ -24,7 +24,7 @@ It's like a mini reactive runtime baked directly into your DOM tree.
 ### Runtime Footprint
 When enabled:
 - Adds **~8KB** static runtime (served once, cached forever)
-- Injects **~300-500B** glue logic on a page with scripts
+- Injects **~100-200B** glue logic on a page with scripts
 
 It’s faster, smaller, and safer than client frameworks.
 
@@ -72,7 +72,11 @@ type RelayEvents = {
   'user:auth': {id: string};
 };
 
-const {Script, script} = createScript<Env, RelayEvents>({atomic: true});
+const config = {
+	atomic: true,
+} as const;
+
+const {Script, script} = createScript<typeof config, Env, RelayEvents>(config);
 export {Script, script};
 ```
 
@@ -144,7 +148,9 @@ type StoreData = {
   theme: 'light' | 'dark';
 };
 
-const {Script, script} = createScript<Env, RelayEvents, StoreData>();
+const config = {} as const;
+
+const {Script, script} = createScript<typeof config, Env, RelayEvents, StoreData>(config);
 ```
 
 Store changes **automatically emit relay events**:
@@ -200,7 +206,7 @@ When atomic is enabled, the `data` object that you pass to your `<Script>` insta
 
 You can:
 - `$set(path, val)` or deep-merge objects with `$set(val)`
-- `$watch(path, fn)` to subscribe to changes
+- `$watch(path, fn)` to subscribe to changes. The watcher fn has the following signature arguments `(newVal, oldVal)`
 - `$bind(path, selector)` to two-way bind to inputs, or `$bind(path, selector, watcher)` to combine a bind and watch in a single line
 
 All deeply typed, scoped to the node, and automatically cleaned up.
@@ -279,6 +285,8 @@ Atomic gives you access to the Atomic `$` utilities. A suite of safe, zero-depen
 - `$.clear(el)`: Clears a dom node
 - `$.query(el, selector)`: Scoped querySelector.
 - `$.queryAll(el, selector)`: Scoped querySelectorAll with **array** result.
+- `$.cssVar(name)`: Retrieve the value of a css static variable registered with css.var (see [Style System](/docs/jsx-style-system))
+- `$.cssTheme(name)`: Retrieve the value of a css theme variable registered with css.theme (see [Style System](/docs/jsx-style-system))
 
 ##### Global Store access
 - `$.storeGet(key)`: Get a value from the global store.

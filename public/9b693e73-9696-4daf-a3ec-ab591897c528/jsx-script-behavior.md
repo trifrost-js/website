@@ -12,6 +12,7 @@ Create your scripting engine using `createScript()` and place it in a shared fil
 ```typescript
 // src/script.ts
 import {createScript} from '@trifrost/core';
+import {css} from './css';
 import {type Env} from './types';
 
 type RelayEvents = {
@@ -28,13 +29,17 @@ type StoreData = {
    */
 };
 
+const config = {
+	atomic: true, /* Enables TriFrost Atomic reactivity + scoped utilities */
+	css, /* Enables certain behaviors in TriFrost Atomic to be typed (such as $.cssVar and $.cssTheme) */
+} as const;
+
 export const {Script, script} = createScript<
+  typeof config,
   Env, /* Env ensures that when you do eg script.env it is fully typed */
   RelayEvents,
   StoreData,
->({
-  atomic: true /* Enables TriFrost Atomic reactivity + scoped utilities */
-});
+>(config);
 ```
 
 > ⚠️ You should only ever call `createScript()` once per environment. Define it in one file and reuse the exported `<Script>` and `script` across your app.
@@ -104,7 +109,7 @@ The `<Script>` component is TriFrost’s universal way to attach logic to your H
 - ✅ Inline behavior via serialized function calls
 - ✅ External script tags with full CSP/nonce support
 - ✅ Built-in deduplication
-- ✅ Optional **atomic reactivity** when using `createScript({atomic: true})`
+- ✅ Optional **atomic reactivity** when using `atomic: true` in the config for createScript
 
 👉 Learn about the [TriFrost Atomic Runtime](/docs/jsx-atomic) to craft reactive masterpieces.
 

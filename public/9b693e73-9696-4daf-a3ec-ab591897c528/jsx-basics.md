@@ -40,7 +40,14 @@ export const css = createCss();
 // script.ts
 import {createScript} from '@trifrost/core';
 import {type Env} from './types.ts';
-export const {Script, script} = createScript<Env>({ atomic: true });
+import {css} from './css';
+
+const config = {
+	atomic: true,
+	css,
+} as const;
+
+export const {Script, script} = createScript<typeof config, Env>(config);
 ```
 
 Then go to your `App` and pass them as `client` options:
