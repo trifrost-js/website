@@ -46,6 +46,7 @@ Each `el` now has:
 - `el.$unmount`: Called automatically when removed from DOM
 - `el.$mount`: Called automatically once VM node has been instantiated
 - `el.$subscribe(topic, fn)`: Method allowing you to subscribe to a topic on the pubsub relay
+- `el.$subscribeOnce(topic, fn)`: Method allowing you to subscribe to a topic on the pubsub relay with automatic unsubscribe once triggered
 - `el.$unsubscribe(topic)`: Method allowing you to unsubscribe from a specific topic on the pubsub relay
 - `el.$publish(topic, data)`: Method allowing you to publish data to a specific topic on the pubsub relay
 - Automatic integration with mutation observers and relay system
@@ -282,6 +283,7 @@ Atomic gives you access to the Atomic `$` utilities. A suite of safe, zero-depen
 - `$.once(el, type, handler)`: Adds a one-time event listener that **auto-cleans on first call**.
 
 ##### DOM utilities
+- `$.blurActive()`: Removes focus from the currently active element
 - `$.clear(el)`: Clears a dom node
 - `$.query(el, selector)`: Scoped querySelector.
 - `$.queryAll(el, selector)`: Scoped querySelectorAll with **array** result.
