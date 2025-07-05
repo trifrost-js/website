@@ -187,7 +187,6 @@ const _css = createCss({
       light: '#03111F !important',
     },
   },
-  themeAttribute: true,
   reset: true,
   definitions: mod => ({
     /* Flex */
