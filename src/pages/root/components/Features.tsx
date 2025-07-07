@@ -8,23 +8,31 @@ const features = [
   },
   {
     title: '📦 Modular Middleware',
-    desc: 'Inspired by Koa, written for scale',
+    desc: 'Inspired by Koa, written for hyperspeed edge workloads',
   },
   {
     title: '⚡ Zero-cost Abstractions',
-    desc: 'Context, Router, ... all inlined for performance',
+    desc: 'SSR, routing, context all inlined for native performance',
   },
   {
-    title: '📈 Introspectable Tracing',
-    desc: 'Otel-native, per-request, per-span, autoredacted',
+    title: '🧪 Telemtry-First',
+    desc: 'Per-request tracing, spans, metrics baked in (Otel-native)',
   },
   {
-    title: '📉 Built-in Rate Limiting',
-    desc: 'Memory, KV, Redis, DurableObject support',
+    title: '🧱 Built-in Rate Limiting',
+    desc: 'Plug-and-play support for KV, DurableObject, Redis, Memory',
   },
   {
-    title: '🧪 Fully Typed API',
-    desc: 'First-class TypeScript support throughout',
+    title: '🧰 Fully Typed API',
+    desc: 'End-to-end TypeScript, infer everything, no magic',
+  },
+  {
+    title: '🧪 Atomic Hydration',
+    desc: 'Fragment-safe, SSR-first hydration with automatic cleanup',
+  },
+  {
+    title: '🧬 Data Reactivity',
+    desc: 'Built-in reactive data layer, zero config, fully typed',
   },
 ];
 

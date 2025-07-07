@@ -38,8 +38,7 @@ export async function getHome(ctx: Context) {
             lineHeight: '140%',
           })}
         >
-          A blazing-fast, runtime-agnostic server framework built for the modern JavaScript ecosystem — from low-latency edge environments
-          to traditional backend infrastructure
+          Build ultra-fast, fully typed apps that run anywhere. With atomic fragments, runtime telemetry and SSR without compromise.
         </p>
         <div className={css.use('f', 'sp_h_l', 'sm_v_xl', 'sm_h_auto', {gap: css.$v.space_s})}>
           <Button label="Get Started" to="/docs/hello-world-example" />
