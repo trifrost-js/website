@@ -10,6 +10,7 @@ import {css} from '../../css';
 import {Features} from './components/Features';
 import {Benchmark} from './components/Benchmark';
 import {Cli} from './components/CLI';
+import {Arcade} from './components/Arcade';
 import {ExamplesService} from '../examples/Service';
 import {NewsService} from '../news/Service';
 import {DocsService} from '../docs/Service';
@@ -47,6 +48,7 @@ export async function getHome(ctx: Context) {
         <Features />
         <Benchmark />
         <Cli />
+        <Arcade />
         <div
           className={css.use('sm_t_giga', 'sm_h_auto', 'text_header_thin', {
             textAlign: 'center',

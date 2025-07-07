@@ -5,16 +5,16 @@ import {Link} from '../../../components/atoms/Link';
 export function Cli() {
   return (
     <div
-      className={css.use('f', 'sm_h_auto', 'panel', 'sp_m', 'br_m', {
+      className={css.use('f', 'sm_h_auto', 'panel', 'sp_m', 'br_m', 'sm_b_s', {
         border: '1px solid ' + css.$t.panel_border,
-        [css.media.desktop]: css.mix('sm_b_l', 'fh', 'fj_sb', {
+        [css.media.desktop]: css.mix('fh', 'fj_sb', {
           width: '99rem',
         }),
-        [css.media.tablet]: css.mix('sm_b_m', 'fh', 'fj_sb', {
+        [css.media.tablet]: css.mix('fh', 'fj_sb', {
           width: '100%',
           maxWidth: '100rem',
         }),
-        [css.media.mobile]: css.mix('sm_b_s', 'fv', {gap: css.$v.space_l}),
+        [css.media.mobile]: css.mix('fv', {gap: css.$v.space_l}),
       })}
     >
       <div className={css.mix('f', 'fv', 'fa_l', {gap: css.$v.space_m})}>
