@@ -12,5 +12,5 @@ const config = {
   css,
 } as const;
 
-const {Script, script} = createScript<typeof config, Env, Events>(config);
-export {Script, script};
+const {Script, script, Module} = createScript<typeof config, Env, Events>(config);
+export {Script, script, Module};
