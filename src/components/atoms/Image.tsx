@@ -5,10 +5,11 @@ type ImageProps = {
   src: string;
   alt: string;
   style?: Record<string, any>;
+  interactive?: boolean;
   [key: string]: unknown;
 };
 
-export function Image({src, alt, style, ...rest}: ImageProps) {
+export function Image({src, alt, style, interactive = true, ...rest}: ImageProps) {
   return (
     <div
       className={css.use(
@@ -16,12 +17,14 @@ export function Image({src, alt, style, ...rest}: ImageProps) {
         {
           overflow: 'hidden',
           border: '1px solid ' + css.$t.border,
-          cursor: 'zoom-in',
           [css.not('[data-loaded]')]: {
             minHeight: '10rem',
           },
-          [css.not('[data-viewing]')]: css.mix('outline', {
-            [`div${css.nthOfType(2)}`]: css.mix('hide'),
+          ...(interactive && {
+            cursor: 'zoom-in',
+            [css.not('[data-viewing]')]: css.mix('outline', {
+              [`div${css.nthOfType(2)}`]: css.mix('hide'),
+            }),
           }),
           [css.attr('data-loaded')]: {div: css.mix('hide')},
           [css.attr('data-error')]: css.mix('hide'),
@@ -86,20 +89,23 @@ export function Image({src, alt, style, ...rest}: ImageProps) {
           {...rest}
         />
       </div>
-      <Script>
-        {({el, $}) => {
+      <Script data={{interactive}}>
+        {({el, data, $}) => {
           function loaded() {
             el.setAttribute('data-loaded', 'true');
             el.style.minHeight = 'unset';
           }
 
-          const modal = $.query(el, '> div:last-of-type')!;
-          $.on(modal, 'click', () => el.removeAttribute('data-viewing'));
-
           const img = $.query(el, '> img') as HTMLImageElement;
           img.onerror = () => el.setAttribute('data-error', 'true');
-          img.onclick = () => el.setAttribute('data-viewing', 'true');
           img.onload = loaded;
+
+          if (data.interactive) {
+            const modal = $.query(el, '> div:last-of-type')!;
+            $.on(modal, 'click', () => el.removeAttribute('data-viewing'));
+
+            img.onclick = () => el.setAttribute('data-viewing', 'true');
+          }
 
           if (img.complete || img.naturalWidth > 0) loaded();
         }}
