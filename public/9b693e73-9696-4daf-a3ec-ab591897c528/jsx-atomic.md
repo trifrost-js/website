@@ -285,10 +285,13 @@ Atomic gives you access to the Atomic `$` utilities. A suite of safe, zero-depen
 ##### DOM utilities
 - `$.blurActive()`: Removes focus from the currently active element
 - `$.clear(el)`: Clears a dom node
-- `$.query(el, selector)`: Scoped querySelector.
-- `$.queryAll(el, selector)`: Scoped querySelectorAll with **array** result.
+- `$.create(tag, opts)`: Creates a new DOM element (uses `createElementNS` for known SVG tags, and infers the return type by tag)
 - `$.cssVar(name)`: Retrieve the value of a css static variable registered with css.var (see [Style System](/docs/jsx-style-system))
 - `$.cssTheme(name)`: Retrieve the value of a css theme variable registered with css.theme (see [Style System](/docs/jsx-style-system))
+- `$.query(el, selector)`: Scoped querySelector. (with type inference for common selectors)
+- `$.queryAll(el, selector)`: Scoped querySelectorAll with **array** result. (with type inference for common selectors)
+- `$.timedAttr(el, attr, opts)`: Sets an attribute on `el` and removes it after `opts.duration` (optional `after` callback)
+- `$.timedClass(el, className, opts)`: Adds a class to `el` and removes it after `opts.duration` (optional `after` callback)
 
 ##### Global Store access
 - `$.storeGet(key)`: Get a value from the global store.
