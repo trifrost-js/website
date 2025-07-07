@@ -28,7 +28,7 @@ This tells TypeScript to compile JSX into calls compatible with TriFrost’s run
 
 You’ll also want to define two shared files:
 - `css.ts`: Creates and exports your app-wide `css` instance
-- `script.ts`: Creates and exports your shared `Script` component and `script` context helpers
+- `script.ts`: Creates and exports your shared `Script` and `Module` components and `script` context helpers
 
 ```typescript
 // css.ts
@@ -47,7 +47,7 @@ const config = {
   css,
 } as const;
 
-export const {Script, script} = createScript<typeof config, Env>(config);
+export const {Module, Script, script} = createScript<typeof config, Env>(config);
 ```
 
 Then go to your `App` and pass them as `client` options:
@@ -252,6 +252,7 @@ Here's a more full-fledged example (from the news section on the website) where 
 - ❌ Don’t create new `createCss()` or `createScript()` instances per render. Define them once and pass them to your app as well.
 - ✅ Use `script.env()`, `script.state()` instead of passing context manually
 - ✅ Keep hydration logic inside `<Script>` blocks colocated with their element
+- ✅ Keep global components inside `<Module>` blocks (such as modals, notification, etc)
 
 ---
 
