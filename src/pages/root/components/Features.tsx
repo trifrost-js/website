@@ -16,11 +16,11 @@ const features = [
   },
   {
     title: '🧪 Telemtry-First',
-    desc: 'Per-request tracing, spans, metrics baked in (Otel-native)',
+    desc: 'Per-request tracing, spans and metrics (Otel-native)',
   },
   {
     title: '🧱 Built-in Rate Limiting',
-    desc: 'Plug-and-play support for KV, DurableObject, Redis, Memory',
+    desc: 'Plug & play for KV, DurableObject, Redis, Memory',
   },
   {
     title: '🧰 Fully Typed API',
@@ -28,7 +28,7 @@ const features = [
   },
   {
     title: '🧪 Atomic Hydration',
-    desc: 'Fragment-safe, SSR-first hydration with automatic cleanup',
+    desc: 'Fragment-safe, SSR-first hydration & automatic cleanup',
   },
   {
     title: '🧬 Data Reactivity',
