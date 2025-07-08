@@ -9,6 +9,8 @@
     "lint": "./node_modules/.bin/eslint ./src",
     "types": "tsc -p ./tsconfig.json --noEmit"
   },
+  "license": "MIT",
+  "homepage": "https://trifrost.dev",
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250702.0",
     "eslint": "^9.30.1",
