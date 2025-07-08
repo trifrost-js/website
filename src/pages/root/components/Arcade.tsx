@@ -29,7 +29,9 @@ export function Arcade() {
         </div>
       </div>
       <div>
-        <Image src="/assets/atomic.jpg" alt="Atomic Arcade" interactive={false} style={{maxWidth: '25rem'}} />
+        <Link to="https://arcade.trifrost.dev">
+          <Image src="/assets/atomic.jpg" alt="Atomic Arcade" interactive={false} style={{maxWidth: '25rem'}} />
+        </Link>
       </div>
     </div>
   );
