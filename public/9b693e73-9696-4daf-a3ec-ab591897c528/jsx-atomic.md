@@ -206,13 +206,20 @@ When atomic is enabled, the `data` object that you pass to your `<Script>` insta
 ```
 
 You can:
+- Call `$set(path, value)` for granular updates, or pass a full object for deep merges, or pass a path and an object for leaf merges
+- Use `$watch(path, handler)` to respond to changes. The handler receives `(newVal, oldVal)`
+- Bind data to DOM with `$bind(path, selector)` or `$bind(path, selector, watcher)` to bind **and** watch in one line
+
 - `$set(path, val)` or deep-merge objects with `$set(val)`
 - `$watch(path, fn)` to subscribe to changes. The watcher fn has the following signature arguments `(newVal, oldVal)`
 - `$bind(path, selector)` to two-way bind to inputs, or `$bind(path, selector, watcher)` to combine a bind and watch in a single line
 
-All deeply typed, scoped to the node, and automatically cleaned up.
+Everything is:
+- Deeply typed (with your own `data` shape)
+- Scoped to the current node
+- Automatically cleaned up on DOM removal
 
-Example form binding:
+Example form binding + backend update:
 ```tsx
 <form>
   <fieldset>
@@ -224,12 +231,11 @@ Example form binding:
   {/* We pass initial filter state to clientside */}
   <Script data={{filters: {type: 'all'}}}>
     {({data, $}) => {
-      /* Bind our form inputs to the data proxy */
+      /* Two-way bind radios with data proxy */
       data.$bind('filters.type', 'input[name="type"]');
 
-      /* Watch for changes and send them to the backend */
+      /* Watch for changes and refetch news */
       data.$watch('filters', async () => {
-        /* $.fetch instantiates a document fragment for us */
         const res = await $.fetch<DocumentFragment>('/filter-news', {
           method: 'POST',
           body: data.filters
@@ -244,27 +250,40 @@ Example form binding:
   </Script>
 </form>
 <div id="news-list">
-  {/* Initial render — will get replaced when filters change */}
+  {/* Initial server-rendered content, replaced on filter changes */}
 </div>
 ```
+
+Reactive data is minimal, atomic, and DOM-aware by default, no extra setup needed.
 
 ---
 
 ### 🌐 Global Store
-Atomic gives access to a shared global store.
+Atomic exposes a shared global store for cross-component coordination:
 ```tsx
 <Script data={{locale:'nl'}}>{({$}) => {
   $.storeSet('locale', data.locale);
-  console.log($.storeGet('locale'));
+  console.log($.storeGet('locale')); // -> 'nl'
 }}</Script>
 ```
 
 But more importantly:
-- `storeSet(...)` **broadcasts automatically** via `"$store:key"` relay
-- You can listen to changes via `el.$subscribe('$store:open', handler)`
-- It’s fully typed via your `createScript<..., ..., Store>()` setup
+- The store **hydrates automatically** from `localStorage` on load (using the `$tfs:` prefix)
+- `$.storeSet(key, value)` **broadcasts** a `$store:key` relay event
+- Use `el.$subscribe('$store:locale', handler)` to listen reactively anywhere
+- Pass `{ persist: true }` to `storeSet` to persist the value to `localStorage`
+- `$.storeDel(key)` removes a key from memory **and** localStorage, **and** triggers a relay event
+- The store is **fully typed** via your `createScript<..., ..., Store>()` signature
+```tsx
+<Script>{({el, $}) => {
+	/* Listen to locale update */
+  el.$subscribe('$store:locale', (locale) => {
+    ...
+  });
+}}</Script>
+```
 
-This makes it perfect for global state coordination.
+Ideal for global state like themes, locales, onboarding flags, and other app-wide coordination.
 
 ---
 
@@ -294,15 +313,24 @@ Atomic gives you access to the Atomic `$` utilities. A suite of safe, zero-depen
 - `$.timedClass(el, className, opts)`: Adds a class to `el` and removes it after `opts.duration` (optional `after` callback)
 
 ##### Global Store access
-- `$.storeGet(key)`: Get a value from the global store.
-- `$.storeSet(key, value)`: Set a value in the global store.
+- `$.storeGet(key)`: Get a value from the global kv store.
+- `$.storeSet(key, value, opts?:{persist:boolean})`: Set a value in the global kv store and optionally persists to local storage.
+- `$.storeDel(key)`: Deletes a value from global kv store and local storage.
 
 ##### Miscellaneous
-- `$.uid()`: Generates a random id.
-- `$.sleep(ms)`: Resolves after the specified delay.
-- `$.eq(a, b)`: Structural equality check.
 - `$.debounce(fn, delay)`: Debounced function wrapper.
+- `$.eq(a, b)`: Structural equality check.
 - `$.fetch(...)`: Smart wrapper around fetch with automatic body serialization and content parsing.
+- `$.isArr`: Verify a provided value is an array (**type guarded**)
+- `$.isBool`: Verify a provided value is a boolean (**type guarded**)
+- `$.isDate`: Verify a provided value is a **valid** Date instance (**type guarded**)
+- `$.isFn`: Verify a provided value is a function (**type guarded**)
+- `$.isInt`: Verify a provided value is an integer (**type guarded**)
+- `$.isNum`: Verify a provided value is a finite number (**type guarded**)
+- `$.isObj`: Verify a provided value is a plain object (**type guarded**)
+- `$.isStr`: Verify a provided value is a string (**type guarded**)
+- `$.sleep(ms)`: Resolves after the specified delay.
+- `$.uid()`: Generates a random id.
 
 ##### Notes on $.fetch
 - Automatically parses JSON, HTML, text, blobs, etc. based on the response `Content-Type`.
