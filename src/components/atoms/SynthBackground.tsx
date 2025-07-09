@@ -28,7 +28,7 @@ export function SynthBackground() {
         return <line key={`h-${i}`} x1="0%" y1={`${y}%`} x2="100%" y2={`${y}%`} stroke={css.$t.synth_lines} strokeWidth="1" />;
       })}
       <Script data={{columns, rows}}>
-        {({el, data}) => {
+        {({el, data, $}) => {
           const POOL_SIZE = 64;
           const pool: SVGLineElement[] = [];
           const pool_using: Set<SVGLineElement> = new Set();
@@ -39,10 +39,10 @@ export function SynthBackground() {
 
           /* Pre-create the pool */
           for (let i = 0; i < POOL_SIZE; i++) {
-            const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-            l.style.display = 'none'; // Hide initially
-            l.setAttribute('stroke-width', '1');
-            l.setAttribute('stroke-linecap', 'round');
+            const l = $.create('line', {
+              attrs: {'stroke-width': '1', 'stroke-linecap': 'round'},
+              style: {display: 'none'},
+            });
             el.appendChild(l);
             pool.push(l);
           }

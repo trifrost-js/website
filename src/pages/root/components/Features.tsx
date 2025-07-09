@@ -15,7 +15,7 @@ const features = [
     desc: 'SSR, routing, context all inlined for native performance',
   },
   {
-    title: '🧪 Telemtry-First',
+    title: '🧪 Telemetry-First',
     desc: 'Per-request tracing, spans and metrics (Otel-native)',
   },
   {
