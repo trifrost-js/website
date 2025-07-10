@@ -228,15 +228,22 @@ OMIT_PRESETS.default = [
   {global: 'sid'},
   {global: 'token'},
   {global: 'user_token'},
-  {valuePattern: /Bearer\s+[A-Za-z0-9\-._~+/]+=*/},
   /* PII */
   {global: 'first_name'},
   {global: 'last_name'},
   {global: 'full_name'},
-  {valuePattern: /[\w.-]+@[\w.-]+\.\w{2,}/}, /* Email */
-  {valuePattern: /\+?\d{1,2}[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/}, /* Phone */
+  {valuePattern: /\b[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,255}\.[A-Za-z]{2,10}\b/}, /* Email */
+  {valuePattern: /\+?\d{1,3}[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/}, /* Phone */
   {valuePattern: /\b\d{3}-\d{2}-\d{4}\b/}, /* SSN */
-  {valuePattern: /\b(?:\d[ -]*?){13,16}\b/}, /* Credit card */
+  {valuePattern: /\b(?:\d[ -]?){13,16}\b/}, /* Credit card */
+  /* Infra/Sensitive */
+  {valuePattern: /gh[pousr]_[A-Za-z0-9]{20,64}/}, /* GitHub personal access token */
+  {valuePattern: /sk_live_[A-Za-z0-9]{24,64}/}, /* Stripe secret key */
+  {valuePattern: /AKIA[0-9A-Z]{10,64}/}, /* AWS access keys */
+  {valuePattern: /ASIA[0-9A-Z]{10,64}/}, /* AWS access keys */
+  {valuePattern: /AIZA[0-9A-Za-z-_]{32,64}/}, /* Google API key */
+  {valuePattern: /\b[a-f0-9]{32,64}\b/}, /* Generic long tokens (e.g. JWTs, API keys) */
+  {valuePattern: /Bearer\s+[A-Za-z0-9-_]+\b/}, /* Generic Bearer tokens (e.g. JWTs, API keys) */
 ];
 ```
 
@@ -245,7 +252,7 @@ Each exporter supports configuring the `omit` behavior, for example lets say you
 ```typescript
 import {OMIT_PRESETS} from '@trifrost/core';
 
-new ConsoleExporter({omit: [...OMIT_PRESETS, {global: 'ssn'})
+new ConsoleExporter({omit: [...OMIT_PRESETS.default, {global: 'ssn'})
 ```
 
 ##### I dont like the defaults
