@@ -62,6 +62,7 @@ const contentType = ctx.headers['content-type'];
 ctx.setHeader(key: string, value: string | number): void
 ctx.setHeaders(headers: Record<string, string | number>): void
 ctx.delHeader(key: string): void
+ctx.delHeaders(keys: string[]): void
 ```
 
 ```typescript
@@ -252,6 +253,7 @@ ctx.body        // Parsed request body (if applicable)
 ctx.domain      // Domain derived from host (if determinable)
 ctx.env         // The environment passed at app boot
 ctx.headers     // Inbound request headers
+ctx.resHeaders 	// Outbound response headers
 ctx.host        // Host of the request (respects trusted proxy config)
 ctx.ip          // Caller IP address (if able to determine)
 ctx.kind        // Purpose of the context: 'std', 'health', 'notfound', or 'options'
@@ -552,6 +554,7 @@ ctx.render(<MarketingCampaign />, { css: myCustomCSS });
 ```
 
 > Automatically handles nonce injection, config propagation, and environment hydration.
+> **Note:** The provided options get merged on top of the defaults.
 
 👉 See: [JSX Basics](/docs/jsx-basics)
 
