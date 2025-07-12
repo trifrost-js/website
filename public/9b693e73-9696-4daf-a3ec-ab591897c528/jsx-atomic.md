@@ -52,7 +52,7 @@ Each `el` now has:
 - Automatic integration with mutation observers and relay system
 
 ##### Scoped Pub/Sub Relay
-Every atomic script runs inside an isolated VM that can **communicate across nodes** using scoped [pub/sub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern).
+Every atomic script runs inside an isolated VM that can **communicate across nodes** using scoped [pub/sub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) messages.
 ```tsx
 <Script>{({el}) => {
   el.$subscribe('filters:open', (val) => console.log('opened?', val));
@@ -62,35 +62,46 @@ Every atomic script runs inside an isolated VM that can **communicate across nod
 
 These relay messages are:
 - Fully isolated per page render
-- Strongly typed via your `createScript<..., RelayEvents>()` config
+- Strongly typed via global `AtomicRelay` interface
 - Automatically cleaned up on unmount
 
 **Relay Typing**:
-You define available messages in `createScript`:
-```typescript
-type RelayEvents = {
+Each component can extend the global `AtomicRelay` with its own available messages:
+```tsx
+type FilterEvents = {
   'filters:open': boolean;
-  'user:auth': {id: string};
-};
+}
 
-const config = {
-  atomic: true,
-} as const;
+declare global {
+  interface AtomicRelay extends FilterEvents {}
+}
 
-const {Script, script} = createScript<typeof config, Env, RelayEvents>(config);
-export {Script, script};
-```
-
-Handlers will be properly typed:
-```typescript
-el.$subscribe('filters:open', (val) => {
-  val.toFixed(); // ❌ Error (val is boolean)
-});
+function MyFilters () {
+  return <div>
+    ...
+    <Script>{({el}) => {
+      ...
+      el.$subscribe('filters:open', (val) => {
+        val.toFixed(); // ❌ Error (val is boolean)
+      });
+      ...
+    }}</Script>
+  </div>;
+}
 ```
 
 **Cross-Component Pub/Sub Example:**
 ```tsx
 {/* Component A */}
+type ModalEvents = {
+  'modal:open': void;
+  'modal:close': void;
+}
+
+declare global {
+  interface AtomicRelay extends ModalEvents {}
+}
+
 <Script>
   {({el}) => {
     el.$subscribe('modal:open', () => {
@@ -134,24 +145,39 @@ Use `$.fire(el, type)` to dispatch a DOM event to just the parent.
 ```
 Unlike relay, `$.fire(...)` walks the DOM tree either up (default) or down. Perfect for scoped signals without global subscriptions.
 
-Combined with the global store (below), this gives you safe reactive messaging across the page.
+Combined with the global store (below) and `AtomicRelay/AtomicStore` typing (also below), this gives you safe reactive messaging across the page.
 
-##### Typed Global Store
+##### 🌐 Global Store
 TriFrost Atomic includes a global reactive store:
 - Write with `$.storeSet('key', value)`
 - Read with `$.storeGet('key')`
 - Listen with `el.$subscribe('$store:key', handler)`
 
-Define store shape during setup:
+This store is:
+- Fully reactive
+- Deeply typed (via `AtomicStore`)
+- Automatically hydrated from localStorage
+
+**Usage:**
+```tsx
+<Script>{({el, $}) => {
+  $.storeSet('theme', 'dark', {persist: true});
+  const theme = $.storeGet('theme'); // 'dark'
+
+  el.$subscribe('$store:theme', (val) => {
+    el.setAttribute('data-theme', val);
+  });
+}}</Script>
+```
+
+**Behavior:**
+- Setting a key emits `$store:key` event
+- Deleting a key emits `$store:key` with `undefined`
+- Persisted keys auto-hydrate on load (prefixed via `$tfs:`)
+
+**Persistence Example:**
 ```typescript
-type StoreData = {
-  locale: string;
-  theme: 'light' | 'dark';
-};
-
-const config = {} as const;
-
-const {Script, script} = createScript<typeof config, Env, RelayEvents, StoreData>(config);
+$.storeSet('locale', 'en', {persist: true});
 ```
 
 Store changes **automatically emit relay events**:
@@ -180,6 +206,14 @@ This provides lightweight global coordination with zero globals.
 </Script>
 
 {/* Somewhere else in Component B */}
+type StoreData = {
+  theme: 'dark' | 'light'
+};
+
+declare global {
+  interface AtomicStore extends StoreData {}
+}
+
 <Script>
   {({$}) => {
     $.storeSet('theme', 'dark'); // triggers A's listener
@@ -190,7 +224,67 @@ This provides lightweight global coordination with zero globals.
 This demonstrates:
 - How store changes act like global pub/sub
 - That VMs can subscribe to store changes as if they were events
-- No manual wiring, just declare `createScript<..., ..., Store>()` and you're good
+
+##### 🔐 Global Contracts: AtomicRelay & AtomicStore
+TriFrost uses **global ambient interfaces** for all relay/store typing.
+
+There are currently two of these **ambient interfaces** available:
+- `AtomicRelay`: type contract for `$publish` and `$subscribe`
+- `AtomicStore`: type contract for `$.storeGet`, `$.storeSet`, and `$.storeDel`
+
+This means:
+- No passing around and importing of Event or Store types
+- No manual unions
+- Autocomplete works everywhere
+
+These interfaces are available globally inside **every `<Script>` and `<Module>`**, with no need to import or union types manually. Just declare and use anywhere.
+
+Let’s say your `Game` component defines its own events and store shape. By extending the ambient interfaces below, these types become globally available to all `<Script>` and `<Module>` instances, no imports needed:
+```ts
+// types.ts or within your component file
+type GameEvents = {
+  'game:evt:boot': void;
+  'game:evt:countdown': void;
+};
+
+type GameStore = {
+  gameConfig: {
+    music: 'on' | 'off';
+    difficulty: 'beginner' | 'intermediate' | 'expert';
+  };
+};
+
+declare global {
+  interface AtomicRelay extends GameEvents {}
+  interface AtomicStore extends GameStore {}
+}
+```
+
+✅ Each component can **extend the global AtomicRelay and AtomicStore types** and these declarations from our `Game` component will be available globally within your tsx files. TriFrost infers your events and store structure automatically:
+```tsx
+<Script data={{ evtStart: 'game:evt:boot' as keyof AtomicRelay }}>
+  {({ el, data, $ }) => {
+    el.$subscribe(data.evtStart, () => {
+      const music = $.storeGet('gameConfig').music;
+      el.$publish(music === 'on' ? 'audio:play' : 'audio:pause');
+    });
+
+    el.$publish('game:evt:countdown');
+  }}
+</Script>
+```
+
+You get:
+- 🔒 Strong typing for all `$.store*` and `$publish/$subscribe` calls
+- 🚫 No manual unions or generics required
+- ⚡ Fully typed `keyof AtomicStore` and `keyof AtomicRelay` autocomplete in any script/module
+- ✅ Zero runtime cost
+
+> 🧠 **Why this matters**
+> This reduces ceremony, avoids repetition, and ensures consistent typing across your entire atomic runtime. It keeps your relay/store contract global, type-safe, and frictionless.
+
+> 💡 **Modular by Design  **
+> Since every component can safely extend `AtomicRelay` or `AtomicStore`, event and store contracts stay colocated,  without requiring a central registry or union types.
 
 ---
 
@@ -276,7 +370,7 @@ But more importantly:
 - The store is **fully typed** via your `createScript<..., ..., Store>()` signature
 ```tsx
 <Script>{({el, $}) => {
-	/* Listen to locale update */
+  /* Listen to locale update */
   el.$subscribe('$store:locale', (locale) => {
     ...
   });
@@ -329,6 +423,7 @@ Atomic gives you access to the Atomic `$` utilities. A suite of safe, zero-depen
 - `$.isNum`: Verify a provided value is a finite number (**type guarded**)
 - `$.isObj`: Verify a provided value is a plain object (**type guarded**)
 - `$.isStr`: Verify a provided value is a string (**type guarded**)
+- `$.isTouch`: Boolean getter which returns `true` if the device has touch capabilities and `false` if it doesnt
 - `$.sleep(ms)`: Resolves after the specified delay.
 - `$.uid()`: Generates a random id.
 
@@ -466,6 +561,22 @@ if (!res.ok) console.error('Request timed out or failed');
 - `atomic: true` gives you per-node VMs with reactive state, lifecycle, and messaging
 - Runs at sub-framework cost, with DOM-native behavior
 - Ideal for interactive fragments, modals, filters, toggles
+
+---
+
+### Atomic Arcade 🎮
+Want to see TriFrost Atomic in action? Check out [Atomic Arcade](https://arcade.trifrost.dev), a fully interactive, zero-bundle gaming experience running entirely on Cloudflare Workers.
+
+Built with **TriFrost Atomic**, the arcade showcases three classic games:
+- **Tetris**: With keyboard controls, dynamic theming, fragment-based rendering and canvas control.
+- **Breakout**: Featuring DOM-driven canvas control and some nice bouncy effects.
+- **Snake**: With fast-paced reactivity and SSR-based food fragments.
+
+Everything is powered by Atomic `<Script>` components and global `<Module>`-based services. Ambiently typed via `AtomicRelay` and `AtomicStore`, no client bundles, no hydration ceremony.
+
+> 💾 View the source: [github.com/trifrost-js/example-atomic-arcade](https://github.com/trifrost-js/example-atomic-arcade)
+
+Atomic Arcade is a perfect reference for building **modular, interactive islands** using TriFrost’s reactivity, lifecycle hooks, and global typing model, all in a worker-optimized footprint.
 
 ---
 
