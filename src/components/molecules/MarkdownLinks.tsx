@@ -1,9 +1,13 @@
 import {css} from '../../css';
 import {Script} from '../../script';
 
-export type MarkdownLinkEvents = {
+type MarkdownLinkEvents = {
   'markdownlinks:rerender': void;
 };
+
+declare global {
+  interface AtomicRelay extends MarkdownLinkEvents {}
+}
 
 type MarkdownLinksPanelOptions = {
   id: string;

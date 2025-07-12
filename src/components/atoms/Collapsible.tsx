@@ -10,9 +10,13 @@ type CollapsibleProps = {
   [key: string]: unknown;
 };
 
-export type CollapsibleEvents = {
+type CollapsibleEvents = {
   'collapsible:toggle': {vmId: string};
 };
+
+declare global {
+  interface AtomicRelay extends CollapsibleEvents {}
+}
 
 export function Collapsible({title, tag, children, defaultExpanded = false, group = null, ...rest}: CollapsibleProps) {
   const TAG = tag || 'h2';

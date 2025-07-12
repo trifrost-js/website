@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 import {type TriFrostRouter, type TriFrostContext} from '@trifrost/core';
 
 export type Env = {

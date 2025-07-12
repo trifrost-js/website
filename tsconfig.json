@@ -17,5 +17,5 @@
 		"strict": true,
 		"skipLibCheck": true
 	},
-	"include": ["src/**/*.ts", "src/handler.tsx"]
+	"include": ["src/**/*.ts", "src/**/*.tsx"]
 }

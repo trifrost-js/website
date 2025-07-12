@@ -13,9 +13,13 @@ import {NextPrevious} from '../../components/molecules/NextPrevious';
 import {MarkdownLinks} from '../../components/molecules/MarkdownLinks';
 import {Menu, TableOfContents} from '../../components/atoms/Icons';
 
-export type DocsEvents = {
+type DocsEvents = {
   'docsmenu:mobile:open': void;
 };
+
+declare global {
+  interface AtomicRelay extends DocsEvents {}
+}
 
 export function DocsSidebar({entry}: {entry: Doc}) {
   const collapseCid = css.cid();
