@@ -51,7 +51,6 @@ Now, `ctx.env.DB_URL` and others are fully typed across:
 - Middleware
 - Handlers
 - Routers
-- Services
 
 👉 See also: [Context & State Management](/docs/context-state-management)
 
