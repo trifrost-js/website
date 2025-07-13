@@ -37,6 +37,24 @@ You can configure:
 
 👉 See also: [Hello World Example](/docs/hello-world-example) | [Runtime Adapters](/docs/supported-runtimes)
 
+##### 🔐 Typing your App's Environment
+TriFrost lets you define your environment shape via the generic `<Env>` parameter. This ensures your `ctx.env` is fully typed everywhere in your app.
+```typescript
+type Env = {
+  DB_URL: string;
+  COOKIE_SECRET: string;
+};
+
+const app = new App<Env>({});
+```
+Now, `ctx.env.DB_URL` and others are fully typed across:
+- Middleware
+- Handlers
+- Routers
+- Services
+
+👉 See also: [Context & State Management](/docs/context-state-management)
+
 ---
 
 ### 🧭 Prefer a guided setup?
@@ -60,7 +78,7 @@ npm create trifrost@latest
 ### ⚙️ Configuration Options
 When constructing an app, you can pass any of the following options:
 ```typescript
-new App({
+new App<Env>({
   cache,      // Cache adapter (Redis, Memory, etc)
   client,     // Client object containing css/script setup for auto-mounting atomic
   cookies,    // Global cookie defaults
