@@ -77,6 +77,11 @@ const ROUTES = [
         desc: 'Learn how TriFrost detects development environments and how it affects logging, exporters, and runtime behavior.',
       },
       {
+        title: 'Environment Variables',
+        slug: 'utils-envvars',
+        desc: 'Learn how TriFrost app configuration can be done through environment variables',
+      },
+      {
         title: 'Request Lifecycle',
         slug: 'request-response-lifecycle',
         desc: 'Explore the full lifecycle of a request and how TriFrost handles responses.',
