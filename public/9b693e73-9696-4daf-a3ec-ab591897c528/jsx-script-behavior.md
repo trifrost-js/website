@@ -84,7 +84,7 @@ You never need to call `script.root()` manually, TriFrost handles that automatic
 
 ---
 
-### 🧭 Prefer a guided setup instead?
+### 🧭 Prefer a guided setup?
 You can skip the above manual steps and let the CLI scaffold everything for you, including runtime setup, middleware, styling, and more.
 
 Run:

@@ -4,7 +4,7 @@ We’ll walk you through the minimal setup to get a TriFrost app running locally
 
 ---
 
-### 🧭 Prefer a guided setup instead?
+### 🧭 Prefer a guided setup?
 You can skip the manual steps and let the CLI scaffold everything for you, including runtime setup, middleware, styling, and more.
 
 Run:

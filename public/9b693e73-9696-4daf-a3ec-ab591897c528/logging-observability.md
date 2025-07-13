@@ -24,11 +24,11 @@ You will never need to touch the root logger directly as this is **internal** to
 ```typescript
 /* App-level root setup */
 const rootLogger = new TriFrostRootLogger({
-	name: cfg.name,
-	version: cfg.version,
-	debug: true,
-	rootExporter: new ConsoleExporter(),
-	exporters: env => [... (your configured exporters)]
+  name: cfg.name,
+  version: cfg.version,
+  debug: true,
+  rootExporter: new ConsoleExporter(),
+  exporters: env => [... (your configured exporters)]
 });
 
 /* On incoming request */
