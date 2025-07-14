@@ -23,7 +23,9 @@ It includes things such as:
 
 As well as a whole lot more, no boilerplate/custom scaffolding, you get this for every request, in every runtime.
 
-👉 Read more about Context and all it offers [here](/docs/context-api)
+👉 Read more about:
+- [Context](/docs/context-api) and all it offers
+- [Body Parser](/docs/bodyparsing) and all it offers
 
 ---
 

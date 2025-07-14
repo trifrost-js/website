@@ -34,6 +34,18 @@ Lower versions may lack support for:
 
 ### Project Setup
 TriFrost detects Node automatically, no runtime config needed.
+
+You can scaffold a Node-powered TriFrost project in seconds:
+```bash
+npm create trifrost@latest
+```
+
+Then choose:
+- Runtime: `Node`
+- Optional modules: Cache, RateLimiter, Styling, etc.
+
+Or create it manually:
+
 ```bash
 npm install @trifrost/core
 npm install -D typescript
@@ -60,6 +72,8 @@ And in your `package.json`:
 ```
 
 👉 You can use `tsc` or `tsx`, both are supported. We recommend `tsc` for smooth local dev.
+
+👉 Learn more about the [Creation CLI](/docs/cli-quickstart)
 
 ---
 

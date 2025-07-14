@@ -165,9 +165,9 @@ const ROUTES = [
         desc: 'Full API details for the App class, including methods, properties, and usage.',
       },
       {
-        title: 'Router & Route',
-        slug: 'router-route',
-        desc: 'Detailed reference for the Router and Route APIs, covering routing methods and hooks.',
+        title: 'Body Parsing',
+        slug: 'bodyparsing',
+        desc: 'Full API details for the Body parser system within TriFrost, including configuration and usage.',
       },
       {
         title: 'Cache',
@@ -233,6 +233,11 @@ const ROUTES = [
         title: 'Rate Limiting',
         slug: 'ratelimiting-api',
         desc: 'Detailed reference for the built-in rate limiting system.',
+      },
+      {
+        title: 'Router & Route',
+        slug: 'router-route',
+        desc: 'Detailed reference for the Router and Route APIs, covering routing methods and hooks.',
       },
     ],
   },

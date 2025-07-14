@@ -721,6 +721,7 @@ Keep these principles in mind when working with the TriFrost ctx object:
 
 ### 📦 Related
 - [App Class](/docs/app-class)
+- [Body Parser](/docs/bodyparsing)
 - [Router & Route](/docs/router-route)
 - [Routing Basics](/docs/routing-basics)
 - [Middleware Basics](/docs/middleware-basics)
