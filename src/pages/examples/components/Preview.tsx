@@ -1,11 +1,12 @@
 import {css} from '../../../css';
 import {type Logo} from '../Service';
-import {HTMX, NodeJS, TriFrost} from '../../../components/atoms/Icons';
+import {CloudFlare, HTMX, NodeJS, TriFrost} from '../../../components/atoms/Icons';
 
 const LOGO_REGISTRY: {[K in Logo]: () => JSX.Element} = {
   trifrost: () => <TriFrost />,
   htmx: () => <HTMX />,
   nodejs: () => <NodeJS />,
+  cloudflare: () => <CloudFlare />,
 };
 
 type PreviewHeaderOptions = {
@@ -22,6 +23,7 @@ export function PreviewHeader({logo1, logo2, type, style, ...rest}: PreviewHeade
     'f',
     'fh',
     'fa_c',
+    'fj_sa',
     {
       width: '100%',
       overflow: 'hidden',
@@ -39,8 +41,8 @@ export function PreviewHeader({logo1, logo2, type, style, ...rest}: PreviewHeade
         userSelect: 'none',
         [css.media.tablet]: css.mix('hide'),
       }),
-      [css.media.desktop]: css.mix('sp_xl', 'fj_c'),
-      [css.media.tablet]: css.mix('sp_l', 'fj_sa'),
+      [css.media.desktop]: css.mix('sp_xl'),
+      [css.media.tablet]: css.mix('sp_l'),
     },
     style || {},
   );
@@ -48,7 +50,6 @@ export function PreviewHeader({logo1, logo2, type, style, ...rest}: PreviewHeade
   return (
     <div className={cls} {...rest}>
       {LOGO_REGISTRY[logo1]()}
-      <span>+</span>
       {LOGO_REGISTRY[logo2]()}
     </div>
   );

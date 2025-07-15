@@ -37,6 +37,16 @@ export function Twitter({...rest}: IconProps) {
   );
 }
 
+export function CloudFlare({...rest}: IconProps) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 80" {...rest}>
+      <path fill="#FFF" d="m116 45-16-9-3-1-63 1v32h82V45z"/>
+      <path fill="#F38020" d="M87 65c1-3 1-5-1-7l-5-2-45-1-1-1 2-1 45-1c5 0 11-4 13-9l2-7 1-1a29 29 0 0 0-57-3 13 13 0 0 0-9-3 13 13 0 0 0-12 17A19 19 0 0 0 2 67a1 1 0 0 0 1 1h83l1-1v-2z"/>
+      <path fill="#FAAE40" d="M102 36h-2v1l-2 6c-1 3-1 5 1 7l5 2 10 1 1 1-2 1h-9c-6 1-12 5-14 10v3h34l1-1 1-6c0-14-11-25-24-25"/>
+    </svg>
+  );
+}
+
 export function GitHub({...rest}: IconProps) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" {...rest}>

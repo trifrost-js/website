@@ -110,7 +110,10 @@ export async function examplesRouter<State extends Record<string, unknown>>(r: R
                     <div className={css.use('f', 'sm_t_s', 'sm_b_l', {gap: css.$v.space_s})}>
                       <Back to="/examples" label="Examples" />
                       <Button to={entry.live} label="View Live" size="s" blank={true} style={css.mix('sm_b_l')} />
-                      <Button to={`/examples/${entry.slug}/download`} label="Download" size="s" style={css.mix('sm_b_l')} />
+                      {!entry.github && (
+                        <Button to={`/examples/${entry.slug}/download`} label="Download" size="s" style={css.mix('sm_b_l')} />
+                      )}
+                      {entry.github && <Button to={entry.github} label="GitHub" size="s" style={css.mix('sm_b_l')} />}
                     </div>
                     {Markdown.renderTree(example.tree)}
                   </div>

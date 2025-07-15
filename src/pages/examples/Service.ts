@@ -5,7 +5,7 @@ import {isNeString} from '@valkyriestudios/utils/string';
 import {siteMapEntry} from '../../utils/sitemap';
 import {type ScreenShot} from './components/ScreenShots';
 
-export type Logo = 'trifrost' | 'htmx' | 'nodejs';
+export type Logo = 'trifrost' | 'htmx' | 'nodejs' | 'cloudflare';
 
 export type Example = {
   slug: string;
@@ -16,6 +16,7 @@ export type Example = {
   logo1: Logo;
   logo2: Logo;
   to: string;
+  github?: string;
   screenshots: ScreenShot[];
 };
 
@@ -57,6 +58,30 @@ const EXAMPLES = [
       {
         file: 'trifrost_node_mini_site_light.png',
         title: 'Light mode version of the homepage',
+      },
+    ],
+  },
+  {
+    slug: 'atomic_arcade',
+    title: 'Atomic Arcade (TriFrost Atomic)',
+    desc: 'A fully reactive, zero-bundle gaming site built with TriFrost Atomic and fragment rendering.',
+    tags: ['Cloudflare', 'JSX', 'Atomic', 'Games', 'Fragments', 'UpTrace'],
+    live: 'https://arcade.trifrost.dev/',
+    github: 'https://github.com/trifrost-js/example-atomic-arcade',
+    logo1: 'trifrost',
+    logo2: 'cloudflare',
+    screenshots: [
+      {
+        video: 'trifrost-arcade.mp4',
+        title: 'Video of Atomic Arcade',
+      },
+      {
+        file: 'atomic_arcade_home.jpg',
+        title: 'Home screen of Atomic Arcade with games menu',
+      },
+      {
+        file: 'atomic_arcade_tetris.jpg',
+        title: 'Tetris game running in a canvas with atomic controls',
       },
     ],
   },
