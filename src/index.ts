@@ -12,8 +12,8 @@ import {script} from './script';
 export {TriFrostDurableObject} from '@trifrost/core';
 
 const app = await new App<Env>({
-  cache: new DurableObjectCache({
-    store: ({env}) => env.MainDurable,
+  cache: ({env}) => new DurableObjectCache({
+    store: env.MainDurable,
   }),
   tracing: {
     exporters: ({env}) => {

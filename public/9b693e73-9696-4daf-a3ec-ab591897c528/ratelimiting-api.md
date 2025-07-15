@@ -278,7 +278,7 @@ store: ({env}) => new Store(...env.MyBinding)
 
 ---
 
-### **TLDR**
+### TLDR
 - `.limit(...)` works at any level
 - Supports `.limit(...)` with dynamic functions
 - Built-in `fixed` and `sliding` window strategies
