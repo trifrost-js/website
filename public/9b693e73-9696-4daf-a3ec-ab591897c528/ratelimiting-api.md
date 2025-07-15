@@ -48,7 +48,7 @@ To enable it, pass a `rateLimit` instance when creating your app:
 import {MemoryRateLimit} from '@trifrost/core';
 
 const app = new App({
-  rateLimit: new MemoryRateLimit({
+  rateLimit: () => new MemoryRateLimit({
     strategy: 'sliding',
     window: 60
   }),
@@ -157,7 +157,7 @@ import {App, MemoryRateLimit} from '@trifrost/core';
 import {type Env} from './types';
 
 const app = new App<Env>({
-  rateLimit: new MemoryRateLimit({
+  rateLimit: () => new MemoryRateLimit({
     strategy: 'sliding', // or 'fixed'
     window: 60, // 60 seconds
   }),
@@ -180,8 +180,8 @@ type Env = {
 };
 
 const app = new App<Env>({
-  rateLimit: new KVRateLimit({
-    store: ({env}) => env.MY_KV,
+  rateLimit: ({env}) => new KVRateLimit({
+    store: env.MY_KV,
     strategy: 'fixed',
     window: 60, // 60 seconds
   }),
@@ -203,11 +203,9 @@ id = "xxxxxx..."
 import {App, RedisRateLimit} from '@trifrost/core';
 import Redis from 'ioredis';
 
-const redis = new Redis(...); // your Redis instance
-
 const app = new App({
-  rateLimit: new RedisRateLimit({
-    store: () => redis,
+  rateLimit: ({env}) => new RedisRateLimit({
+    store: new Redis(...),
     strategy: 'sliding',
     window: 60, // 60 seconds
   }),
@@ -235,8 +233,8 @@ type Env = {
 export {TriFrostDurableObject};
 
 const app = await new App<Env>({
-  rateLimit: new DurableObjectRateLimit({
-    store: ({env}) => env.MainDurable,
+  rateLimit: ({env}) => new DurableObjectRateLimit({
+    store: env.MainDurable,
     strategy: 'sliding',
     window: 60,
   }),
@@ -263,15 +261,19 @@ new_sqlite_classes = ["TriFrostDurableObject"]
 
 ---
 
-### 🧪 Why store Is a Function
-When configuring a rate limiter, TriFrost expects `store` to be a function that receives the current `{env}`.
+### 🧪 Why rateLimit Is a Function
+When configuring a rate limiter, TriFrost expects `rateLimit` to be a function that receives the current `{env}`.
 
 This enables:
 - Lazy initialization (e.g. when not all bindings are ready at startup)
 - Runtime-specific resolution (DO/KV vary across regions or workers)
 - Full access to typed `ctx.env` inside the adapter
+- Ability to switch the rate limiting setup depending on the environment
 ```typescript
-store: ({env}) => new Store(...env.MyBinding)
+rateLimit: ({env}) => {
+  if (isDevMode(env)) return new MemoryRateLimit({...});
+  return new DurableObjectRateLimit({store: env.MainDurable, ...});
+},
 ```
 
 > This ensures your rate limiter integrates seamlessly with edge runtimes and supports async-compatible storage.
@@ -301,6 +303,7 @@ store: ({env}) => new Store(...env.MyBinding)
 ---
 
 ### Related
+- [Dev Mode](/docs/utils-devmode)
 - [Router & Route](/docs/router-route)
 - [Routing Basics](/docs/routing-basics)
 - [Context API](/docs/context-api)
