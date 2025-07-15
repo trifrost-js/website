@@ -91,7 +91,7 @@ $ GET /snake → ctx.html(<Snake />)
   ├─ ✅ HTML: Snake grid, controls
   ├─ 🎨 Styles: Snake-specific
   ├─ 🔒 Scripts: Input + Game loop
-  └─ 🧠 Modules: <Module name="audio" /> ← modal already mounted, skipped
+  └─ 🧠 Modules: audio ← modal already mounted, skipped
 
 # 3️⃣ Game begins: food spawns
 $ GET /snake/food → ctx.html(<Food />)

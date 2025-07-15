@@ -16,6 +16,7 @@ When you pass `atomic: true` to `createScript()`, every `<Script>` and their par
 - Lifecycle hooks (`el.$unmount`, `el.$mount`)
 - Global store access (`$.storeSet`, `$.storeGet`, with reactive broadcasts)
 - Access to the Atomic utils (`$.fire`, `$.on`, `$.fetch`, ...)
+- Typed module access (`$.modal.open()`, `$.audio.play()`, ...) via the `Module(...)` factory + `createScript({modules})`
 
 It's like a mini reactive runtime baked directly into your DOM tree.
 
@@ -50,6 +51,7 @@ Each `el` now has:
 - `el.$unsubscribe(topic)`: Method allowing you to unsubscribe from a specific topic on the pubsub relay
 - `el.$publish(topic, data)`: Method allowing you to publish data to a specific topic on the pubsub relay
 - Automatic integration with mutation observers and relay system
+- `$.<module>`: Automatically injected when referenced in a `<Script>`, providing typed access to registered modules
 
 ##### Scoped Pub/Sub Relay
 Every atomic script runs inside an isolated VM that can **communicate across nodes** using scoped [pub/sub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) messages.
@@ -237,9 +239,9 @@ This means:
 - No manual unions
 - Autocomplete works everywhere
 
-These interfaces are available globally inside **every `<Script>` and `<Module>`**, with no need to import or union types manually. Just declare and use anywhere.
+These interfaces are available globally inside every `<Script>` **block or registered Module**, with no need to import or union types manually.
 
-Let’s say your `Game` component defines its own events and store shape. By extending the ambient interfaces below, these types become globally available to all `<Script>` and `<Module>` instances, no imports needed:
+Let’s say your `Game` component defines its own events and store shape. By extending the ambient interfaces below, these types become globally available to all `<Script>` **and Module instances**, no imports needed:
 ```ts
 // types.ts or within your component file
 type GameEvents = {
@@ -260,7 +262,8 @@ declare global {
 }
 ```
 
-✅ Each component can **extend the global AtomicRelay and AtomicStore types** and these declarations from our `Game` component will be available globally within your tsx files. TriFrost infers your events and store structure automatically:
+✅ Each component or module can **extend the global AtomicRelay and AtomicStore types**. These declarations become ambiently available inside all `<Script>` **blocks and registered Modules**. No imports needed.
+
 ```tsx
 <Script data={{ evtStart: 'game:evt:boot' as keyof AtomicRelay }}>
   {({ el, data, $ }) => {
@@ -378,6 +381,84 @@ But more importantly:
 ```
 
 Ideal for global state like themes, locales, onboarding flags, and other app-wide coordination.
+
+---
+
+### 🧩 Atomic Modules
+
+When using `createModule(...)` and passing your modules into `createScript({modules})`, all `<Script>` blocks gain typed access to those modules via `$.<name>`.
+
+For example:
+```tsx
+<Script>
+  {({ el, $ }) => {
+    $.modal.open({ frag: '/about' });
+    $.audio.play('intro');
+  }}
+</Script>
+```
+
+Modules are:
+- Declared server-side
+- Registered at the script level (not global)
+- Auto-delivered just-in-time — no bundlers, no dead code
+
+> ✅ They only ship when referenced in a `<Script>`, keeping your payloads atomic and minimal.
+
+##### How to Define a Module
+Below is an example `Modal` module (as seen in [Atomic Arcade](https://arcade.trifrost.dev) with full source [here](https://github.com/trifrost-js/example-atomic-arcade/blob/main/src/components/modules/Modal.tsx)):
+```typescript
+// Modal.ts
+import {Module} from '~/script';
+
+export function Modal () {
+  return Module({
+    name: 'modal',
+    mod: ({ $ }) => {
+      let root: HTMLDivElement | null = null;
+
+      function open(frag: DocumentFragment) {
+        root = $.create('div', { children: [frag] });
+        document.body.appendChild(root);
+      }
+
+      return {
+        open: async ({frag}:{frag:string}) => {
+          if (root) root.remove();
+          const res = await $.fetch<DocumentFragment>(frag);
+          if (res.ok && res.content) open(res.content);
+        },
+        close: () => { root?.remove(); root = null; },
+      };
+    },
+  });
+}
+```
+
+Then register it:
+```typescript
+// script.ts
+import { createScript, createModule } from '@trifrost/core';
+import { type Env } from './types';
+import { css } from './css';
+import { Modal } from './components/modules/Modal';
+
+export const { Module } = createModule({css});
+
+const config = {
+  atomic: true,
+  css,
+  modules: {
+    modal: Modal,
+  },
+} as const;
+
+export const { Script, script } = createScript<typeof config, Env>(config);
+```
+
+Now inside any `<Script>`, you can reference `$.modal`, `$.audio`, etc., with full typing, no imports needed.
+
+For a full example (include an `AudioPlayer` module) see [Atomic Arcade](https://github.com/trifrost-js/example-atomic-arcade), or play it [live](https://arcade.trifrost.dev).
 
 ---
 
@@ -549,18 +630,33 @@ if (!res.ok) console.error('Request timed out or failed');
 ---
 
 ### Best Practices
-- Use `atomic: true` only when you need reactivity or global coordination
-- Always define `createScript(...)` once and reuse
-- Bind inputs with `$bind`, not manual `addEventListener`
-- Watch deeply nested keys via `data.$watch('a.b.c')` or the entire leaf via `data.$watch('a')`
-- Clean up logic with `el.$unmount`
+- ✅ Define your `Script` and `Module` factories once (via `createScript()` and `createModule()`), and share them across your app
+- ✅ Use `atomic: true` if you need reactivity, scoped lifecycle, pub/sub, or interactivity
+- ✅ Pass modules into `createScript({modules})` to enable `$.<name>` just-in-time delivery
+- ✅ Keep global logic in Modules (`Module(...)`), and local logic colocated in `<Script>`
+- ✅ Prefer `data.$watch(...)` and `data.$bind(...)` over manual DOM tracking
+- ✅ Use the `$` utils for everything from event listeners to element creation (`$.on`, `$.create`, `$.fire`, etc.)
+- ✅ Define your event and store contracts using `AtomicRelay` and `AtomicStore` interfaces for full global typing
+- ✅ Keep behavior colocated with markup, every `<Script>` is a reactive, isolated, fragment-safe unit
+- ✅ Design modules like services: reusable, lazy, stateless, and DOM-aware
+- ✅ Clean up logic with `el.$unmount`
+- ❌ Don’t manually import your modules client-side, use the `$.<module>` interface
+- ❌ Don’t mutate DOM outside the Atomic runtime, use `$` helpers to stay reactive
 
 ---
 
 ### TLDR
-- `atomic: true` gives you per-node VMs with reactive state, lifecycle, and messaging
-- Runs at sub-framework cost, with DOM-native behavior
-- Ideal for interactive fragments, modals, filters, toggles
+- `createScript({atomic: true})` enables fine-grained reactivity with lifecycle, pub/sub, data proxying, and more
+- `<Script>` blocks become **per-node reactive VMs**, isolated, hydrated, CSP-safe
+- Define global service-based logic using `Module(...)` and pass them to `createScript({modules})`
+- Access registered modules inside `<Script>` via `$.<module>`, zero import, fully typed
+- Modules are delivered **just-in-time**, only when referenced
+- Global pub/sub via `el.$publish`, `el.$subscribe`, typed with `AtomicRelay`
+- Global reactive store via `$.storeSet`, `$.storeGet`, typed with `AtomicStore`
+- `$.fetch`, `$.fire`, `$.on`, `$.debounce`, a full DOM-native toolkit included
+- No bundling, no hydration wrappers, everything SSR-first and fragment-ready
+
+🚀 It's the power of a reactive runtime, delivered one fragment at a time.
 
 ---
 
@@ -572,7 +668,7 @@ Built with **TriFrost Atomic**, the arcade showcases three classic games:
 - **Breakout**: Featuring DOM-driven canvas control and some nice bouncy effects.
 - **Snake**: With fast-paced reactivity and SSR-based food fragments.
 
-Everything is powered by Atomic `<Script>` components and global `<Module>`-based services. Ambiently typed via `AtomicRelay` and `AtomicStore`, no client bundles, no hydration ceremony.
+Everything is powered by Atomic `<Script>` components and global Module-based services. Ambiently typed via `AtomicRelay` and `AtomicStore`, no client bundles, no hydration ceremony.
 
 > 💾 View the source: [github.com/trifrost-js/example-atomic-arcade](https://github.com/trifrost-js/example-atomic-arcade)
 

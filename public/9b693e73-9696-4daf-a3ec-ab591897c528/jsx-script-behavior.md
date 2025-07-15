@@ -113,92 +113,92 @@ The `<Script>` component is TriFrost’s universal way to attach logic to your H
 
 👉 Learn about the [TriFrost Atomic Runtime](/docs/jsx-atomic) to craft reactive masterpieces.
 
-### ✨ What is <Module>
-The `<Module>` primitive is a sibling to `<Script>`, designed for global logic, cross-component coordination, and singleton behaviors.
+---
 
-Unlike `<Script>`, a `<Module>`:
-- Is not bound to a DOM node (`el` is undefined)
-- Can only appear **once** in a page render
-- Runs as soon as the module system is ready
-- Has access to `mod`, `data`, and `$` (the same powerful utilities as Script)
+### ✨ What is a Module
+Modules are **globally scoped behaviors**, declared using `Module(...)` and registered via `createScript({modules})`.
 
-This makes it ideal for:
-- Event listeners (e.g. `$subscribe('event')`)
-- Modal/Notification systems
-- Global logic like audio handling
-- Coordinating page-wide effects
-- Listening for app-wide broadcasts (like keyboard shortcuts, theme changes, or audio control)
-```tsx
-/* Example from the Atomic Arcade */
-import {Module} from '~/script';
+They are **not tied to DOM elements**, and are ideal for:
+- Modals
+- Notifications
+- Global effects
+- Keyboard listeners
+- Audio players
+- App-wide logic
+- ...
+
+To define one:
+```typescript
+// Modal.ts
+import { Module } from '~/script';
 
 export function Modal () {
-  const modal = css.use('f', 'fv', 'fa_c', 'fj_c', {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(12, 18, 32, .75)',
-    zIndex: 10,
-  });
+  return Module({
+    name: 'modal',
+    data: {
+      // initial props, available as `data` in mod()
+    },
+    mod: ({ data, $ }) => {
+      // Lifecycle logic, store subscriptions, DOM helpers, etc.
+      // For example:
+      let root: HTMLDivElement | null = null;
 
-  const modalContent = css({
-    position: 'relative',
-    maxWidth: '50vw',
-    maxHeight: '50vh',
-  });
+      function open(frag: DocumentFragment) {
+        root = $.create('div', { children: [frag] });
+        document.body.appendChild(root);
+      }
 
-  return <Module name="modal" data={{modal, modalContent}}>{({mod, data, $}) => {
-    let root:HTMLDivElement|null = null;
-
-    function render (val:DocumentFragment) {
-      clear();
-      root = $.create('div', {
-        attrs: {class: data.modal},
-        children: [
-          $.create('div', {
-            attrs: {class: data.modalContent},
-            children: [val],
-          }),
-        ],
-      });
-      document.body.appendChild(root);
+      return {
+        open: async ({ frag }: { frag: string }) => {
+          if (root) root.remove();
+          const res = await $.fetch<DocumentFragment>(frag);
+          if (res.ok && res.content) open(res.content);
+        },
+        close: () => { root?.remove(); root = null; },
+      };
     }
-
-    function clear () {
-      if (root) root.remove();
-      root = null;
-    }
-
-    /* Listen for modal open */
-    mod.$subscribe('modal:open', async ({frag}) => {
-      if (root) root.remove();
-
-      const res = await $.fetch<DocumentFragment>(frag);
-      if (res.ok && res.content) render(res.content);
-    });
-
-    /* Listen for modal close event */
-    mod.$subscribe('modal:close', () => clear());
-  }}</Module>;
+  });
 }
 ```
+
+And register it like so:
+```typescript
+// script.ts
+import {createModule, createScript} from '@trifrost/core';
+import {type Env} from './types.ts';
+import {css} from './css';
+import {Modal} from './modules/Modal';
+
+export const {Module} = createModule({css});
+
+const config = {
+  atomic: true,
+  css,
+  modules: {
+    modal: Modal,
+  },
+} as const;
+
+export const {Script, script} = createScript<typeof config, Env>(config);
+```
+Now any `<Script>` can access it using `$.modal.open(...)`, `$.modal.close(...)`.
+
+> 🧠 Modules are **just-in-time delivered**, singleton-scoped, and typed via your `Module(...)` config, they are **only included when referenced in a** `<Script>` **block**.
 
 Just like `<Script>`, `data={...}` is fully typed and passed into the body, and Atomic features work the same way.
 
 ##### What’s provided?
-Inside a `<Module>`, your function receives:
+Inside a `Module`, your function receives:
 - `mod`: Relay object with `$publish`, `$subscribe`, etc.
 - `data`: The initial props passed via `data={...}` (reactive if [Atomic](/docs/jsx-atomic) is enabled)
 - `$`: All scoped [Atomic](/docs/jsx-atomic) utilities (like in `<Script>`)
 
 ##### Notes
-- Modules must define a `name` (e.g. `name="modal"`).
+- Modules must define a `name` (e.g. `name:"modal"`).
 - Modules are deemed **singletons**. You cannot render the same module multiple times on the same page, only the first will execute.
 - Modules are ideal for global listeners, bridge layers, effects, modals, etc.
 
-Want more reactive power? Pair `<Module>` with the [Atomic Runtime](/docs/jsx-atomic) and unlock full pubsub, store, and signal sync.
+Want more reactive power? Check out the [Atomic Runtime](/docs/jsx-atomic) and unlock full pubsub, store, and signal sync.
 
 ---
 
@@ -463,14 +463,18 @@ No runtime globals. No unsafe scopes.
 ---
 
 ### Best Practices
-- ✅ Define script once with createScript()
+- ✅ Define script once with `createScript()`
+- ✅ Define global logic with `Module(...)`
+- ✅ Register modules in `createScript({modules})` to enable typed, lazy-loaded access inside any `<Script>`
 - ✅ Co-locate behavior with elements
+- ❌ Don’t render modules manually or wrap them in JSX — define them once and reuse via `$`
 
 ---
 
 ### TLDR
 - Use `<Script>` to hydrate parent-node behavior
-- Use `<Module>` for global components like modals, notifications, audio control, etc
+- Use `Module(...)` to define global logic (modals, notifications, audio, etc.)
+- Register modules with `createScript({modules})` for typed access via `$.<name>`
 - Supports inline or external `src`-based scripts
 - Automatically handles CSP nonces
 - Dedupes scripts and data at render time
