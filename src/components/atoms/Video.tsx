@@ -46,8 +46,7 @@ export function Video({src, style, ...rest}: VideoProps) {
         muted
         preload="metadata"
         className={css({
-          width: '100%',
-          height: '100%',
+          maxHeight: '40rem',
           objectFit: 'contain',
           display: 'block',
         })}

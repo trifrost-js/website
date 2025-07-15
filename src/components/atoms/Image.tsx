@@ -16,6 +16,7 @@ export function Image({src, alt, style, interactive = true, ...rest}: ImageProps
         'br_m',
         {
           overflow: 'hidden',
+          display: 'inline-block',
           border: '1px solid ' + css.$t.border,
           [css.not('[data-loaded]')]: {
             minHeight: '10rem',

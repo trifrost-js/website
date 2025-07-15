@@ -87,6 +87,10 @@ export function Article({children, style, ...rest}: ArticleProps) {
       maxWidth: '100%',
       display: 'block',
     }),
+    video: css.mix('br_m', {
+      maxWidth: '100%',
+      display: 'block',
+    }),
     blockquote: css.mix('text_body', 'sp_l_m', {
       lineHeight: 1.4,
       letterSpacing: '.1rem',
