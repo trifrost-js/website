@@ -19,7 +19,9 @@ const app = new App({
   tracing: {
     exporters: () => [new ConsoleExporter()],
   },
-  cache: new RedisCache({ store: () => redis /* Your redis instance */ }),
+  cache: ({env}) => new RedisCache({
+    store: redis /* Your redis instance */
+  }),
   client: {css, script},
 });
 ```
@@ -79,22 +81,21 @@ When constructing an app, you can pass any of the following options:
 ```typescript
 new App<Env>({
   cache,      // Cache adapter (Redis, Memory, etc)
-  client,     // Client object containing css/script setup for auto-mounting atomic
+  client,     // Client object css/script setup for auto-mounting atomic
   cookies,    // Global cookie defaults
-  env,        // Custom object to be added ON TOP OF the detected environment env
+  env,        // Custom object added ON TOP OF the detected environment env
   rateLimit,  // Rate Limiter Instance
   runtime,    // Custom runtime if no auto-detect is wanted
-  timeout,    // Maximum timeout in milliseconds globally (defaults to 30 000)
+  timeout,    // Maximum timeout in milliseconds globally (default: 30 000)
   tracing,    // Tracing config (exporters, requestId)
-  trustProxy, // Whether to trust proxy headers (each runtime has their own default)
 });
 ```
 
 Example:
 ```typescript
 new App<Env>({
-  cache: new DurableObjectCache({
-    store: ({env}) => env.MainDurable,
+  cache: ({env}) => new DurableObjectCache({
+    store: env.MainDurable,
   }),
   tracing: {
     exporters: ({env}) => {
@@ -118,8 +119,8 @@ new App<Env>({
 ##### cache
 TriFrost uses this cache to power `ctx.cache`. If omitted, it falls back to a `MemoryCache`. You can plug in Redis, Durable Objects, KV, or any custom adapter that implements the `TriFrostCache` interface.
 ```typescript
-cache: new RedisCache({
-  store: () => ... /* your redis instance */,
+cache: ({env}) => new RedisCache({
+  store: ... /* your redis instance */,
 })
 ```
 
@@ -173,8 +174,8 @@ env: {
 ##### rateLimit
 Optional rate limiter instance — supports Redis, KV, Durable Objects, etc. If provided, routes/groups can call `.limit(...)` and TriFrost will auto-enforce quotas.
 ```typescript
-rateLimit: new RedisRateLimit({
-  store: () => ... /* your redis instance */,
+rateLimit: ({env}) => new RedisRateLimit({
+  store: ... /* your redis instance */
 }),
 ```
 
@@ -305,8 +306,8 @@ Set it to `[]` to disable entirely.
 tracing: {
   requestId: {
     inbound: ['x-request-id'], // accepted inbound header
-    outbound: 'x-request-id',  // header sent on ctx.fetch(...) with the trace id
-    validate: val => ..., // validation method to validate for a proper id format
+    outbound: 'x-request-id',  // header sent on ctx.fetch(...) with trace id
+    validate: val => ..., // validation method to validate for id format
   }
 }
 ```

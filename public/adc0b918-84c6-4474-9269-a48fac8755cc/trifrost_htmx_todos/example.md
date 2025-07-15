@@ -41,7 +41,7 @@ export {TriFrostDurableObject} from '@trifrost/core';
 
 const app = await new App<Env>({
   client: {css},
-  cache: new DurableObjectCache({store: ({env}) => env.MAIN_DURABLE}),
+  cache: ({env}) => new DurableObjectCache({store: env.MAIN_DURABLE}),
   tracing: {exporters: ({env}) => [
     new OtelHttpExporter({
       logEndpoint: 'https://otlp.uptrace.dev/v1/logs',
