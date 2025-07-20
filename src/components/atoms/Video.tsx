@@ -47,6 +47,7 @@ export function Video({src, style, ...rest}: VideoProps) {
         preload="metadata"
         className={css({
           maxHeight: '40rem',
+          maxWidth: '100%',
           objectFit: 'contain',
           display: 'block',
         })}
