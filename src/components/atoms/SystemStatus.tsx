@@ -28,7 +28,7 @@ export function SystemStatus() {
         {({el, $}) => {
           const span = $.query(el, 'span')!;
           async function load() {
-            const res = await $.fetch<{color: string; message: string}>('http://localhost:8081/status/badge', {
+            const res = await $.fetch<{color: string; message: string}>('https://status.trifrost.dev/status/badge', {
               credentials: 'omit',
             });
             if (res.ok && res.content) {
