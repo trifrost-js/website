@@ -40,6 +40,8 @@ const app = await new App<Env>({
         'media-src': ["'self'", 'https://github.com', 'https://github-production-user-asset-6210df.s3.amazonaws.com'],
         'form-action': ["'self'"],
         'connect-src': [
+          'http://localhost:8081',
+          'https://status.trifrost.dev',
           "'self'",
           'https://insights.algolia.io',
           'https://n3tg8pi3iw-dsn.algolia.net',

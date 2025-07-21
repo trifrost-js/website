@@ -3,6 +3,7 @@ import {Theme} from '../atoms/Theme';
 import {GitHub, NPM, Discord} from '../atoms/Icons';
 import {css} from '../../css';
 import {Script} from '../../script';
+import {SystemStatus} from '../atoms/SystemStatus';
 
 enum HeaderSections {
   Home = 'home',
@@ -228,6 +229,7 @@ export function Header({active, ...rest}: HeaderProps) {
             [css.media.tablet]: css.mix('fj_sb', 'fg0', 'fs0', {width: '100%'}),
           })}
         >
+          <SystemStatus />
           <div
             className={css.use('f', 'fa_c', 'fj_c', {
               gap: css.$v.space_m,
