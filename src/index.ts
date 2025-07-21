@@ -17,14 +17,15 @@ const app = await new App<Env>({
   }),
   tracing: {
     exporters: ({env}) => {
-      if (isDevMode(env)) return [new ConsoleExporter()];
+      if (isDevMode(env)) return new ConsoleExporter();
       return [
         new JsonExporter(),
         new OtelHttpExporter({
-          logEndpoint: 'https://otlp.uptrace.dev/v1/logs',
-          spanEndpoint: 'https://otlp.uptrace.dev/v1/traces',
+          logEndpoint: 'https://ingest.trifrost.dev/v1/ingest/otel',
+          spanEndpoint: 'https://ingest.trifrost.dev/v1/ingest/otel',
           headers: {
-            'uptrace-dsn': env.UPTRACE_DSN,
+            'x-ingest-key': env.TRIFROST_INGESTOR_KEY,
+            'x-ingest-client': env.TRIFROST_INGESTOR_CLIENT,
           },
         }),
       ];
