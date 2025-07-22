@@ -25,8 +25,8 @@ export function Layout({children, section, title, description}: LayoutProps) {
         <Header active={section} />
         {children}
         <Footer />
+        <DocSearch />
       </div>
-      <DocSearch />
     </Root>
   );
 }
