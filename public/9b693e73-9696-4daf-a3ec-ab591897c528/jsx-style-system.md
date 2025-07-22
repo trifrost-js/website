@@ -235,6 +235,16 @@ const responsive = css.use({
 
 You can use these inside both definitions and inline styles.
 
+##### Default Breakpoints
+The below shows the default set of breakpoints defined within the TriFrost styling system:
+```typescript
+css.media.mobile /* <= 600px */
+css.media.tablet /* <= 1199px */
+css.media.tabletOnly /* > 600px AND < 1200px */
+css.media.tabletUp /* > 600px */
+css.media.desktop /* >= 1200px */
+```
+
 ##### Media queries in definitions
 When defining utilities via `createCss({ definitions })`, you can reference `mod.media` to scope styles per breakpoint:
 ```typescript

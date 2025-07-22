@@ -53,6 +53,8 @@ Each `el` now has:
 - Automatic integration with mutation observers and relay system
 - `$.<module>`: Automatically injected when referenced in a `<Script>`, providing typed access to registered modules
 
+> 💡 To register teardown logic for a dynamic element (e.g., created in a module), use `el.$unmount = () => { ... }`. This will automatically run when the element is removed from the DOM.
+
 ##### Scoped Pub/Sub Relay
 Every atomic script runs inside an isolated VM that can **communicate across nodes** using scoped [pub/sub](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) messages.
 ```tsx
@@ -473,7 +475,7 @@ Atomic gives you access to the Atomic `$` utilities. A suite of safe, zero-depen
 
 ##### Event utilities
 - `$.fire(el, type, {data?, mode?})`: Fires a `CustomEvent` from the provided element. Defaults to bubbling upward.
-- `$.on(el, type, handler)`: Adds an event listener and returns a disposer.
+- `$.on(el, type, handler)`: Adds an event listener and automatically cleans up on unmount/element remove.
 - `$.once(el, type, handler)`: Adds a one-time event listener that **auto-cleans on first call**.
 
 ##### DOM utilities
@@ -496,6 +498,7 @@ Atomic gives you access to the Atomic `$` utilities. A suite of safe, zero-depen
 - `$.debounce(fn, delay)`: Debounced function wrapper.
 - `$.eq(a, b)`: Structural equality check.
 - `$.fetch(...)`: Smart wrapper around fetch with automatic body serialization and content parsing.
+- `$.goto(...)`: Navigation helper to navigate to a specific url
 - `$.isArr`: Verify a provided value is an array (**type guarded**)
 - `$.isBool`: Verify a provided value is a boolean (**type guarded**)
 - `$.isDate`: Verify a provided value is a **valid** Date instance (**type guarded**)
@@ -507,6 +510,41 @@ Atomic gives you access to the Atomic `$` utilities. A suite of safe, zero-depen
 - `$.isTouch`: Boolean getter which returns `true` if the device has touch capabilities and `false` if it doesnt
 - `$.sleep(ms)`: Resolves after the specified delay.
 - `$.uid()`: Generates a random id.
+
+##### Notes on $.goto
+`$.goto` is a high-level navigation helper for declarative and ergonomic client-side routing with built-in handling for query merging, blank tab opening, and replace-mode navigation.
+
+Examples:
+```typescript
+$.goto("/dashboard");
+// → Navigates to: /dashboard
+```
+```typescript
+$.goto("/login", "replace");
+// → Replaces current history entry with /login
+```
+```typescript
+$.goto("https://external.site", "blank");
+// → Opens https://external.site in a new tab
+```
+```typescript
+// Current url: https://app.local/settings?page=2&theme=dark
+
+$.goto("/account", "query");
+// → Navigates to: /account?page=2&theme=dark
+
+$.goto("/search?q=test", "query");
+// → Navigates to: /search?q=test&page=2&theme=dark
+
+$.goto("/search?q=test&page=3", "query");
+// → Navigates to: /search?q=test&page=3&theme=dark
+
+$.goto("/profile", {
+  replace: true,
+  includeQuery: true
+});
+// → Replaces history with: /profile?page=2&theme=dark
+```
 
 ##### Notes on $.fetch
 - Automatically parses JSON, HTML, text, blobs, etc. based on the response `Content-Type`.
