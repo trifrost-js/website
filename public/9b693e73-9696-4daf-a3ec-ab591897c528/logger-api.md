@@ -131,9 +131,27 @@ const process = spanFn('process', async (ctx) => {
 
 Both are great for **instrumenting services, utilities, or helpers** where you want lightweight tracing without clutter.
 
-> **⚠ Important**:
-> For the decorator or `spanFn()` to work, they need to find a `ctx.logger`.\n- In class methods, they look for the first argument being a `ctx`, falling back to `this.logger` or `this.ctx`.\n- In standalone functions, they look for the first argument being `ctx`.
-> Without that, your function will still work, but **no span will be attached**.
+##### Using ctx() in Decorators (v1.3)
+From v1.3 onward, decorators and helpers automatically resolve the active request context using `ctx()` (backed by **AsyncLocalStorage**).
+
+This means you don’t always need to pass `ctx` explicitly if your method doesn’t otherwise need it:
+```ts
+import {span, ctx} from '@trifrost/core';
+
+class ProductService {
+  // No ctx arg here — span key + method body both resolve context implicitly
+  @span(() => `getProduct:${ctx().state.organisationId}`, {ttl: 120})
+  async getProduct() {
+    const id = ctx().state.productId;
+		...
+  }
+}
+```
+
+## ✅ Best Practices:
+- If your method **already needs** `ctx` (e.g. to read body, query, headers), keep it as an argument.
+- If your method **doesn’t need** `ctx` directly, lean on `ctx()` for cleaner signatures.
+- Decorators (`@cache`, `@span`) and wrappers (`cacheFn`, `spanFn`) will work in both styles.
 
 ##### logger.span (inline)
 ```typescript

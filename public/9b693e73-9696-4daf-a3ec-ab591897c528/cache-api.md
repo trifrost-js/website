@@ -68,6 +68,28 @@ const cachedFetch = cacheFn((ctx) => `user:${ctx.state.userId}`, {ttl: 60})(
 );
 ```
 
+##### Using ctx() in Decorators (v1.3)
+From v1.3 onward, decorators and helpers automatically resolve the active request context using `ctx()` (backed by **AsyncLocalStorage**).
+
+This means you don’t always need to pass `ctx` explicitly if your method doesn’t otherwise need it:
+```ts
+import {cache, ctx} from '@trifrost/core';
+
+class ProductService {
+  // No ctx arg here — cache key + method body both resolve context implicitly
+  @cache(() => `product:${ctx().state.productId}`, {ttl: 120})
+  async getProduct() {
+    const id = ctx().state.productId;
+    return fetchProduct(id);
+  }
+}
+```
+
+## ✅ Best Practices:
+- If your method **already needs** `ctx` (e.g. to read body, query, headers), keep it as an argument.
+- If your method **doesn’t need** `ctx` directly, lean on `ctx()` for cleaner signatures.
+- Decorators (`@cache`, `@span`) and wrappers (`cacheFn`, `spanFn`) will work in both styles.
+
 ---
 
 ### 🚫 Skipping Cache

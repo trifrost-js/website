@@ -27,6 +27,32 @@ As well as a whole lot more, no boilerplate/custom scaffolding, you get this for
 - [Context](/docs/context-api) and all it offers
 - [Body Parser](/docs/bodyparsing) and all it offers
 
+##### Global `ctx()` Utility
+> The `ctx()` utility was added in **TriFrost 1.3**
+In addition to being passed to handlers and middleware automatically TriFrost now **exposes the active context via a global helper**:
+```ts
+import {ctx} from '@trifrost/core';
+
+export async function audit() {
+  const context = ctx();
+  context.logger.info('Auditing from anywhere in the stack');
+}
+```
+
+This works because TriFrost internally uses AsyncLocalStorage to track request state across the call stack.
+
+It means decorators (`@cache`, `@span`) and helpers (`cacheFn`, `spanFn`) no longer need to be passed `ctx` explicitly and you can call `ctx()` anywhere inside your functions if you want full access.
+
+This keeps APIs clean while still giving you escape hatches when you need them.
+
+## ✅ Best Practices for ctx()
+- Prefer explicit ctx in handlers and middleware.
+- Use ctx() in helpers, decorators, and deep utilities. Anywhere you’d need to plumb ctx through five layers of function calls is a good fit.
+- If a function is already receiving ctx explicitly, use that instead of calling ctx(). This avoids ambiguity and **keeps type inference predictable**.
+- `@cache`, `@span`, etc now leverage `ctx()` internally, so you can annotate methods without worrying about context plumbing.
+
+> **Note:** `ctx()` will only return the active context IF part of an active request.
+
 ---
 
 ### 🧩 State from Route Params

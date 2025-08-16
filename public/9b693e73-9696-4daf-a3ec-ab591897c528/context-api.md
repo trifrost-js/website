@@ -4,6 +4,20 @@ You never construct a context yourself, it's passed into every handler automatic
 
 👉 See also: [Understanding Context](/docs/understanding-context) | [Context & State Management](/docs/context-state-management)
 
+### ✨ Global `ctx()` Utility (since v1.3)
+In addition to being passed into every handler, TriFrost now exposes the active request context globally.
+
+```ts
+import {ctx} from '@trifrost/core';
+
+export async function auditLog() {
+  const context = ctx();
+  context.logger.info('Auditing from anywhere in the call stack');
+}
+```
+
+👉 Learn more in [Context & State Management](/docs/context-state-management)
+
 ---
 
 ### 🧠 State Management
