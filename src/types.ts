@@ -11,8 +11,6 @@ export type Env = {
   RATELIMITER_KV: KVNamespace;
   MainDurable: DurableObjectNamespace;
   TRIFROST_BUCKET: R2Bucket;
-  TRIFROST_INGESTOR_KEY: string;
-  TRIFROST_INGESTOR_CLIENT: string;
 };
 
 export type Context<State extends Record<string, unknown> = {}> = TriFrostContext<Env, State>;

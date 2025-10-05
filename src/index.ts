@@ -16,11 +16,10 @@ const app = await new App<Env>({
       return [
         new JsonExporter(),
         new OtelHttpExporter({
-          logEndpoint: 'https://ingest.trifrost.dev/v1/ingest/otel',
-          spanEndpoint: 'https://ingest.trifrost.dev/v1/ingest/otel',
+          logEndpoint: 'https://otlp.uptrace.dev/v1/logs',
+          spanEndpoint: 'https://otlp.uptrace.dev/v1/traces',
           headers: {
-            'x-ingest-key': env.TRIFROST_INGESTOR_KEY,
-            'x-ingest-client': env.TRIFROST_INGESTOR_CLIENT,
+            'uptrace-dsn': env.UPTRACE_DSN,
           },
         }),
       ];
@@ -40,8 +39,6 @@ const app = await new App<Env>({
         'media-src': ["'self'", 'https://github.com', 'https://github-production-user-asset-6210df.s3.amazonaws.com'],
         'form-action': ["'self'"],
         'connect-src': [
-          'http://localhost:8081',
-          'https://status.trifrost.dev',
           "'self'",
           'https://insights.algolia.io',
           'https://n3tg8pi3iw-dsn.algolia.net',
