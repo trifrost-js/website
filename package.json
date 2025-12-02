@@ -12,15 +12,15 @@
   "license": "MIT",
   "homepage": "https://trifrost.dev",
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20251004.0",
+    "@cloudflare/workers-types": "^4.20251202.0",
     "@valkyriestudios/utils": "^12.47.0",
-    "eslint": "^9.37.0",
+    "eslint": "^9.39.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
-    "prettier": "^3.6.2",
+    "prettier": "^3.7.3",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.45.0",
-    "wrangler": "^4.42.0"
+    "typescript-eslint": "^8.48.1",
+    "wrangler": "^4.51.0"
   },
   "dependencies": {
     "@trifrost/core": "^1.4.1",
