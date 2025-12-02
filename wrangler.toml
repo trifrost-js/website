@@ -24,7 +24,7 @@ name = "MainDurable"
 class_name = "TriFrostDurableObject"
 
 [[migrations]]
-tag = "v1"
+tag = "v2"
 new_sqlite_classes = ["TriFrostDurableObject"]
 
 [[r2_buckets]]
