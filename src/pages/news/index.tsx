@@ -13,7 +13,6 @@ import {blogRouter} from './blog/index';
 import {Page} from '../../components/molecules/Page';
 import {Panel} from '../../components/molecules/Panel';
 import {NewsService, type NewsItem} from './Service';
-import {ReleaseService} from './releases/Service';
 
 function bucketKey(val: Date | string | number) {
   return format(new Date(val), 'YYYY-MM');
@@ -274,8 +273,6 @@ export async function newsRouter<State extends Record<string, unknown>>(r: Route
           }),
         )
         .post(async ctx => {
-          const noSync = ctx.query.get('noSync') ?? false;
-          if (!noSync) await ReleaseService.syncToDb(ctx);
           await NewsService.evict(ctx);
           return ctx.status(200);
         });

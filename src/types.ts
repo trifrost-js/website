@@ -7,7 +7,6 @@ export type Env = {
   UPTRACE_DSN: string;
   ALGOLIA_DOCSEARCH_APPID: string;
   ALGOLIA_DOCSEARCH_APIKEY: string;
-  DB_CONNECTION_STRING: string;
   RATELIMITER_KV: KVNamespace;
   MainDurable: DurableObjectNamespace;
   TRIFROST_BUCKET: R2Bucket;

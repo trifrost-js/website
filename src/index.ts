@@ -1,5 +1,5 @@
 import {type Env} from './types';
-import {App, OtelHttpExporter, JsonExporter, Security, Cors, isDevMode, ConsoleExporter} from '@trifrost/core';
+import {App, OtelHttpExporter, JsonExporter, Security, Cors, isDevMode, ConsoleExporter, DurableObjectCache} from '@trifrost/core';
 import {notFound} from './pages/notfound';
 import {error} from './pages/error';
 import {rootRouter} from './pages/root';
@@ -9,7 +9,12 @@ import {newsRouter} from './pages/news';
 import {css} from './css';
 import {script} from './script';
 
+export {TriFrostDurableObject} from '@trifrost/core';
+
 const app = await new App<Env>({
+  cache: ({env}) => new DurableObjectCache({
+    store: env.MainDurable,
+  }),
   tracing: {
     exporters: ({env}) => {
       if (isDevMode(env)) return new ConsoleExporter();

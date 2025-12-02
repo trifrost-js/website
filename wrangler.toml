@@ -19,6 +19,14 @@ head_sampling_rate = 1
 [observability.logs]
 invocation_logs = false
 
+[[durable_objects.bindings]]
+name = "MainDurable"
+class_name = "TriFrostDurableObject"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["TriFrostDurableObject"]
+
 [[r2_buckets]]
 binding = "TRIFROST_BUCKET"
 bucket_name = "trifrost-r2-eu"

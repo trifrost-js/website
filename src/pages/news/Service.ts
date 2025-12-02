@@ -13,10 +13,10 @@ export class NewsService {
    * @param {Context} ctx
    */
   @span('getNews')
-  @cache('news', {ttl: 7200})
+  @cache('news:__all__', {ttl: 7200})
   static async list(ctx: Context): Promise<NewsItem[]> {
     try {
-      return sort([...(await ReleaseService.list(ctx)), ...(await BlogService.list(ctx))], 'date', 'desc');
+      return sort([...(await ReleaseService.list(ctx)), ...(await BlogService.list())], 'date', 'desc');
     } catch (err) {
       ctx.logger.error(err);
       return cacheSkip([]);
@@ -57,6 +57,6 @@ export class NewsService {
    * @param {Context} ctx
    */
   static async evict(ctx: Context) {
-    await ctx.cache.del('news');
+    await ctx.cache.del({prefix: 'news'});
   }
 }
